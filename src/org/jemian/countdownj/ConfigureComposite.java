@@ -18,10 +18,11 @@ import org.eclipse.swt.widgets.Listener;
 public class ConfigureComposite extends Composite {
 
 	public ConfigureComposite(Gui gui, Composite parent) {
-		super(parent, SWT.BORDER);
+		super(parent, SWT.NONE);
 		this.setLayout(new FillLayout());
 
 		final Gui top = gui;
+
 		final Button b1 = new Button(this, SWT.PUSH);
 		b1.setText("<configure>");
 

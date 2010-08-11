@@ -9,11 +9,15 @@ package org.jemian.countdownj;
 //########### SVN repository information ###################
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -34,6 +38,7 @@ public class Gui {
 
 	public Gui(Shell s) {
 		clockTimer = new ClockTimer(this);
+		final Shell finalShell = s;
 
 		GridLayout layout = new GridLayout(1, true);
 		s.setLayout(layout);
@@ -52,10 +57,21 @@ public class Gui {
 		mmssComposite.SetNamedForegroundColor("red");
 		phaseComposite.SetNamedForegroundColor("yellow");
 
-		griddata = new GridData(GridData.FILL_BOTH);
+		griddata = new GridData(GridData.FILL_HORIZONTAL);
 		TabFolder tabs = setupTabbedPanels(s);
 		tabs.setLayoutData(griddata);
 		clockTimer.setTime_s(15 * 60);
+
+		s.addListener(SWT.Resize, new Listener() {
+			public void handleEvent(Event e) {
+				switch (e.type) {
+				case SWT.Resize:
+					Rectangle rect = finalShell.getClientArea();
+					System.out.println("Shell resized: height=" + rect.height);
+					break;
+				}
+			}
+		});
 	}
 
 	public void callbackFunction(String str) {
@@ -68,6 +84,9 @@ public class Gui {
 
 	private TabFolder setupTabbedPanels(Shell s) {
 		TabFolder tf = new TabFolder(s, SWT.NONE);
+		Display d = s.getDisplay();
+		tf.setBackground(new Color(d, 0, 0, 0));
+		tf.setForeground(new Color(d, 255, 255, 255));
 
 		TabItem ti1 = new TabItem(tf, SWT.NONE);
 		ti1.setText("mm:ss controls");
@@ -93,16 +112,15 @@ public class Gui {
 	}
 
 	public void buttonResponder(Button b, String label) {
-		System.out.println(label);
 		Composite parent = b.getParent();
 		if (parent == mmssBtnComposite)
-			System.out.println("mmssBtnComposite");
+			System.out.println("mmssBtnComposite: " + label);
 		if (parent == presetBtnComposite)
-			System.out.println("presetBtnComposite");
+			System.out.println("presetBtnComposite: " + label);
 		if (parent == presetConfigureBtnComposite)
-			System.out.println("presetConfigureBtnComposite");
+			System.out.println("presetConfigureBtnComposite: " + label);
 		if (parent == configureBtnComposite)
-			System.out.println("configureBtnComposite");
+			System.out.println("configureBtnComposite: " + label);
 	}
 
 	/**
@@ -111,13 +129,14 @@ public class Gui {
 	public static void main(String[] args) {
 		String revision = "$Revision$";
 		Display d = new Display();
-		Shell s = new Shell(d, SWT.CLOSE | SWT.RESIZE | SWT.MAX);
-		s.setSize(500, 500);
+		Shell s = new Shell(d, SWT.SHELL_TRIM );
 		s.setText("CountdownJ, by Pete Jemian: " + revision);
+		s.setSize(500, 500);
+		s.setBackground(new Color(d, 0,0, 0));
 
 		Gui gui = new Gui(s);
 
-		s.pack();
+		//s.pack();
 		s.open();
 
 		while (!s.isDisposed()) {

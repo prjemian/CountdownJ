@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Listener;
 public class ConfigurePresets extends Composite {
 
 	public ConfigurePresets(Gui gui, Composite parent) {
-		super(parent, SWT.BORDER);
+		super(parent, SWT.NONE);
 		this.setLayout(new FillLayout());
 
 		final Gui top = gui;

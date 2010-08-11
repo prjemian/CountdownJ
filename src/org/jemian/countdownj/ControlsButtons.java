@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Listener;
 public class ControlsButtons extends Composite {
 
 	public ControlsButtons(Gui gui, Composite parent, String label) {
-		super(parent, SWT.BORDER);
+		super(parent, SWT.NONE);
 		this.setLayout(new FillLayout());
 
 		final Gui top = gui;

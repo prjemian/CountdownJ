@@ -27,11 +27,11 @@ public class LabelPaneComposite extends Composite {
 	final Color green;
 
 	public LabelPaneComposite(Composite parent) {
-		super(parent, SWT.BORDER);
+		super(parent, SWT.NONE);
 		this.setLayout(new FillLayout());
 
 		int options = SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL;
-		options = SWT.BORDER | SWT.CENTER | SWT.READ_ONLY;
+		options = SWT.CENTER | SWT.READ_ONLY;
 
 		this.t = new Label(this, options);
 		this.t.setText("initial text string");
@@ -52,7 +52,7 @@ public class LabelPaneComposite extends Composite {
 				switch (e.type) {
 				case SWT.Resize:
 					SetTextSize();
-					System.out.println("composite resized");
+					// System.out.println("composite resized");
 					break;
 				}
 			}
