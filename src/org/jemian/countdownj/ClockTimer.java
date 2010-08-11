@@ -1,11 +1,19 @@
 package org.jemian.countdownj;
 
+//########### SVN repository information ###################
+//# $Date$
+//# $Author$
+//# $Revision$
+//# $URL$
+//# $Id$
+//########### SVN repository information ###################
+
 import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * Operate the clock 
- * generate updates when the clock is running
+ * Operate the clock for countdown
+ * generate periodic updates when the clock is running
  * @author Pete
  *
  */
@@ -13,7 +21,7 @@ public class ClockTimer {
 
 	Timer timer;
 	boolean counting = false;
-	double counter = 0;
+	double time_s = 0;
 	int interval_ms = 1000;
 	double endTime = 0;
 	int initialDelay = 0;
@@ -22,7 +30,7 @@ public class ClockTimer {
 	/**
 	 * @param timer : java.util.Timer object
 	 * @param counting : flag to describe if the timer is running
-	 * @param counter : the preset or remaining time
+	 * @param time_s : the preset or remaining time
 	 * @param interval_ms : reporting interval
 	 * @param endTime : (internal) when the presentation should end
 	 * @param initialDelay : always ZERO for this class
@@ -43,7 +51,7 @@ public class ClockTimer {
 	/**
 	 * receive the timer update
 	 */
-	class RemindTask extends TimerTask {
+	class UpdateTask extends TimerTask {
 
 		ClockTimer ct;
 
@@ -51,22 +59,17 @@ public class ClockTimer {
 		 * pass and save the reference of the outer class
 		 * @param clockTimer
 		 */
-		public RemindTask(ClockTimer clockTimer) {
+		public UpdateTask(ClockTimer clockTimer) {
+			// TODO: Can this be found without passing from the caller?
 			this.ct = clockTimer;
 		}
 
 		/**
-		 * called periodically by the running timer
+		 * called periodically (interval_ms) by the running timer
+		 * calls the parent class update() method
 		 */
 		public void run() {
-			ct.counter = ct.endTime - ct._now_();
-			String mmss = ct.toString();
-			if (ct.caller != null) {
-				ct.caller.callbackFunction(mmss);
-			} else {
-				// development only
-				System.out.println("ClockTimer: " + mmss);
-			}
+			ct.update();
 		}
 	}
 	
@@ -81,29 +84,29 @@ public class ClockTimer {
 	 * return the programmed or remaining countdown interval
 	 * negative if overtime
 	 */
-	public double GetCounter() {
-		return counter;
+	public double getTime_s() {
+		return time_s;
 	}
 	
 	/**
 	 * define the programmed countdown interval
 	 */
-	public void SetCounter(double seconds) {
-		if (!counting)  counter = seconds;
+	public void setTime_s(double seconds) {
+		if (!counting)  time_s = seconds;
 	}
 	
 	/**
 	 * increment the programmed countdown interval
 	 */
-	public void AddCounter(double seconds) {
-		if (!counting)  counter += seconds;
+	public void incrTime_s(double seconds) {
+		if (!counting)  time_s += seconds;
 	}
 	
 	/**
 	 * zero out the programmed countdown interval
 	 */
-	public void ClearCounter() {
-		SetCounter(0);
+	public void clearCounter() {
+		setTime_s(0);
 	}
 	
 	/**
@@ -118,10 +121,11 @@ public class ClockTimer {
 	 * start the countdown clock
 	 */
 	public void start() {
-		endTime = _now_() + counter;
+		endTime = _now_() + time_s;
         counting = true;
 		timer = new Timer();
-		timer.schedule(new RemindTask(this), initialDelay, interval_ms);
+		timer.schedule(new UpdateTask(this), initialDelay, interval_ms);
+		update();
 	}
 	
 	/**
@@ -133,10 +137,24 @@ public class ClockTimer {
 	}
 	
 	/**
+	 * update the countdown clock
+	 */
+	public void update() {
+		time_s = endTime - _now_();
+		String mmss = toString();
+		if (caller != null) {
+			caller.callbackFunction(mmss);
+		} else {
+			// development only
+			System.out.println("ClockTimer: " + mmss);
+		}
+	}
+	
+	/**
 	 * render the value of interval as mm:ss
 	 */
 	public String toString() {
-		int basis = Math.abs((int) (counter + 0.5));		// roundoff
+		int basis = Math.abs((int) (time_s + 0.5));		// roundoff
 		int h = basis / 60;
 		int m = basis % 60;
 		String mmss = String.format("%02d", h) 
@@ -152,7 +170,7 @@ public class ClockTimer {
 	public static void main(String args[]) {
 		System.out.println("About to schedule task.");
 		ClockTimer ct = new ClockTimer(0);
-		ct.SetCounter(15);
+		ct.setTime_s(15);
 		ct.start();
 		System.out.println("Task scheduled.");
 	}

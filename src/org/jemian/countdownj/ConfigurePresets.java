@@ -1,5 +1,13 @@
 package org.jemian.countdownj;
 
+//########### SVN repository information ###################
+//# $Date$
+//# $Author$
+//# $Revision$
+//# $URL$
+//# $Id$
+//########### SVN repository information ###################
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;

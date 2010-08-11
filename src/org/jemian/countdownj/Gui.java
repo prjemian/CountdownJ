@@ -3,6 +3,14 @@
  */
 package org.jemian.countdownj;
 
+//########### SVN repository information ###################
+//# $Date$
+//# $Author$
+//# $Revision$
+//# $URL$
+//# $Id$
+//########### SVN repository information ###################
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -45,7 +53,7 @@ public class Gui {
 		griddata = new GridData(GridData.FILL_BOTH);
 		TabFolder tabs = setupTabbedPanels(s);
 		tabs.setLayoutData(griddata);
-		clockTimer.SetCounter(25);
+		clockTimer.setTime_s(25);
 		clockTimer.start();
 	}
 
@@ -53,7 +61,8 @@ public class Gui {
 		System.out.println("callbackFunction: " + str);
 		// can't set the widget text from here 
 		// got to be more crafty, it seems
-		// mmssComposite.SetText("curious");
+//		mmssComposite.SetText(str);
+		// throw some event to set this instead
 	}
 	
 	private static TabFolder setupTabbedPanels(Shell s) {
