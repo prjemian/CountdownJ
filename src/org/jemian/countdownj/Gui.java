@@ -14,8 +14,9 @@ package org.jemian.countdownj;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -45,16 +46,15 @@ public class Gui {
 		phaseComposite.setLayoutData(griddata);
 
 		phaseComposite.SetText("second text composite");
-		mmssComposite.SetTextSize(50);
-		phaseComposite.SetTextSize(20);
+		mmssComposite.SetTextSize();
+		phaseComposite.SetTextSize();
 		mmssComposite.SetNamedForegroundColor("red");
 		phaseComposite.SetNamedForegroundColor("yellow");
 
 		griddata = new GridData(GridData.FILL_BOTH);
 		TabFolder tabs = setupTabbedPanels(s);
 		tabs.setLayoutData(griddata);
-		clockTimer.setTime_s(25);
-		clockTimer.start();
+		clockTimer.setTime_s(15*60);
 	}
 
 	public void callbackFunction(String str) {
@@ -70,23 +70,23 @@ public class Gui {
 
 		TabItem ti1 = new TabItem(tf, SWT.NONE);
 		ti1.setText("mm:ss controls");
-		ControlsMmss cm1 = new ControlsMmss(tf);
-		ti1.setControl(cm1);
+		ControlsButtons mmssComposite = new ControlsButtons(tf);
+		ti1.setControl(mmssComposite);
 
 		TabItem ti2 = new TabItem(tf, SWT.NONE);
 		ti2.setText("preset controls");
-		ControlsPresets pc2 = new ControlsPresets(tf);
-		ti2.setControl(pc2);
+		ControlsButtons presetComposite = new ControlsButtons(tf);
+		ti2.setControl(presetComposite);
 
 		TabItem ti3 = new TabItem(tf, SWT.NONE);
 		ti3.setText("configure presets");
-		ConfigurePresets cp3 = new ConfigurePresets(tf);
-		ti3.setControl(cp3);
+		ConfigurePresets presetConfigureComposite = new ConfigurePresets(tf);
+		ti3.setControl(presetConfigureComposite);
 
 		TabItem ti4 = new TabItem(tf, SWT.NONE);
 		ti4.setText("configure");
-		ConfigureComposite cc4 = new ConfigureComposite(tf);
-		ti4.setControl(cc4);
+		ConfigureComposite configureComposite = new ConfigureComposite(tf);
+		ti4.setControl(configureComposite);
 
 		return tf;
 	}
@@ -95,10 +95,11 @@ public class Gui {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		String revision = "$Revision$";
 		Display d = new Display();
 		Shell s = new Shell(d, SWT.CLOSE | SWT.RESIZE | SWT.MAX);
 		s.setSize(500, 500);
-		s.setText("CountdownJ, by Pete Jemian");
+		s.setText("CountdownJ, by Pete Jemian: " + revision);
 		
 		Gui gui = new Gui(s);
 
