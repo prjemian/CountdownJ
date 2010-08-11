@@ -12,16 +12,29 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 public class ConfigurePresets extends Composite {
 
-	public ConfigurePresets(Composite parent) {
+	public ConfigurePresets(Gui gui, Composite parent) {
 		super(parent, SWT.BORDER);
 		this.setLayout(new FillLayout());
 
+		final Gui top = gui;
+
 		for (int i = 0; i < 4; i++) {
 			final Button b1 = new Button(this, SWT.PUSH);
-			b1.setText("button " + i);
+			b1.setText("<button " + i + ">");
+			b1.addListener(SWT.Selection, new Listener() {
+				public void handleEvent(Event e) {
+					switch (e.type) {
+					case SWT.Selection:
+						top.buttonResponder(b1, b1.getText());
+						break;
+					}
+				}
+			});
 		}
 	}
 

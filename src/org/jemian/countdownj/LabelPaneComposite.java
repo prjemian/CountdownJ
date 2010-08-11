@@ -47,27 +47,28 @@ public class LabelPaneComposite extends Composite {
 		this.t.setForeground(this.white);
 		this.t.setBackground(this.black);
 
-		this.addListener(SWT.Resize , new Listener() {
-			  public void handleEvent(Event e) {
-			    switch (e.type) {
-			    case SWT.Resize :
-			    	SetTextSize();
+		this.addListener(SWT.Resize, new Listener() {
+			public void handleEvent(Event e) {
+				switch (e.type) {
+				case SWT.Resize:
+					SetTextSize();
 					System.out.println("composite resized");
 					break;
-			    }
-			  }
-			});
+				}
+			}
+		});
 	}
 
 	public void SetTextSize() {
 		Font f = this.t.getFont();
 		FontData fd = f.getFontData()[0];
 		Rectangle clientRect = this.getClientArea();
-		//Layout layout = this.getLayout();
+		// Layout layout = this.getLayout();
 
 		int height = clientRect.height;
-		if (height == 0) height = 20;
-		fd.setHeight(height/2);
+		if (height == 0)
+			height = 20;
+		fd.setHeight(height / 2);
 
 		Font font = new Font(this.device, fd);
 		this.t.setFont(font);
@@ -87,11 +88,16 @@ public class LabelPaneComposite extends Composite {
 
 	public void SetNamedForegroundColor(String colorName) {
 		Color color = this.white;
-		if (colorName == "black") color = this.black;
-		if (colorName == "white") color = this.white;
-		if (colorName == "red") color = this.red;
-		if (colorName == "yellow") color = this.yellow;
-		if (colorName == "green") color = this.green;
+		if (colorName == "black")
+			color = this.black;
+		if (colorName == "white")
+			color = this.white;
+		if (colorName == "red")
+			color = this.red;
+		if (colorName == "yellow")
+			color = this.yellow;
+		if (colorName == "green")
+			color = this.green;
 		this.SetForegroundColor(color);
 	}
 

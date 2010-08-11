@@ -17,47 +17,52 @@ import org.eclipse.swt.widgets.Listener;
 
 public class ControlsButtons extends Composite {
 
-	public ControlsButtons(Composite parent) {
+	public ControlsButtons(Gui gui, Composite parent, String label) {
 		super(parent, SWT.BORDER);
 		this.setLayout(new FillLayout());
 
+		final Gui top = gui;
+
 		for (int i = 0; i < 4; i++) {
 			final Button b1 = new Button(this, SWT.PUSH);
-			b1.setText("button " + i);
+			b1.setText("<" + label + " " + i + ">");
 			b1.addListener(SWT.Selection, new Listener() {
-				  public void handleEvent(Event e) {
-				    switch (e.type) {
-				    case SWT.Selection:
-				      System.out.println("<" + b1.getText() + ">");
-				      break;
-				    }
-				  }
-				});
+				public void handleEvent(Event e) {
+					switch (e.type) {
+					case SWT.Selection:
+						top.buttonResponder(b1, b1.getText());
+						break;
+					}
+				}
+			});
 		}
 
 		final Button start = new Button(this, SWT.PUSH);
-		start.setText("start");
+		start.setText("<" + label + " start>");
 		start.addListener(SWT.Selection, new Listener() {
-			  public void handleEvent(Event e) {
-			    switch (e.type) {
-			    case SWT.Selection:
-			      System.out.println("<start>");
-			      break;
-			    }
-			  }
-			});
+			public void handleEvent(Event e) {
+				switch (e.type) {
+				case SWT.Selection:
+					top.buttonResponder(start, start.getText());
+					break;
+				}
+			}
+		});
 
 		final Button stop = new Button(this, SWT.PUSH);
-		stop.setText("stop");
+		stop.setText("<" + label + " stop>");
 		stop.addListener(SWT.Selection, new Listener() {
-			  public void handleEvent(Event e) {
-			    switch (e.type) {
-			    case SWT.Selection:
-			      System.out.println("<stop>");
-			      break;
-			    }
-			  }
-			});
+			public void handleEvent(Event e) {
+				switch (e.type) {
+				case SWT.Selection:
+					top.buttonResponder(stop, stop.getText());
+					break;
+				}
+			}
+		});
 	}
 
+	public void setButtonText(String label, String text) {
+		
+	}
 }
