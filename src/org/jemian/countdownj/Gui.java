@@ -90,23 +90,44 @@ public class Gui {
 
 		TabItem ti1 = new TabItem(tf, SWT.NONE);
 		ti1.setText("mm:ss controls");
-		mmssBtnComposite = new ControlsButtons(this, tf, "mm:ss");
+		String key = "mm:ss";
+		mmssBtnComposite = new ControlsButtons(this, tf, key);
 		ti1.setControl(mmssBtnComposite);
+		mmssBtnComposite.setButtonText(key + "-0", "+10:00");
+		mmssBtnComposite.setButtonText(key + "-1", "+01:00");
+		mmssBtnComposite.setButtonText(key + "-2", "+00:10");
+		mmssBtnComposite.setButtonText(key + "-3", "+00:01");
+		mmssBtnComposite.setButtonText("start", "start");
+		mmssBtnComposite.setButtonText("stop", "clear");
 
 		TabItem ti2 = new TabItem(tf, SWT.NONE);
 		ti2.setText("preset controls");
-		presetBtnComposite = new ControlsButtons(this, tf, "presets");
+		key = "presets";
+		presetBtnComposite = new ControlsButtons(this, tf, key);
 		ti2.setControl(presetBtnComposite);
+		presetBtnComposite.setButtonText(key + "-0", "<A>");
+		presetBtnComposite.setButtonText(key + "-1", "<B>");
+		presetBtnComposite.setButtonText(key + "-2", "<C>");
+		presetBtnComposite.setButtonText(key + "-3", "<D>");
+		presetBtnComposite.setButtonText("start", "start");
+		presetBtnComposite.setButtonText("stop", "clear");
 
 		TabItem ti3 = new TabItem(tf, SWT.NONE);
 		ti3.setText("configure presets");
+		key = "configPre";
 		presetConfigureBtnComposite = new ConfigurePresets(this, tf);
 		ti3.setControl(presetConfigureBtnComposite);
+		presetConfigureBtnComposite.setButtonText(key + "-0", "<A>");
+		presetConfigureBtnComposite.setButtonText(key + "-1", "<B>");
+		presetConfigureBtnComposite.setButtonText(key + "-2", "<C>");
+		presetConfigureBtnComposite.setButtonText(key + "-3", "<D>");
 
 		TabItem ti4 = new TabItem(tf, SWT.NONE);
 		ti4.setText("configure");
+		key = "configure";
 		configureBtnComposite = new ConfigureComposite(this, tf);
 		ti4.setControl(configureBtnComposite);
+		configureBtnComposite.setButtonText(key, "configure");
 
 		return tf;
 	}
@@ -129,14 +150,14 @@ public class Gui {
 	public static void main(String[] args) {
 		String revision = "$Revision$";
 		Display d = new Display();
-		Shell s = new Shell(d, SWT.SHELL_TRIM );
+		Shell s = new Shell(d, SWT.SHELL_TRIM);
 		s.setText("CountdownJ, by Pete Jemian: " + revision);
 		s.setSize(500, 500);
-		s.setBackground(new Color(d, 0,0, 0));
+		s.setBackground(new Color(d, 0, 0, 0));
 
 		Gui gui = new Gui(s);
 
-		//s.pack();
+		// s.pack();
 		s.open();
 
 		while (!s.isDisposed()) {
