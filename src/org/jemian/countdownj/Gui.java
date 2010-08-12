@@ -35,10 +35,11 @@ public class Gui {
 	ControlsButtons presetBtnComposite;
 	ConfigurePresets presetConfigureBtnComposite;
 	ConfigureComposite configureBtnComposite;
+	final Shell finalShell;
 
 	public Gui(Shell s) {
 		clockTimer = new ClockTimer(this);
-		final Shell finalShell = s;
+		finalShell = s;
 
 		GridLayout layout = new GridLayout(1, true);
 		s.setLayout(layout);
@@ -75,18 +76,21 @@ public class Gui {
 	}
 
 	public void callbackFunction(String str) {
-		System.out.println("callbackFunction: " + str);
-		// can't set the widget text from here
-		// got to be more crafty, it seems
-		// mmssComposite.SetText(str);
-		// throw some event to set this instead
+		// can't set the widget text directly from here
+		//  (We were called by a timer from another thread)
+		// here's the way to do it
+		// http://www.eclipse.org/swt/faq.php#uithread
+		Display d = finalShell.getDisplay();
+		final String text = str;
+		d.syncExec(new Runnable() {
+			public void run() {
+				mmssComposite.SetText(text);
+			}
+		});
 	}
 
 	private TabFolder setupTabbedPanels(Shell s) {
 		TabFolder tf = new TabFolder(s, SWT.NONE);
-		// Display d = s.getDisplay();
-		// tf.setBackground(new Color(d, 0, 0, 0));
-		// tf.setForeground(new Color(d, 255, 255, 255));
 
 		TabItem ti1 = new TabItem(tf, SWT.NONE);
 		ti1.setText("mm:ss controls");
