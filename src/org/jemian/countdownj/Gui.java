@@ -84,7 +84,7 @@ public class Gui {
 
 	private TabFolder setupTabbedPanels(Shell s) {
 		TabFolder tf = new TabFolder(s, SWT.NONE);
-		Display d = s.getDisplay();
+		// Display d = s.getDisplay();
 		// tf.setBackground(new Color(d, 0, 0, 0));
 		// tf.setForeground(new Color(d, 255, 255, 255));
 
