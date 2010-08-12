@@ -133,7 +133,8 @@ public class ClockTimer {
 	 */
 	public void stop() {
         counting = false;
-        timer.cancel();
+        if (timer != null)
+        	timer.cancel();
 	}
 	
 	/**

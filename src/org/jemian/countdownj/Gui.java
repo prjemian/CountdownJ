@@ -85,8 +85,8 @@ public class Gui {
 	private TabFolder setupTabbedPanels(Shell s) {
 		TabFolder tf = new TabFolder(s, SWT.NONE);
 		Display d = s.getDisplay();
-		tf.setBackground(new Color(d, 0, 0, 0));
-		tf.setForeground(new Color(d, 255, 255, 255));
+		// tf.setBackground(new Color(d, 0, 0, 0));
+		// tf.setForeground(new Color(d, 255, 255, 255));
 
 		TabItem ti1 = new TabItem(tf, SWT.NONE);
 		ti1.setText("mm:ss controls");
