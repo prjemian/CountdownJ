@@ -8,6 +8,8 @@ package org.jemian.countdownj;
 //# $Id$
 //########### SVN repository information ###################
 
+import java.awt.Toolkit;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Rectangle;
@@ -36,10 +38,17 @@ public class Gui {
 	ConfigurePresets presetConfigureBtnComposite;
 	ConfigureComposite configureBtnComposite;
 	final Shell finalShell;
+	String lastPhaseText;
+	double last_time_s;
+	Display d;
 
 	public Gui(Shell s) {
 		clockTimer = new ClockTimer(this);
 		finalShell = s;
+		
+		d = s.getDisplay();
+		lastPhaseText = "";
+		last_time_s = 0;
 
 		GridLayout layout = new GridLayout(1, true);
 		s.setLayout(layout);
@@ -52,23 +61,23 @@ public class Gui {
 		phaseComposite = new LabelPaneComposite(s);
 		phaseComposite.setLayoutData(griddata);
 
-		phaseComposite.SetText("second text composite");
 		mmssComposite.SetTextSize();
 		phaseComposite.SetTextSize();
-		mmssComposite.SetNamedForegroundColor("red");
-		phaseComposite.SetNamedForegroundColor("yellow");
+		mmssComposite.SetNamedForegroundColor("white");
+		phaseComposite.SetNamedForegroundColor("white");
 
 		griddata = new GridData(GridData.FILL_HORIZONTAL);
 		TabFolder tabs = setupTabbedPanels(s);
 		tabs.setLayoutData(griddata);
 		clockTimer.setTime_s(15 * 60);
+		clockTimer.update();
 
 		s.addListener(SWT.Resize, new Listener() {
 			public void handleEvent(Event e) {
 				switch (e.type) {
 				case SWT.Resize:
 					Rectangle rect = finalShell.getClientArea();
-					System.out.println("Shell resized: height=" + rect.height);
+					//System.out.println("Shell resized: height=" + rect.height);
 					break;
 				}
 			}
@@ -81,12 +90,81 @@ public class Gui {
 		// here's the way to do it
 		// http://www.eclipse.org/swt/faq.php#uithread
 		Display d = finalShell.getDisplay();
-		final String text = str;
+		double time_s = clockTimer.getTime_s();
+
+		int numBeeps = 0;
+		String color = "white";
+		final String finalPhaseText = calcPhaseText();
+		if ("Overtime".compareTo(finalPhaseText)==0) {
+			color = "red";
+			if ("Discussion".compareTo(lastPhaseText) == 0)
+				numBeeps = 2;
+			if (last_time_s < 0) {
+				double overtimeReminder_s = 60.0;		// TODO: need to get from configuration
+				double t1 = Math.abs(time_s) % overtimeReminder_s;
+				double t2 = Math.abs(last_time_s) % overtimeReminder_s;
+				if ( t1 < t2)
+					numBeeps = 3;				
+			}
+		}
+		if ("Discussion".compareTo(finalPhaseText)==0) {
+			color = "yellow";
+			if ("Presentation".compareTo(lastPhaseText) == 0)
+				numBeeps = 1;
+		}
+		if ("Presentation".compareTo(finalPhaseText)==0) {
+			color = "green";
+		}
+
+		// for next time
+		lastPhaseText = finalPhaseText;
+		last_time_s = time_s;
+
+		final String finalMmssText = str;
+		final String finalColor = color;
+		final int beepCount = numBeeps;
+
 		d.syncExec(new Runnable() {
 			public void run() {
-				mmssComposite.SetText(text);
+				mmssComposite.SetText(finalMmssText);
+				phaseComposite.SetText(finalPhaseText);
+				mmssComposite.SetNamedForegroundColor(finalColor);
+				phaseComposite.SetNamedForegroundColor(finalColor);
+				for (int i = 0; i < beepCount; i++)
+					beep();
 			}
 		});
+	}
+	
+	private void beep() {
+		// AWT method
+		//Toolkit.getDefaultToolkit().beep();
+
+		// ASCII method
+		//		System.out.print("\007");	// ASCII BEL
+		//		System.out.flush();
+		//		double t = clockTimer.getTime_s();
+
+		// SWT method
+		d.beep();
+	}
+
+	private String calcPhaseText() {
+		double time_s = clockTimer.getTime_s();
+		String phaseText = "";
+		if (clockTimer.isCounting()) {
+			if (time_s < 0) {
+				phaseText = "Overtime";
+			} else {
+				double discussionTime_s = 5*60;		// TODO: need to get from configuration
+				if (time_s > discussionTime_s) {
+					phaseText = "Presentation";
+				} else  {
+					phaseText = "Discussion";
+				}
+			}
+		}
+		return phaseText;
 	}
 
 	private TabFolder setupTabbedPanels(Shell s) {
@@ -104,48 +182,108 @@ public class Gui {
 		mmssBtnComposite.setButtonText("start", "start");
 		mmssBtnComposite.setButtonText("stop", "clear");
 
-		TabItem ti2 = new TabItem(tf, SWT.NONE);
-		ti2.setText("preset controls");
-		key = "presets";
-		presetBtnComposite = new ControlsButtons(this, tf, key);
-		ti2.setControl(presetBtnComposite);
-		presetBtnComposite.setButtonText(key + "-0", "<A>");
-		presetBtnComposite.setButtonText(key + "-1", "<B>");
-		presetBtnComposite.setButtonText(key + "-2", "<C>");
-		presetBtnComposite.setButtonText(key + "-3", "<D>");
-		presetBtnComposite.setButtonText("start", "start");
-		presetBtnComposite.setButtonText("stop", "clear");
-
-		TabItem ti3 = new TabItem(tf, SWT.NONE);
-		ti3.setText("configure presets");
-		key = "configPre";
-		presetConfigureBtnComposite = new ConfigurePresets(this, tf);
-		ti3.setControl(presetConfigureBtnComposite);
-		presetConfigureBtnComposite.setButtonText(key + "-0", "<A>");
-		presetConfigureBtnComposite.setButtonText(key + "-1", "<B>");
-		presetConfigureBtnComposite.setButtonText(key + "-2", "<C>");
-		presetConfigureBtnComposite.setButtonText(key + "-3", "<D>");
-
-		TabItem ti4 = new TabItem(tf, SWT.NONE);
-		ti4.setText("configure");
-		key = "configure";
-		configureBtnComposite = new ConfigureComposite(this, tf);
-		ti4.setControl(configureBtnComposite);
-		configureBtnComposite.setButtonText(key, "configure");
+//		TabItem ti2 = new TabItem(tf, SWT.NONE);
+//		ti2.setText("preset controls");
+//		key = "presets";
+//		presetBtnComposite = new ControlsButtons(this, tf, key);
+//		ti2.setControl(presetBtnComposite);
+//		presetBtnComposite.setButtonText(key + "-0", "<A>");
+//		presetBtnComposite.setButtonText(key + "-1", "<B>");
+//		presetBtnComposite.setButtonText(key + "-2", "<C>");
+//		presetBtnComposite.setButtonText(key + "-3", "<D>");
+//		presetBtnComposite.setButtonText("start", "start");
+//		presetBtnComposite.setButtonText("stop", "clear");
+//
+//		TabItem ti3 = new TabItem(tf, SWT.NONE);
+//		ti3.setText("configure presets");
+//		key = "configPre";
+//		presetConfigureBtnComposite = new ConfigurePresets(this, tf);
+//		ti3.setControl(presetConfigureBtnComposite);
+//		presetConfigureBtnComposite.setButtonText(key + "-0", "<A>");
+//		presetConfigureBtnComposite.setButtonText(key + "-1", "<B>");
+//		presetConfigureBtnComposite.setButtonText(key + "-2", "<C>");
+//		presetConfigureBtnComposite.setButtonText(key + "-3", "<D>");
+//
+//		TabItem ti4 = new TabItem(tf, SWT.NONE);
+//		ti4.setText("configure");
+//		key = "configure";
+//		configureBtnComposite = new ConfigureComposite(this, tf);
+//		ti4.setControl(configureBtnComposite);
+//		configureBtnComposite.setButtonText(key, "configure");
 
 		return tf;
 	}
 
 	public void buttonResponder(Button b, String label) {
 		Composite parent = b.getParent();
-		if (parent == mmssBtnComposite)
-			System.out.println("mmssBtnComposite: " + label);
-		if (parent == presetBtnComposite)
-			System.out.println("presetBtnComposite: " + label);
-		if (parent == presetConfigureBtnComposite)
-			System.out.println("presetConfigureBtnComposite: " + label);
+		if (parent == mmssBtnComposite) {
+			String key = mmssBtnComposite.getButtonKey(b);
+			if ("start".compareTo(key) == 0)   startButtonHandler();
+			if ("stop".compareTo(key) == 0)    stopButtonHandler();
+			if ("mm:ss-0".compareTo(key) == 0) incrementButtonHandler(10*60);
+			if ("mm:ss-1".compareTo(key) == 0) incrementButtonHandler(60);
+			if ("mm:ss-2".compareTo(key) == 0) incrementButtonHandler(10);
+			if ("mm:ss-3".compareTo(key) == 0) incrementButtonHandler(1);
+		}
+		if (parent == presetBtnComposite) {
+			String key = presetBtnComposite.getButtonKey(b);
+			System.out.println("presetBtnComposite   " + key);
+			if ("start".compareTo(key) == 0) startButtonHandler();
+			if ("stop".compareTo(key) == 0) stopButtonHandler();
+			if ("presets-0".compareTo(key) == 0) phaseComposite.SetText("not yet");
+			if ("presets-1".compareTo(key) == 0) phaseComposite.SetText("not yet");
+			if ("presets-2".compareTo(key) == 0) phaseComposite.SetText("not yet");
+			if ("presets-3".compareTo(key) == 0) phaseComposite.SetText("not yet");
+		}
+		if (parent == presetConfigureBtnComposite) {
+			String key = presetConfigureBtnComposite.getButtonKey(b);
+			if ("configPre-0".compareTo(key) == 0) phaseComposite.SetText("not yet");
+			if ("configPre-1".compareTo(key) == 0) phaseComposite.SetText("not yet");
+			if ("configPre-2".compareTo(key) == 0) phaseComposite.SetText("not yet");
+			if ("configPre-3".compareTo(key) == 0) phaseComposite.SetText("not yet");
+		}
 		if (parent == configureBtnComposite)
-			System.out.println("configureBtnComposite: " + label);
+			phaseComposite.SetText("not yet");
+	}
+	
+	private void incrementButtonHandler(int seconds) {
+		if (!clockTimer.isCounting())
+			clockTimer.incrTime_s(seconds);
+			clockTimer.update();
+	}
+	
+	private void startButtonHandler() {
+		if (!clockTimer.isCounting() && clockTimer.getTime_s()>0) {
+			clockTimer.start();
+			mmssBtnComposite.setButtonText("start", "pause");
+			mmssBtnComposite.setButtonText("stop", "stop");
+		} else {
+			clockTimer.stop();
+			// endTime = 0;
+			if (clockTimer.getTime_s()>0) {
+				mmssBtnComposite.setButtonText("start", "resume");
+				mmssBtnComposite.setButtonText("stop", "clear");
+			} else {
+				// pause while in overtime, same as a full stop
+				stopButtonHandler();
+			}
+		}
+		clockTimer.update();
+	}
+	
+	private void stopButtonHandler() {
+		if (!clockTimer.isCounting()) {
+			clockTimer.stop();
+			clockTimer.clearCounter();
+			mmssBtnComposite.setButtonText("start", "start");
+			mmssBtnComposite.setButtonText("stop", "clear");
+		} else {
+			clockTimer.stop();
+			clockTimer.clearCounter();
+			mmssBtnComposite.setButtonText("start", "start");
+			mmssBtnComposite.setButtonText("stop", "clear");
+		}
+		clockTimer.update();
 	}
 
 	/**

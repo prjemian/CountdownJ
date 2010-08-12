@@ -107,6 +107,7 @@ public class ClockTimer {
 	 */
 	public void clearCounter() {
 		setTime_s(0);
+		endTime = 0;
 	}
 	
 	/**
@@ -133,6 +134,7 @@ public class ClockTimer {
 	 */
 	public void stop() {
         counting = false;
+        endTime = 0;
         if (timer != null)
         	timer.cancel();
 	}
@@ -141,8 +143,13 @@ public class ClockTimer {
 	 * update the countdown clock
 	 */
 	public void update() {
-		time_s = endTime - _now_();
-		String mmss = toString();
+		if (endTime > 0)
+			time_s = endTime - _now_();
+		String mmss;
+		if (counting || time_s != 0)
+			mmss = toString();
+		else
+			mmss = "";
 		if (caller != null) {
 			caller.callbackFunction(mmss);
 		} else {
