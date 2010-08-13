@@ -113,6 +113,7 @@
     </target>
 
 	<target name="info">
+		<echoproperties/>
 		<echo message="ant.file = ${ant.file}"/>
 		<echo message="ant.home = ${ant.home}"/>
 		<echo message="ant.java.version = ${ant.java.version}"/>
@@ -125,10 +126,6 @@
 		<echo message="sun.desktop = ${sun.desktop}"/>
 		<echo message="os = ${os}"/>
 		<echo message="host.arch = ${host.arch}"/>
-	</target>
-
-	<target name="allproperties">
-		<echoproperties/>
 	</target>
 
 </project>
