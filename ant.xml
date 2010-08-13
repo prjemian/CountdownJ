@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<!--
+########### SVN repository information ###################
+# $Date$
+# $Author$
+# $Revision$
+# $URL$
+# $Id$
+########### SVN repository information ###################
+-->
+
+
 <project 
 	default="create_run_jar" 
 	name="Create Runnable Jar for Project CountdownJ">
