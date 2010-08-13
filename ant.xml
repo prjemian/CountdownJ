@@ -19,6 +19,20 @@
 		</and>
 	</condition>
 
+	<condition property="os" value="linux">
+		<and>
+	  		<os family="unix" />
+			<equals arg1="${os.name}" arg2="Linux"/>
+		</and>
+	</condition>
+
+	<condition property="os" value="solaris">
+		<and>
+	  		<os family="unix" />
+			<equals arg1="${os.name}" arg2="SunOS"/>
+		</and>
+	</condition>
+
 	<condition property="os" value="unix">
 		<and>
 	  		<os family="unix" />
@@ -36,9 +50,17 @@
 		<equals arg1="${sun.desktop}" arg2="windows"/>
 	</condition>
 
+	<condition property="graphics" value="motif">
+		<not>
+			<isset property="sun.desktop"/>
+		</not>
+	</condition>
+
 	<condition property="graphics" value="gtk">
 		<equals arg1="${sun.desktop}" arg2="gnome"/>
 	</condition>
+
+	<property name="graphics" value="${sun.desktop}" />
 
 	<condition property="arch" value="x86_64" else="unknown">
 		<equals arg1="${os.arch}" arg2="amd64"/>
