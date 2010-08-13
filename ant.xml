@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project 
+	default="create_run_jar" 
+	name="Create Runnable Jar for Project CountdownJ">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+
+	<property name="host.arch" value="${sun.desktop}-${os.name}-${os.arch}"/>
+
+	<target name="create_run_jar">
+        <jar 
+        	destfile="${basedir}/CountdownJ-${host.arch}.jar" 
+        	filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="Main-Class" value="org.jemian.countdownj.Gui"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            <!-- fileset dir="/home/oxygen18/JEMIAN/Documents/eclipse/org.eclipse.swt" -->
+            <fileset dir="${basedir}/bin"/>
+            <fileset dir="${basedir}/../org.eclipse.swt"/>
+            <zipfileset excludes="META-INF/*.SF" src="${basedir}/../org.eclipse.swt/swt.jar"/>
+            <!-- zipfileset excludes="META-INF/*.SF" src="/home/oxygen18/JEMIAN/Documents/eclipse/org.eclipse.swt/swt.jar" -->
+        </jar>
+    </target>
+
+	<target name="info">
+		<echo message="ant.file = ${ant.file}"/>
+		<echo message="ant.home = ${ant.home}"/>
+		<echo message="ant.java.version = ${ant.java.version}"/>
+		<echo message="ant.project.name = ${ant.project.name}"/>
+		<echo message="eclipse.home = ${eclipse.home}"/>
+		<echo message="basedir = ${basedir}"/>
+		<echo message="os.name = ${os.name}"/>
+		<echo message="os.arch = ${os.arch}"/>
+		<echo message="sun.arch.data.model = ${sun.arch.data.model}"/>
+		<echo message="sun.desktop = ${sun.desktop}"/>
+		<echo message="host.arch = ${host.arch}"/>
+	</target>
+
+	<target name="allproperties">
+		<echoproperties/>
+	</target>
+
+</project>
