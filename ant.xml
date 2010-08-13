@@ -3,23 +3,78 @@
 	default="create_run_jar" 
 	name="Create Runnable Jar for Project CountdownJ">
     <!--this file was created by Eclipse Runnable JAR Export Wizard-->
-    <!--ANT 1.7 is required                                        -->
+    <!--ANT 1.7 is required  -->
 
-	<property name="host.arch" value="${sun.desktop}-${os.name}-${os.arch}"/>
+	<condition property="os" value="win32">
+	  <or>
+	  	<os family="win9x" />
+	    <os family="winnt" />
+	  </or>
+	</condition>
+
+	<condition property="os" value="macosx">
+		<and>
+			<os family="mac" />
+			<os family="unix"/>
+		</and>
+	</condition>
+
+	<condition property="os" value="unix">
+		<and>
+	  		<os family="unix" />
+			<not>
+		  		<os family="mac" />
+			</not>
+		</and>
+	</condition>
+
+	<condition property="os" else="unknown">
+		<isset property="os"/>
+	</condition>
+
+	<condition property="graphics" value="win32">
+		<equals arg1="${sun.desktop}" arg2="windows"/>
+	</condition>
+
+	<condition property="graphics" value="gtk">
+		<equals arg1="${sun.desktop}" arg2="gnome"/>
+	</condition>
+
+	<condition property="arch" value="x86_64" else="unknown">
+		<equals arg1="${os.arch}" arg2="amd64"/>
+	</condition>
+
+	<property name="host.arch" value="${graphics}-${os}-${arch}"/>
+	<!--  ${host.arch} to be how SWT distributions are named:
+			${graphics}-${os}-${arch}
+			win32-win32-x86_64
+			win32-win32-x86
+			gtk-solaris-x86
+			gtk-linux-x86_64
+			win32-wce_ppc-arm-j2se  (for windows mobile: may not handle this one)
+		perhaps: http://lopica.sourceforge.net/os.html
+	-->
+
+	<property environment="env" />
+	<property name="version" value="0.1b"/>  <!-- get this elsewhere? -->
+
+	<property name="bin.dir" value="bin"/>
+	<property name="src.dir" value="src"/>
+	<property name="swt.dir" value="../org.eclipse.swt"/>
+	<property name="swt.jar" value="${swt.dir}/swt.jar"/>
+	<property name="main.class" value="org.jemian.countdownj.Gui"/>
 
 	<target name="create_run_jar">
         <jar 
-        	destfile="${basedir}/CountdownJ-${host.arch}.jar" 
+        	destfile="${basedir}/CountdownJ-${version}-${host.arch}.jar" 
         	filesetmanifest="mergewithoutmain">
             <manifest>
-                <attribute name="Main-Class" value="org.jemian.countdownj.Gui"/>
+                <attribute name="Main-Class" value="${main.class}"/>
                 <attribute name="Class-Path" value="."/>
             </manifest>
-            <!-- fileset dir="/home/oxygen18/JEMIAN/Documents/eclipse/org.eclipse.swt" -->
-            <fileset dir="${basedir}/bin"/>
-            <fileset dir="${basedir}/../org.eclipse.swt"/>
-            <zipfileset excludes="META-INF/*.SF" src="${basedir}/../org.eclipse.swt/swt.jar"/>
-            <!-- zipfileset excludes="META-INF/*.SF" src="/home/oxygen18/JEMIAN/Documents/eclipse/org.eclipse.swt/swt.jar" -->
+            <fileset dir="${bin.dir}"/>
+            <fileset dir="${swt.dir}"/>
+            <zipfileset excludes="META-INF/*.SF" src="${swt.jar}"/>
         </jar>
     </target>
 
@@ -34,6 +89,7 @@
 		<echo message="os.arch = ${os.arch}"/>
 		<echo message="sun.arch.data.model = ${sun.arch.data.model}"/>
 		<echo message="sun.desktop = ${sun.desktop}"/>
+		<echo message="os = ${os}"/>
 		<echo message="host.arch = ${host.arch}"/>
 	</target>
 
