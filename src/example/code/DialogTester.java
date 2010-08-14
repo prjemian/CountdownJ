@@ -17,9 +17,10 @@ public class DialogTester {
     Shell shell = new Shell(display);
 
     ConfigureDialog cd = new ConfigureDialog(shell);
-    int ans = cd.open();
-    System.out.println("discussion (s): " + cd.getDiscussionTime_s());
-    System.out.println("overtime reminder (s): " + cd.getOvertimeReminder_s());
+    if (cd.open()) {
+	    System.out.println("discussion (s): " + cd.getDiscussionTime_s());
+	    System.out.println("overtime reminder (s): " + cd.getOvertimeReminder_s());
+    }
 
     display.dispose();
   }
