@@ -62,27 +62,38 @@
 		<equals arg1="${sun.desktop}" arg2="windows"/>
 	</condition>
 
-	<condition property="graphics" value="motif">
-		<not>
-			<isset property="sun.desktop"/>
-		</not>
+	<condition property="graphics" value="cocoa">
+		<!-- How can this be improved?  What about carbon?-->
+		<equals arg1="${os}" arg2="macosx"/>
 	</condition>
 
 	<condition property="graphics" value="gtk">
 		<equals arg1="${sun.desktop}" arg2="gnome"/>
 	</condition>
 
+	<condition property="graphics" value="motif">
+		<and>
+			<os family="unix"/>
+			<not>
+				<isset property="sun.desktop"/>
+			</not>
+		</and>
+	</condition>
+
 	<property name="graphics" value="${sun.desktop}" />
 
 	<condition property="arch" value="x86_64" else="unknown">
-		<equals arg1="${os.arch}" arg2="amd64"/>
+		<or>
+			<equals arg1="${os.arch}" arg2="amd64"/>
+			<equals arg1="${os.arch}" arg2="x86_64"/>
+		</or>
 	</condition>
 
 	<condition property="arch" value="x86" else="unknown">
-		<and>
+		<or>
 			<equals arg1="${os.arch}" arg2="i386"/>
 			<equals arg1="${os.arch}" arg2="i486"/>
-		</and>
+		</or>
 	</condition>
 
 	<property name="host.arch" value="${graphics}-${os}-${arch}"/>
