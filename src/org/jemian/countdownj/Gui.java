@@ -84,7 +84,7 @@ public class Gui {
 //		});
 	}
 
-	public void callbackFunction(String str) {
+	public void timerCallback(String str) {
 		// can't set the widget text directly from here
 		//  (We were called by a timer from another thread)
 		// here's the way to do it
@@ -225,7 +225,7 @@ public class Gui {
 		key = "configure";
 		configureBtnComposite = new ButtonsComposite(this, tf, key, 1);
 		ti4.setControl(configureBtnComposite);
-		configureBtnComposite.setButtonText(key, "configure");
+		configureBtnComposite.setButtonText(key + "-0", "configure");
 	}
 
 	public void buttonResponder(Button b, String label) {
@@ -257,7 +257,7 @@ public class Gui {
 			if ("configPre-3".compareTo(key) == 0) phaseComposite.SetText("not yet");
 		}
 		if (parent == configureBtnComposite)
-			phaseComposite.SetText("not yet");
+			doConfigureButton();
 	}
 	
 	private void incrementButtonHandler(int seconds) {
@@ -306,6 +306,14 @@ public class Gui {
 			presetBtnComposite.setButtonText(stopKeyPresets, "clear");
 		}
 		clockTimer.update();
+	}
+	
+	private void doConfigureButton() {
+	    System.out.println("discussion (s): ");
+	    ConfigureDialog cd = new ConfigureDialog(finalShell);
+	    int ans = cd.open();
+//	    System.out.println("discussion (s): " + cd.getDiscussionTime_s());
+//	    System.out.println("overtime reminder (s): " + cd.getOvertimeReminder_s());
 	}
 
 	/**

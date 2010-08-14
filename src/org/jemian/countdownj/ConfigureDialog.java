@@ -45,37 +45,30 @@ public class ConfigureDialog extends Dialog {
 		dialog.setText("A Dialog");
 
 		GridLayout layout = new GridLayout(2, true);
+		layout.makeColumnsEqualWidth = false;
 		dialog.setLayout(layout);
 
 		GridData griddata = new GridData(GridData.FILL_HORIZONTAL);
 		Label textOT = new Label(dialog, 0);
 		textOT.setLayoutData(griddata);
 	    textOT.setText("Overtime Reminder beep interval (seconds) [10..1000]: ");
-	    //textOT.pack();
-		griddata = new GridData(GridData.FILL_HORIZONTAL);
 	    Spinner spinnerOT = new Spinner(dialog, SWT.BORDER);
-	    //spinnerOT.setLayoutData(griddata);
 	    spinnerOT.setMinimum(10);
 	    spinnerOT.setMaximum(1000);
 	    spinnerOT.setSelection(overtimeReminder_s);
 	    spinnerOT.setIncrement(1);
 	    spinnerOT.setPageIncrement(100);
-	    //spinnerOT.pack();
 
 		griddata = new GridData(GridData.FILL_HORIZONTAL);
 		Label textDisc = new Label(dialog, 0);
 		textDisc.setLayoutData(griddata);
 		textDisc.setText("discussion allowance (seconds) [0..10000]: ");
-		//textDisc.pack();
-		griddata = new GridData(GridData.FILL_HORIZONTAL);
 	    Spinner spinnerDisc = new Spinner(dialog, SWT.BORDER);
-	    //spinnerDisc.setLayoutData(griddata);
 	    spinnerDisc.setMinimum(10);
 	    spinnerDisc.setMaximum(1000);
 	    spinnerDisc.setSelection(discussionTime_s);
 	    spinnerDisc.setIncrement(1);
 	    spinnerDisc.setPageIncrement(100);
-	    //spinnerDisc.pack();
 
 	    dialog.open();
 	    dialog.pack();

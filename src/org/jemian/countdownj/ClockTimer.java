@@ -34,7 +34,7 @@ public class ClockTimer {
 	 * @param interval_ms : reporting interval
 	 * @param endTime : (internal) when the presentation should end
 	 * @param initialDelay : always ZERO for this class
-	 * @param caller : to call caller.callbackFunction("mm:ss") every interval_ms
+	 * @param caller : to call caller.timerCallback("mm:ss") every interval_ms
 	 */
 	public ClockTimer(Gui callback) {
 		caller = callback;
@@ -151,7 +151,7 @@ public class ClockTimer {
 		else
 			mmss = "";
 		if (caller != null) {
-			caller.callbackFunction(mmss);
+			caller.timerCallback(mmss);
 		} else {
 			// development only
 			System.out.println("ClockTimer: " + mmss);
