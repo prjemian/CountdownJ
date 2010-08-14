@@ -22,7 +22,7 @@ public class ClockTimer {
 	Timer timer;
 	boolean counting = false;
 	double time_s = 0;
-	int interval_ms = 1000;
+	int interval_ms = 50;
 	double endTime = 0;
 	int initialDelay = 0;
 	Gui caller = null;
