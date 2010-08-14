@@ -19,7 +19,7 @@
 
 	<condition property="os" value="win32">
 	  <or>
-	  	<os family="win9x" />
+	    <os family="win9x" />
 	    <os family="winnt" />
 	  </or>
 	</condition>
@@ -82,7 +82,7 @@
 
 	<property name="graphics" value="${sun.desktop}" />
 
-	<condition property="arch" value="x86_64" else="unknown">
+	<condition property="arch" value="x86_64">
 		<or>
 			<equals arg1="${os.arch}" arg2="amd64"/>
 			<equals arg1="${os.arch}" arg2="x86_64"/>
@@ -95,6 +95,8 @@
 			<equals arg1="${os.arch}" arg2="i486"/>
 		</or>
 	</condition>
+
+	<property name="arch" value="${os.arch}" />
 
 	<property name="host.arch" value="${graphics}-${os}-${arch}"/>
 	<!--  ${host.arch} to be how SWT distributions are named:
@@ -110,7 +112,7 @@
 	-->
 
 	<property environment="env" />
-	<property name="version" value="0.1b"/>  <!-- get this elsewhere? -->
+	<property name="version" value="1.0j"/>  <!-- get this elsewhere? -->
 
 	<property name="bin.dir" value="bin"/>
 	<property name="src.dir" value="src"/>
@@ -130,6 +132,10 @@
             <fileset dir="${swt.dir}"/>
             <zipfileset excludes="META-INF/*.SF" src="${swt.jar}"/>
         </jar>
+	<chmod 
+	    file="${basedir}/CountdownJ-${version}-${host.arch}.jar" 
+	    perm="ugo+rx">
+	</chmod>
     </target>
 
 	<target name="info">
