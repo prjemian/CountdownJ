@@ -68,7 +68,7 @@ public class LabelPaneComposite extends Composite {
 		int height = clientRect.height;
 		if (height == 0)
 			height = 20;
-		fd.setHeight(height / 3);
+		fd.setHeight(4 * height / 10);
 
 		Font font = new Font(this.device, fd);
 		this.t.setFont(font);

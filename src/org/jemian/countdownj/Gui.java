@@ -12,8 +12,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -53,25 +54,42 @@ public class Gui {
 		lastPhaseText = "";
 		last_time_s = 0;
 
-		GridLayout layout = new GridLayout(1, true);
+		FormLayout layout = new FormLayout();
 		s.setLayout(layout);
+		
+		int inset = 5;
 
-		GridData griddata = new GridData(GridData.FILL_BOTH);
+		FormData alignment = new FormData();
+		alignment.top = new FormAttachment(0, inset);
+		alignment.left = new FormAttachment(0, inset);
+		alignment.bottom = new FormAttachment(60, -inset);
+		alignment.right = new FormAttachment(100, -inset);
 		mmssComposite = new LabelPaneComposite(s);
-		mmssComposite.setLayoutData(griddata);
+		mmssComposite.setLayoutData(alignment);
 
-		griddata = new GridData(GridData.FILL_BOTH);
+		alignment = new FormData();
+		alignment.top = new FormAttachment(mmssComposite, inset);
+		alignment.left = new FormAttachment(0, inset);
+		alignment.right = new FormAttachment(100, -inset);
 		phaseComposite = new LabelPaneComposite(s);
-		phaseComposite.setLayoutData(griddata);
+
+		FormData fdata = new FormData();
+		// NO fdata.top: that way, the tabs box stays its default height
+		fdata.left = new FormAttachment(0, inset);
+		fdata.bottom = new FormAttachment(100, -inset);
+		fdata.right = new FormAttachment(100, -inset);
+		CTabFolder tabs = setupTabbedPanels(s);
+		tabs.setLayoutData(fdata);
+
+		// phaseComposite.bottom attached to tabs.top
+		alignment.bottom = new FormAttachment(tabs, -inset);
+		phaseComposite.setLayoutData(alignment);
 
 		mmssComposite.setTextSize();
 		phaseComposite.setTextSize();
 		mmssComposite.setNamedForegroundColor("white");
 		phaseComposite.setNamedForegroundColor("white");
 
-		griddata = new GridData(GridData.FILL_HORIZONTAL);
-		CTabFolder tabs = setupTabbedPanels(s);
-		tabs.setLayoutData(griddata);
 		clockTimer.setTime_s(15 * 60);
 		clockTimer.update();
 
@@ -137,8 +155,15 @@ public class Gui {
 				if (time_s < 0) {
 					updateButtonText(mmssBtnComposite, startKeyMmss, "stop");
 				}
-				for (int i = 0; i < beepCount; i++)
+				for (int i = 0; i < beepCount; i++) {
+					try {
+						Thread.sleep(333);  // intervals between beeps
+					} catch (InterruptedException e) {
+						// ignore this possibility, per
+						// http://download.oracle.com/javase/tutorial/essential/concurrency/sleep.html
+					}
 					beep();
+				}
 			}
 		});
 	}
