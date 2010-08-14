@@ -78,6 +78,13 @@
 		<equals arg1="${os.arch}" arg2="amd64"/>
 	</condition>
 
+	<condition property="arch" value="x86" else="unknown">
+		<and>
+			<equals arg1="${os.arch}" arg2="i386"/>
+			<equals arg1="${os.arch}" arg2="i486"/>
+		</and>
+	</condition>
+
 	<property name="host.arch" value="${graphics}-${os}-${arch}"/>
 	<!--  ${host.arch} to be how SWT distributions are named:
 			${graphics}-${os}-${arch}
@@ -86,6 +93,8 @@
 			gtk-solaris-x86
 			gtk-linux-x86_64
 			win32-wce_ppc-arm-j2se  (for windows mobile: may not handle this one)
+			cocoa-macosx-x86_64
+			cocoa-macosx          	(Mac OS X with 32-bit Java)
 		perhaps: http://lopica.sourceforge.net/os.html
 	-->
 
