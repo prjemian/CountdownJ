@@ -59,6 +59,20 @@ public class ButtonsComposite extends Composite {
 	}
 
 	/**
+	 * get the text of the button identified by key
+	 * @param key
+	 * @return button text or empty string
+	 */
+	public String getButtonText(String key) {
+		String text = "";
+		if (buttons.containsKey(key)) {
+			Button btn = buttons.get(key);
+			text = btn.getText();
+		}
+		return text;
+	}
+
+	/**
 	 * set the text of the button identified by key
 	 * @param key
 	 * @param text
