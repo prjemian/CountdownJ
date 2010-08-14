@@ -51,7 +51,7 @@ public class LabelPaneComposite extends Composite {
 			public void handleEvent(Event e) {
 				switch (e.type) {
 				case SWT.Resize:
-					SetTextSize();
+					setTextSize();
 					// System.out.println("composite resized");
 					break;
 				}
@@ -59,7 +59,7 @@ public class LabelPaneComposite extends Composite {
 		});
 	}
 
-	public void SetTextSize() {
+	public void setTextSize() {
 		Font f = this.t.getFont();
 		FontData fd = f.getFontData()[0];
 		Rectangle clientRect = this.getClientArea();
@@ -74,19 +74,19 @@ public class LabelPaneComposite extends Composite {
 		this.t.setFont(font);
 	}
 
-	public void SetText(String text) {
+	public void setText(String text) {
 		this.t.setText(text);
 	}
 
-	public String GetText() {
+	public String getText() {
 		return this.t.getText();
 	}
 
-	public void SetForegroundColor(Color color) {
+	public void setForegroundColor(Color color) {
 		this.t.setForeground(color);
 	}
 
-	public void SetNamedForegroundColor(String colorName) {
+	public void setNamedForegroundColor(String colorName) {
 		Color color = this.white;
 		if (colorName == "black")
 			color = this.black;
@@ -98,7 +98,7 @@ public class LabelPaneComposite extends Composite {
 			color = this.yellow;
 		if (colorName == "green")
 			color = this.green;
-		this.SetForegroundColor(color);
+		this.setForegroundColor(color);
 	}
 
 }

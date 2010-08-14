@@ -9,6 +9,8 @@ package org.jemian.countdownj;
 //########### SVN repository information ###################
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -16,8 +18,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
 
 /**
  * @author Pete
@@ -40,10 +40,14 @@ public class Gui {
 	String stopKeyMmss;
 	String startKeyPresets;
 	String stopKeyPresets;
+	int discussionTime_s = 5*60;
+	int overtimeReminder_s = 60;
 
 	public Gui(Shell s) {
 		clockTimer = new ClockTimer(this);
 		finalShell = s;
+
+		s.setMaximized (true);
 		
 		d = s.getDisplay();
 		lastPhaseText = "";
@@ -60,13 +64,13 @@ public class Gui {
 		phaseComposite = new LabelPaneComposite(s);
 		phaseComposite.setLayoutData(griddata);
 
-		mmssComposite.SetTextSize();
-		phaseComposite.SetTextSize();
-		mmssComposite.SetNamedForegroundColor("white");
-		phaseComposite.SetNamedForegroundColor("white");
+		mmssComposite.setTextSize();
+		phaseComposite.setTextSize();
+		mmssComposite.setNamedForegroundColor("white");
+		phaseComposite.setNamedForegroundColor("white");
 
 		griddata = new GridData(GridData.FILL_HORIZONTAL);
-		TabFolder tabs = setupTabbedPanels(s);
+		CTabFolder tabs = setupTabbedPanels(s);
 		tabs.setLayoutData(griddata);
 		clockTimer.setTime_s(15 * 60);
 		clockTimer.update();
@@ -100,8 +104,6 @@ public class Gui {
 			if ("Discussion".compareTo(lastPhaseText) == 0)
 				numBeeps = 2;
 			if (last_time_s < 0) {
-				// TODO: need to get from configuration
-				double overtimeReminder_s = 60.0;
 				double t1 = Math.abs(time_s) % overtimeReminder_s;
 				double t2 = Math.abs(last_time_s) % overtimeReminder_s;
 				if ( t1 < t2)
@@ -127,16 +129,44 @@ public class Gui {
 
 		d.syncExec(new Runnable() {
 			public void run() {
-				mmssComposite.SetText(finalMmssText);
-				phaseComposite.SetText(finalPhaseText);
-				mmssComposite.SetNamedForegroundColor(finalColor);
-				phaseComposite.SetNamedForegroundColor(finalColor);
+				updateText(mmssComposite, finalMmssText);
+				updateText(phaseComposite, finalPhaseText);
+				mmssComposite.setNamedForegroundColor(finalColor);
+				phaseComposite.setNamedForegroundColor(finalColor);
+				double time_s = clockTimer.getTime_s();
+				if (time_s < 0) {
+					updateButtonText(mmssBtnComposite, startKeyMmss, "stop");
+				}
 				for (int i = 0; i < beepCount; i++)
 					beep();
 			}
 		});
 	}
 	
+	/**
+	 * change the button text if it is different
+	 * @param c : ButtonsComposite object
+	 * @param key : enumeration key
+	 * @param text : new text
+	 */
+	private void updateButtonText(ButtonsComposite c, String key, String text) {
+		if (text.compareTo(c.getButtonText(key)) != 0)
+			c.setButtonText(key, text);
+	}
+	
+	/**
+	 * change the label text if it is different
+	 * @param c : LabelPaneComposite object
+	 * @param text : new text
+	 */
+	private void updateText(LabelPaneComposite c, String text) {
+		if (text.compareTo(c.getText()) != 0)
+			c.setText(text);
+	}
+	
+	/**
+	 * sound a beep
+	 */
 	private void beep() {
 		// AWT method
 		//Toolkit.getDefaultToolkit().beep();
@@ -157,8 +187,6 @@ public class Gui {
 			if (time_s < 0) {
 				phaseText = "Overtime";
 			} else {
-				// TODO: need to get from configuration
-				double discussionTime_s = 5*60;
 				if (time_s > discussionTime_s) {
 					phaseText = "Presentation";
 				} else  {
@@ -169,10 +197,10 @@ public class Gui {
 		return phaseText;
 	}
 
-	private TabFolder setupTabbedPanels(Shell s) {
-		TabFolder tf = new TabFolder(s, SWT.NONE);
+	private CTabFolder setupTabbedPanels(Shell s) {
+		CTabFolder tf = new CTabFolder(s, SWT.NONE);
 
-		TabItem ti1 = new TabItem(tf, SWT.NONE);
+		CTabItem ti1 = new CTabItem(tf, SWT.NONE);
 		ti1.setText("mm:ss controls");
 		String key = "mm:ss";
 		mmssBtnComposite = new ButtonsComposite(this, tf, key, 6);
@@ -193,8 +221,8 @@ public class Gui {
 		return tf;
 	}
 		
-	private void setupOtherTabs(TabFolder tf) {
-		TabItem ti2 = new TabItem(tf, SWT.NONE);
+	private void setupOtherTabs(CTabFolder tf) {
+		CTabItem ti2 = new CTabItem(tf, SWT.NONE);
 		ti2.setText("preset controls");
 		String key = "presets";
 		presetBtnComposite = new ButtonsComposite(this, tf, key, 6);
@@ -210,7 +238,7 @@ public class Gui {
 		presetBtnComposite.setButtonText(startKeyPresets, "start");
 		presetBtnComposite.setButtonText(stopKeyPresets, "clear");
 
-		TabItem ti3 = new TabItem(tf, SWT.NONE);
+		CTabItem ti3 = new CTabItem(tf, SWT.NONE);
 		ti3.setText("configure presets");
 		key = "configPre";
 		presetConfigureBtnComposite = new ButtonsComposite(this, tf, key, 4);
@@ -220,7 +248,7 @@ public class Gui {
 		presetConfigureBtnComposite.setButtonText(key + "-2", "<C>");
 		presetConfigureBtnComposite.setButtonText(key + "-3", "<D>");
 
-		TabItem ti4 = new TabItem(tf, SWT.NONE);
+		CTabItem ti4 = new CTabItem(tf, SWT.NONE);
 		ti4.setText("configure");
 		key = "configure";
 		configureBtnComposite = new ButtonsComposite(this, tf, key, 1);
@@ -244,17 +272,17 @@ public class Gui {
 			// System.out.println("presetBtnComposite   " + key);
 			if (startKeyPresets.compareTo(key) == 0) startButtonHandler();
 			if (stopKeyPresets.compareTo(key) == 0) stopButtonHandler();
-			if ("presets-0".compareTo(key) == 0) phaseComposite.SetText("not yet");
-			if ("presets-1".compareTo(key) == 0) phaseComposite.SetText("not yet");
-			if ("presets-2".compareTo(key) == 0) phaseComposite.SetText("not yet");
-			if ("presets-3".compareTo(key) == 0) phaseComposite.SetText("not yet");
+			if ("presets-0".compareTo(key) == 0) phaseComposite.setText("not yet");
+			if ("presets-1".compareTo(key) == 0) phaseComposite.setText("not yet");
+			if ("presets-2".compareTo(key) == 0) phaseComposite.setText("not yet");
+			if ("presets-3".compareTo(key) == 0) phaseComposite.setText("not yet");
 		}
 		if (parent == presetConfigureBtnComposite) {
 			String key = presetConfigureBtnComposite.getButtonKey(b);
-			if ("configPre-0".compareTo(key) == 0) phaseComposite.SetText("not yet");
-			if ("configPre-1".compareTo(key) == 0) phaseComposite.SetText("not yet");
-			if ("configPre-2".compareTo(key) == 0) phaseComposite.SetText("not yet");
-			if ("configPre-3".compareTo(key) == 0) phaseComposite.SetText("not yet");
+			if ("configPre-0".compareTo(key) == 0) phaseComposite.setText("not yet");
+			if ("configPre-1".compareTo(key) == 0) phaseComposite.setText("not yet");
+			if ("configPre-2".compareTo(key) == 0) phaseComposite.setText("not yet");
+			if ("configPre-3".compareTo(key) == 0) phaseComposite.setText("not yet");
 		}
 		if (parent == configureBtnComposite)
 			doConfigureButton();
@@ -309,11 +337,17 @@ public class Gui {
 	}
 	
 	private void doConfigureButton() {
-	    System.out.println("discussion (s): ");
+	    // System.out.println("discussion (s): ");
 	    ConfigureDialog cd = new ConfigureDialog(finalShell);
-	    int ans = cd.open();
-//	    System.out.println("discussion (s): " + cd.getDiscussionTime_s());
-//	    System.out.println("overtime reminder (s): " + cd.getOvertimeReminder_s());
+	    cd.setText("global parameters");
+	    cd.setDiscussionTime_s(discussionTime_s);
+	    cd.setOvertimeReminder_s(overtimeReminder_s);
+	    if (cd.open()) {
+		    int i = cd.getDiscussionTime_s();
+	    	discussionTime_s = i;
+		    i = cd.getOvertimeReminder_s();
+		    overtimeReminder_s = i;
+	    }
 	}
 
 	/**
