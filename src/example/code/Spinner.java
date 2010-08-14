@@ -6,6 +6,7 @@ package example.code;
  * 
  * All Rights Reserved.
  *  
+ *  http://www.java2s.com/Code/Java/SWT-JFace-Eclipse/SWTSpinnerSample.htm
  */
 
 import org.eclipse.swt.SWT;

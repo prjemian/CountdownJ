@@ -3,6 +3,8 @@ package example.code;
 /*
  * Spinner example snippet: create and initialize a spinner widget
  * 
+ * http://www.java2s.com/Code/Java/SWT-JFace-Eclipse/createandinitializeaSWTspinnerwidget.htm
+ * 
  * For a list of all SWT example snippets see
  * http://dev.eclipse.org/viewcvs/index.cgi/%7Echeckout%7E/platform-swt-home/dev.html#snippets
  */
