@@ -378,7 +378,7 @@ public class Gui {
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) {		
 		String revision = "$Revision$";
 		Display d = new Display();
 		Shell s = new Shell(d, SWT.SHELL_TRIM);
