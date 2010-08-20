@@ -17,6 +17,7 @@
 			gtk-solaris-x86
 			gtk-linux-x86_64
 			win32-wce_ppc-arm-j2se  (for windows mobile: may not handle this one)
+			carbon-macosx-x86_64
 			cocoa-macosx-x86_64
 			cocoa-macosx          	(Mac OS X with 32-bit Java)
 		perhaps: http://lopica.sourceforge.net/os.html
@@ -72,8 +73,21 @@
 	</condition>
 
 	<condition property="graphics" value="cocoa">
-		<!-- How can this be improved?  What about carbon?-->
-		<equals arg1="${os}" arg2="macosx"/>
+		<!--
+		This was useful:
+		http://www.eclipse.org/forums/index.php?t=msg&goto=520735&
+		-->
+		<and>
+			<equals arg1="${os}" arg2="macosx"/>
+			<contains string="${java.class.path}" substring="cocoa"/>
+		</and>
+	</condition>
+
+	<condition property="graphics" value="carbon">
+		<and>
+			<equals arg1="${os}" arg2="macosx"/>
+			<contains string="${java.class.path}" substring="carbon"/>
+		</and>
 	</condition>
 
 	<condition property="graphics" value="gtk">
