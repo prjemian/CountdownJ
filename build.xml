@@ -12,8 +12,8 @@
 
 
 <project 
-	default="create_run_jar" 
-	name="Create Runnable Jar for Project CountdownJ">
+	default="gui_jar" 
+	name="Create Runnable Jar for GUI in project CountdownJ">
 	<!--this file was created by Eclipse Runnable JAR Export Wizard-->
 	<!--ANT 1.7 is required  -->
 
@@ -26,11 +26,15 @@
 	<property name="src.dir" value="src"/>
 	<property name="swt.dir" value="../org.eclipse.swt"/>
 	<property name="swt.jar" value="${swt.dir}/swt.jar"/>
-	<property name="main.class" value="org.jemian.countdownj.Gui"/>
 
-	<target name="create_run_jar">
+	<target name="gui_jar">
+		<property name="target.jar" 
+			value="CountdownJ-${version}-${host.arch}.jar"/>
+		<property name="main.class" value="org.jemian.countdownj.Gui"/>
+		<echo message="target.jar = ${target.jar}"/>
+		<echo message="main.class = ${main.class}"/>
 		<jar 
-        	destfile="${basedir}/CountdownJ-${version}-${host.arch}.jar" 
+        	destfile="${target.jar}" 
         	filesetmanifest="mergewithoutmain">
 			<manifest>
 				<attribute name="Main-Class" value="${main.class}"/>
@@ -40,10 +44,83 @@
 			<fileset dir="${swt.dir}"/>
 			<zipfileset excludes="META-INF/*.SF" src="${swt.jar}"/>
 		</jar>
-		<chmod 
-		    file="${basedir}/CountdownJ-${version}-${host.arch}.jar" 
-		    perm="ugo+rx">
-		</chmod>
+		<chmod file="${target.jar}" perm="ugo+rx"/>
+	</target>
+
+	<target name="MyFormLayoutTest">
+		<property name="main.class.short" value="MyFormLayoutTest"/>
+		<property name="main.class.path" value="example.code"/>
+		<property name="target.jar" value="${main.class.short}.jar"/>
+		<property name="main.class" value="${main.class.path}.${main.class.short}"/>
+		<echo message="target.jar = ${target.jar}"/>
+		<echo message="main.class = ${main.class}"/>
+		<jar destfile="${target.jar}">
+			<manifest>
+				<attribute name="Main-Class" value="${main.class}"/>
+				<attribute name="Class-Path" value="."/>
+			</manifest>
+			<fileset dir="${bin.dir}"/>
+			<fileset dir="${swt.dir}"/>
+			<zipfileset excludes="META-INF/*.SF" src="${swt.jar}"/>
+		</jar>
+		<chmod file="${target.jar}" perm="ugo+rx"/>
+	</target>
+
+	<target name="AnnoyingBeep">
+		<property name="main.class.short" value="AnnoyingBeep"/>
+		<property name="main.class.path" value="example.code"/>
+		<property name="target.jar" value="${main.class.short}.jar"/>
+		<property name="main.class" value="${main.class.path}.${main.class.short}"/>
+		<echo message="target.jar = ${target.jar}"/>
+		<echo message="main.class = ${main.class}"/>
+		<jar destfile="${target.jar}">
+			<manifest>
+				<attribute name="Main-Class" value="${main.class}"/>
+				<attribute name="Class-Path" value="."/>
+			</manifest>
+			<fileset dir="${bin.dir}"/>
+			<fileset dir="${swt.dir}"/>
+			<zipfileset excludes="META-INF/*.SF" src="${swt.jar}"/>
+		</jar>
+		<chmod file="${target.jar}" perm="ugo+rx"/>
+	</target>
+
+	<target name="Snippet184">
+		<property name="main.class.short" value="Snippet184"/>
+		<property name="main.class.path" value="example.code"/>
+		<property name="target.jar" value="${main.class.short}.jar"/>
+		<property name="main.class" value="${main.class.path}.${main.class.short}"/>
+		<echo message="target.jar = ${target.jar}"/>
+		<echo message="main.class = ${main.class}"/>
+		<jar destfile="${target.jar}">
+			<manifest>
+				<attribute name="Main-Class" value="${main.class}"/>
+				<attribute name="Class-Path" value="."/>
+			</manifest>
+			<fileset dir="${bin.dir}"/>
+			<fileset dir="${swt.dir}"/>
+			<zipfileset excludes="META-INF/*.SF" src="${swt.jar}"/>
+		</jar>
+		<chmod file="${target.jar}" perm="ugo+rx"/>
+	</target>
+
+	<target name="ClockTimer">
+		<property name="main.class.short" value="ClockTimer"/>
+		<property name="main.class.path" value="org.jemian.countdownj"/>
+		<property name="target.jar" value="${main.class.short}.jar"/>
+		<property name="main.class" value="${main.class.path}.${main.class.short}"/>
+		<echo message="target.jar = ${target.jar}"/>
+		<echo message="main.class = ${main.class}"/>
+		<jar destfile="${target.jar}">
+			<manifest>
+				<attribute name="Main-Class" value="${main.class}"/>
+				<attribute name="Class-Path" value="."/>
+			</manifest>
+			<fileset dir="${bin.dir}"/>
+			<fileset dir="${swt.dir}"/>
+			<zipfileset excludes="META-INF/*.SF" src="${swt.jar}"/>
+		</jar>
+		<chmod file="${target.jar}" perm="ugo+rx"/>
 	</target>
 
 	<target name="info">
