@@ -4,7 +4,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.jemian.countdownj.LabelPaneComposite;
 
 public class CompositeShellExample {
 	Display d;
@@ -18,7 +17,7 @@ public class CompositeShellExample {
 		s.setText("A Shell Composite Example");
 		s.setLayout(new FillLayout());
 		//final TextPaneComposite tpc = new TextPaneComposite(s);
-		new LabelPaneComposite(s);
+		new org.jemian.countdownj.swt.LabelPaneComposite(s);
 		s.open();
 		while (!s.isDisposed()) {
 			if (!d.readAndDispatch())

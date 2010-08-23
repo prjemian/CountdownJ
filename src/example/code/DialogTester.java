@@ -8,7 +8,7 @@ package example.code;
  */
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.jemian.countdownj.ConfigureDialog;
+import org.jemian.countdownj.swt.ConfigureDialog;
 
 public class DialogTester {
 

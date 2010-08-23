@@ -70,9 +70,9 @@ public class FormLayoutSample {
 		display.dispose();
 	}
 
-	private void init() {
-
-	}
+//private void init() {
+//
+//}
 
 	public static void main(String[] args) {
 		new FormLayoutSample();
