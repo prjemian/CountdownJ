@@ -57,7 +57,10 @@
 	</condition>
 
 	<condition property="os" value="solaris">
-		<equals arg1="${os.name}" arg2="SunOS"/>
+		<or>
+			<equals arg1="${os.name}" arg2="SunOS"/>
+			<equals arg1="${os.name}" arg2="Solaris"/>
+		</or>
 		<!--
 		<and>
 	  		<os family="unix" />
