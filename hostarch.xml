@@ -21,6 +21,7 @@
 			cocoa-macosx-x86_64
 			cocoa-macosx          	(Mac OS X with 32-bit Java)
 		perhaps: http://lopica.sourceforge.net/os.html
+		also: http://mindprod.com/jgloss/properties.html#OSNAME
 	-->
 
 <project name="Determine host.arch property for ant">
