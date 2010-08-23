@@ -34,6 +34,8 @@
 	    <!-- <os family="winnt" />-->
 		<equals arg1="${os.name}" arg2="Windows XP"/>
 		<equals arg1="${os.name}" arg2="Windows NT"/>
+		<equals arg1="${os.name}" arg2="Windows Vista"/>
+		<equals arg1="${os.name}" arg2="Windows 7"/>
 	  </or>
 	</condition>
 
