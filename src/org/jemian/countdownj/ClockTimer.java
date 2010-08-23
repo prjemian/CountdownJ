@@ -11,6 +11,8 @@ package org.jemian.countdownj;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.jemian.countdownj.swt.Gui;
+
 /**
  * Operate the clock for countdown
  * generate periodic updates when the clock is running

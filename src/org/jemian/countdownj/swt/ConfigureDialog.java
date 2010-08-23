@@ -1,4 +1,4 @@
-package org.jemian.countdownj;
+package org.jemian.countdownj.swt;
 
 //########### SVN repository information ###################
 //# $Date$
