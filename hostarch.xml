@@ -29,32 +29,43 @@
 
 	<condition property="os" value="win32">
 	  <or>
-	    <os family="win9x" />
-	    <os family="winnt" />
+	    <!-- <os family="win9x" />-->
+	    <!-- <os family="winnt" />-->
+		<equals arg1="${os.name}" arg2="Windows XP"/>
+		<equals arg1="${os.name}" arg2="Windows NT"/>
 	  </or>
 	</condition>
 
 	<condition property="os" value="macosx">
+		<equals arg1="${os.name}" arg2="Mac OS X"/>
+		<!--
 		<and>
 			<os family="mac" />
 			<os family="unix"/>
-		</and>
+		</and>-->
 	</condition>
 
 	<condition property="os" value="linux">
+		<equals arg1="${os.name}" arg2="Linux"/>
+		<!--
 		<and>
 	  		<os family="unix" />
 			<equals arg1="${os.name}" arg2="Linux"/>
 		</and>
+		-->
 	</condition>
 
 	<condition property="os" value="solaris">
+		<equals arg1="${os.name}" arg2="SunOS"/>
+		<!--
 		<and>
 	  		<os family="unix" />
 			<equals arg1="${os.name}" arg2="SunOS"/>
 		</and>
+		-->
 	</condition>
 
+		<!--
 	<condition property="os" value="unix">
 		<and>
 	  		<os family="unix" />
@@ -63,6 +74,7 @@
 			</not>
 		</and>
 	</condition>
+		-->
 
 	<condition property="os" else="unknown">
 		<isset property="os"/>
