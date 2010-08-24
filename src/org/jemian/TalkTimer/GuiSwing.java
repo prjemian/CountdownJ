@@ -59,6 +59,7 @@ public class GuiSwing extends javax.swing.JFrame {
 		clockTimer = new ClockTimer(this);
 		initializeColorTable();
         initComponents();
+        this.setTitle("CountdownJ, prjemian@gmail.com");
         initializeButtonLabels();
         blackPanel.addHierarchyBoundsListener(new windowResizeListener(this));
         setExtendedState(MAXIMIZED_BOTH);
