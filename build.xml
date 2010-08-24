@@ -30,6 +30,25 @@
 	<target name="gui_jar">
 		<property name="target.jar" 
 			value="CountdownJ-${version}-${host.arch}.jar"/>
+		<property name="main.class" value="org.jemian.TalkTimer.GuiSwing"/>
+		<echo message="target.jar = ${target.jar}"/>
+		<echo message="main.class = ${main.class}"/>
+		<jar 
+        	destfile="${target.jar}" 
+        	filesetmanifest="mergewithoutmain">
+			<manifest>
+				<attribute name="Main-Class" value="${main.class}"/>
+				<attribute name="Class-Path" value="."/>
+			</manifest>
+			<fileset dir="${bin.dir}"/>
+			<zipfileset excludes="META-INF/*.SF" src="${swt.jar}"/>
+		</jar>
+		<chmod file="${target.jar}" perm="ugo+rx"/>
+	</target>
+
+	<target name="swt_jar">
+		<property name="target.jar" 
+			value="CountdownJ-${version}-${host.arch}.jar"/>
 		<property name="main.class" value="org.jemian.countdownj.swt.Gui"/>
 		<echo message="target.jar = ${target.jar}"/>
 		<echo message="main.class = ${main.class}"/>
