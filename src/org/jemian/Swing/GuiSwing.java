@@ -56,14 +56,26 @@ public class GuiSwing extends javax.swing.JFrame {
 
     /** Creates new form GuiSwing */
     public GuiSwing() {
-		clockTimer = new ClockTimer(this);
-		initializeColorTable();
+		// prepare the timer
+    	clockTimer = new ClockTimer(this);
+		
+    	// setup the GUI
+    	initializeColorTable();
         initComponents();
-        this.setTitle("CountdownJ, prjemian@gmail.com");
+        String svnRev = "$Revision$".split(" ")[1];
+        String format = "CountdownJ, (svn:%s) prjemian@gmail.com";
+        String title = String.format(format, svnRev);
+        this.setTitle(title);
         initializeButtonLabels();
+
+        // font sizes track with window size
         blackPanel.addHierarchyBoundsListener(new windowResizeListener(this));
+
+        // full screen
         setExtendedState(MAXIMIZED_BOTH);
-		clockTimer.setTime_s(15 * 60);
+
+        // initial talk is 15 minutes
+        clockTimer.setTime_s(15 * 60);
 		clockTimer.update();
     }
 
@@ -138,7 +150,7 @@ public class GuiSwing extends javax.swing.JFrame {
         presetButton3.setEnabled(false);
         presetButton4.setEnabled(false);
         // TODO: complete the configure dialog
-        configureButton.setEnabled(false);
+        //configureButton.setEnabled(false);
     }
 
     private void setTextStartButtons(String text) {
@@ -216,8 +228,14 @@ public class GuiSwing extends javax.swing.JFrame {
 	}
 
     private void doConfigureButton() {
-        // TODO: complete the configure dialog
-    	msgText.setText("not yet");
+        Configure dialog = new Configure(new javax.swing.JFrame(), true);
+        dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                //System.exit(0);
+            }
+        });
+        dialog.setVisible(true);
+        // once window is closed, we ask the dialog some questions
     }
 
     private void doPresetButton(String label) {
