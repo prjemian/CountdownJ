@@ -1,4 +1,4 @@
-package org.jemian.TalkTimer;
+package org.jemian.Swing;
 
 //########### SVN repository information ###################
 //# $Date$

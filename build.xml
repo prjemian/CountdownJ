@@ -30,7 +30,7 @@
 	<target name="gui_jar">
 		<property name="target.jar" 
 			value="CountdownJ-${version}.jar"/>
-		<property name="main.class" value="org.jemian.TalkTimer.GuiSwing"/>
+		<property name="main.class" value="org.jemian.Swing.GuiSwing"/>
 		<echo message="target.jar = ${target.jar}"/>
 		<echo message="main.class = ${main.class}"/>
 		<jar 

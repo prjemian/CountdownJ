@@ -164,17 +164,17 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="mmssButton1" min="-2" max="-2" attributes="0"/>
+                      <Component id="mmssButton1" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="mmssButton2" min="-2" max="-2" attributes="0"/>
+                      <Component id="mmssButton2" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="mmssButton3" min="-2" max="-2" attributes="0"/>
+                      <Component id="mmssButton3" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="mmssButton4" min="-2" max="-2" attributes="0"/>
+                      <Component id="mmssButton4" max="32767" attributes="0"/>
                       <EmptySpace pref="15" max="32767" attributes="0"/>
-                      <Component id="mmssButtonStart" min="-2" max="-2" attributes="0"/>
+                      <Component id="mmssButtonStart" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="mmssButtonStop" min="-2" max="-2" attributes="0"/>
+                      <Component id="mmssButtonStop" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -246,17 +246,17 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="presetButton1" min="-2" max="-2" attributes="0"/>
+                      <Component id="presetButton1" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="presetButton2" min="-2" max="-2" attributes="0"/>
+                      <Component id="presetButton2" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="presetButton3" min="-2" max="-2" attributes="0"/>
+                      <Component id="presetButton3" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="presetButton4" min="-2" max="-2" attributes="0"/>
+                      <Component id="presetButton4" max="32767" attributes="0"/>
                       <EmptySpace pref="15" max="32767" attributes="0"/>
-                      <Component id="presetButtonStart" min="-2" max="-2" attributes="0"/>
+                      <Component id="presetButtonStart" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="presetButtonStop" min="-2" max="-2" attributes="0"/>
+                      <Component id="presetButtonStop" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>

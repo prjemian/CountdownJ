@@ -9,7 +9,7 @@
  * Created on Aug 23, 2010, 8:13:14 PM
  */
 
-package org.jemian.TalkTimer;
+package org.jemian.Swing;
 
 //########### SVN repository information ###################
 //# $Date$
@@ -368,7 +368,7 @@ public class GuiSwing extends javax.swing.JFrame {
         mmssTextPanel.setForeground(new java.awt.Color(255, 255, 255));
 
         mmssText.setBackground(new java.awt.Color(0, 0, 0));
-        mmssText.setFont(new java.awt.Font("Tahoma", 1, 48)); // NOI18N
+        mmssText.setFont(new java.awt.Font("Tahoma", 1, 48));
         mmssText.setForeground(new java.awt.Color(255, 255, 255));
         mmssText.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         mmssText.setText("mm:ss");
@@ -388,7 +388,7 @@ public class GuiSwing extends javax.swing.JFrame {
         msgTextPanel.setForeground(new java.awt.Color(255, 255, 255));
 
         msgText.setBackground(new java.awt.Color(0, 0, 0));
-        msgText.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        msgText.setFont(new java.awt.Font("Tahoma", 0, 24));
         msgText.setForeground(new java.awt.Color(255, 255, 255));
         msgText.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         msgText.setText("message");
@@ -444,17 +444,17 @@ public class GuiSwing extends javax.swing.JFrame {
         mmssTabPaneLayout.setHorizontalGroup(
             mmssTabPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mmssTabPaneLayout.createSequentialGroup()
-                .addComponent(mmssButton1)
+                .addComponent(mmssButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(mmssButton2)
+                .addComponent(mmssButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(mmssButton3)
+                .addComponent(mmssButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(mmssButton4)
+                .addComponent(mmssButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
-                .addComponent(mmssButtonStart)
+                .addComponent(mmssButtonStart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(mmssButtonStop))
+                .addComponent(mmssButtonStop, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         mmssTabPaneLayout.setVerticalGroup(
             mmssTabPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -494,17 +494,17 @@ public class GuiSwing extends javax.swing.JFrame {
         presetTabPaneLayout.setHorizontalGroup(
             presetTabPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(presetTabPaneLayout.createSequentialGroup()
-                .addComponent(presetButton1)
+                .addComponent(presetButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(presetButton2)
+                .addComponent(presetButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(presetButton3)
+                .addComponent(presetButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(presetButton4)
+                .addComponent(presetButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
-                .addComponent(presetButtonStart)
+                .addComponent(presetButtonStart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(presetButtonStop))
+                .addComponent(presetButtonStop, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         presetTabPaneLayout.setVerticalGroup(
             presetTabPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
