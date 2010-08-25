@@ -9,7 +9,7 @@
  * Created on Aug 24, 2010, 10:14:35 AM
  */
 
-package org.jemian.Swing;
+package org.jemian.countdownj.Swing;
 
 //########### SVN repository information ###################
 //# $Date$

@@ -12,7 +12,7 @@
 
 
 <project 
-	default="gui_jar" 
+	default="gui" 
 	name="Create Runnable Jar for GUI in project CountdownJ">
 	<!--this file was created by Eclipse Runnable JAR Export Wizard-->
 	<!--ANT 1.7 is required  -->
@@ -51,16 +51,16 @@
 		    verbose="false">
 			<classpath path="${compile.classpath.contents}" />
 			<exclude name="example/" />
-			<exclude name="org/jemian/countdownj/" />
+			<exclude name="org/jemian/countdownj/swt/" />
 		</javac>
 	</target>
 
-	<target name="gui_jar" depends="compile">
+	<target name="gui" depends="compile">
 		<echo message=" Building main JAR file"/>
 		<property name="target.jar" 
 			value="CountdownJ-${version}.jar"/>
 		<property name="main.class.short" value="GuiSwing"/>
-		<property name="main.class.path" value="org.jemian.Swing"/>
+		<property name="main.class.path" value="org.jemian.countdownj.Swing"/>
 		<property name="main.class" value="${main.class.path}.${main.class.short}"/>
 		<echo message="target.jar = ${target.jar}"/>
 		<echo message="main.class = ${main.class}"/>

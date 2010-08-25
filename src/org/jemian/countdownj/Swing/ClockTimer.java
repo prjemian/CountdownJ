@@ -1,4 +1,4 @@
-package org.jemian.countdownj;
+package org.jemian.countdownj.Swing;
 
 //########### SVN repository information ###################
 //# $Date$
@@ -11,14 +11,12 @@ package org.jemian.countdownj;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.jemian.countdownj.swt.Gui;
-
 /**
- * Operate the clock for countdown
- * generate periodic updates when the clock is running
- * @author Pete
- *
- */
+* Operate the clock for countdown
+* generate periodic updates when the clock is running
+* @author Pete
+*
+*/
 public class ClockTimer {
 
 	Timer timer;
@@ -27,7 +25,7 @@ public class ClockTimer {
 	int interval_ms = 50;
 	double endTime = 0;
 	int initialDelay = 0;
-	Gui caller = null;
+	GuiSwing caller = null;
 
 	/**
 	 * @param timer : java.util.Timer object
@@ -36,9 +34,9 @@ public class ClockTimer {
 	 * @param interval_ms : reporting interval
 	 * @param endTime : (internal) when the presentation should end
 	 * @param initialDelay : always ZERO for this class
-	 * @param caller : to call caller.timerCallback("mm:ss") every interval_ms
+	 * @param caller : to call caller.doTimer("mm:ss") every interval_ms
 	 */
-	public ClockTimer(Gui callback) {
+	public ClockTimer(GuiSwing callback) {
 		caller = callback;
 	}
 
@@ -125,7 +123,7 @@ public class ClockTimer {
 	 */
 	public void start() {
 		endTime = _now_() + time_s;
-        counting = true;
+      counting = true;
 		timer = new Timer();
 		timer.schedule(new UpdateTask(this), initialDelay, interval_ms);
 		update();
@@ -135,10 +133,10 @@ public class ClockTimer {
 	 * stop the countdown clock
 	 */
 	public void stop() {
-        counting = false;
-        endTime = 0;
-        if (timer != null)
-        	timer.cancel();
+      counting = false;
+      endTime = 0;
+      if (timer != null)
+      	timer.cancel();
 	}
 	
 	/**
@@ -153,7 +151,7 @@ public class ClockTimer {
 		else
 			mmss = "";
 		if (caller != null) {
-			caller.timerCallback(mmss);
+			caller.doTimer(mmss);
 		} else {
 			// development only
 			System.out.println("ClockTimer: " + mmss);
