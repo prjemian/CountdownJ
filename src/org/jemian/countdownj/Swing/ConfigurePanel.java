@@ -22,7 +22,9 @@ import javax.swing.JTextField;
 
 /**
  * ConfigurePanel is used by the Configure dialog for the main
- * and preset configurations.
+ * and preset configurations.  By choice the JTextField entry widgets
+ * are exposed to the caller.
+ * 
  * @author Pete
  *
  */
@@ -116,14 +118,14 @@ public class ConfigurePanel extends JPanel {
      * @param tip for the entry widget, as well
      * @return the JTextField object
      */
-    private JTextField label_entry(Container parent, int row, String labelText, String labelTip, String text, String tip) {
+    private JTextField label_entry(Container parent, int row, 
+    		String labelText, String labelTip, String text, String tip) {
     	GridBagConstraints c;
     	c = new GridBagConstraints();
     	c.fill = GridBagConstraints.BOTH;
     	c.gridx = 0;
     	c.gridy = row;
     	c.insets = new Insets(2, 4, 2, 8);
-    	// c.anchor = GridBagConstraints.LINE_END;
     	JLabel label = new JLabel(labelText);
     	label.setToolTipText(labelTip);
     	parent.add(label, c);

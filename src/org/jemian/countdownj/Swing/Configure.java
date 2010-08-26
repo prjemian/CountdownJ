@@ -11,13 +11,12 @@
 
 package org.jemian.countdownj.Swing;
 
-//########### SVN repository information ###################
-//# $Date$
-//# $Author$
-//# $Revision$
-//# $URL$
-//# $Id$
-//########### SVN repository information ###################
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 /**
  *
@@ -33,7 +32,33 @@ public class Configure extends javax.swing.JDialog {
 	/** Creates new form Configure */
     public Configure(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-        initComponents();
+        // initComponents();
+        alternativeInitMethod();
+    }
+
+    private void alternativeInitMethod() {
+    	JPanel mainPanel = new JPanel();
+    	mainPanel.setLayout(new GridBagLayout());
+
+    	GridBagConstraints c;
+    	c = new GridBagConstraints();
+    	c.fill = GridBagConstraints.BOTH;
+    	c.gridx = 0;
+    	c.gridy = 0;
+    	c.insets = new Insets(10, 10, 10, 10);
+    	JLabel title = new JLabel("Configuration details");
+    	mainPanel.add(title, c);
+
+    	c = new GridBagConstraints();
+    	c.fill = GridBagConstraints.BOTH;
+    	c.gridx = 0;
+    	c.gridy = 1;
+    	c.insets = new Insets(2, 2, 2, 2);
+    	c.weightx = 1.0;
+    	c.weighty = 1.0;
+    	ConfigurePanel panel = new ConfigurePanel(mainPanel);
+    	mainPanel.add(panel, c);
+
     }
 
     /** This method is called from within the constructor to
