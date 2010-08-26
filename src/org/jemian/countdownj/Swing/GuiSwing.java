@@ -31,6 +31,7 @@ import java.awt.event.HierarchyEvent;
 import java.util.Hashtable;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 
@@ -39,7 +40,7 @@ import javax.swing.JLabel;
  *
  * @author Pete
  */
-public class GuiSwing extends javax.swing.JFrame {
+public class GuiSwing extends JFrame {
 
     /**
 	 * 

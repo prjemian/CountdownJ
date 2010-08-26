@@ -14,8 +14,6 @@
 <project 
 	default="gui" 
 	name="Create Runnable Jar for GUI in project CountdownJ">
-	<!--this file was created by Eclipse Runnable JAR Export Wizard-->
-	<!--ANT 1.7 is required  -->
 
 	<import file="hostarch.xml"/>
 
@@ -24,8 +22,6 @@
 
 	<property name="bin.dir" value="bin"/>
 	<property name="src.dir" value="src"/>
-	<property name="swt.dir" value="../org.eclipse.swt"/>
-	<property name="swt.jar" value="${swt.dir}/swt.jar"/>
 
 	<target name="init" 
 	    description="first step">
