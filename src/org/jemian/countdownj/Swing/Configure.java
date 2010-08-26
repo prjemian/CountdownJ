@@ -12,11 +12,15 @@
 package org.jemian.countdownj.Swing;
 
 import java.awt.Container;
+import java.awt.FlowLayout;
 import java.awt.Font;
 
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
 
 /**
  *
@@ -41,18 +45,44 @@ public class Configure extends javax.swing.JDialog {
     	this.setLayout(new BoxLayout(pane, BoxLayout.PAGE_AXIS));
     	JPanel mainPanel = new JPanel();
 
-    	JLabel title = new JLabel("Configuration details");
+    	JLabel title = new JLabel("Configuration details (not yet ready)");
     	title.setFont(new Font("Tahoma", Font.BOLD, 24));
     	title.setAlignmentX(CENTER_ALIGNMENT);
     	this.add(title);
 
     	// TODO this inside a JTabbedPane
     	// mainTabbedPane = new javax.swing.JTabbedPane();
-    	JPanel jPanel = new JPanel();
-    	this.add(jPanel);
-    	ConfigurePanel panel = new ConfigurePanel(jPanel);
+    	JTabbedPane tabs = new JTabbedPane();
+    	this.add(tabs);
+
+    	JPanel mmssTab = new JPanel();
+    	mmssTab.setName("basic");
+    	tabs.add(mmssTab);
+    	ConfigurePanel panel = new ConfigurePanel(mmssTab);
+
+    	for (int i = 0; i < 4; i++) {
+        	JPanel tab = new JPanel();
+        	tab.setName("tab " + i);
+        	tabs.add(tab);
+        	ConfigurePanel tabPanel = new ConfigurePanel(tab);
+        	// TODO entry widget not same as others, move into ConfigurePanel
+        	// TODO ConfigurePanel needs optional widgets like this one
+        	JTextField tabName = tabPanel.label_entry(tab, 0, 
+        			"tab name", 
+        			"title of this page of settings",
+        			"{tab name}", 
+        			"suggested: Invited or Plenary or Contributed or ...");
+        	tab.add(tabName);
+        	tabPanel.separator(tab, 1);
+    	}
     	
-    	// TODO panel with buttons here for [Ok] [Cancel] and perhaps [Accept]
+    	// TODO make these buttons work
+    	JPanel buttonPanel = new JPanel();
+    	this.add(buttonPanel);
+    	buttonPanel.setLayout(new FlowLayout());
+    	buttonPanel.add(new JButton("Ok"));
+    	buttonPanel.add(new JButton("Cancel"));
+    	buttonPanel.add(new JButton("Accept"));
     	
     	pack();
     }

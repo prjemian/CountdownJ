@@ -81,7 +81,7 @@ public class ConfigurePanel extends JPanel {
      * @param parent
      */
     private void initializePanel(Container parent) {
-    	int row = 0;
+    	int row = 2;
     	presentation = label_entry(parent, row++, 
     			"time allowed for presentation (and discussion)", 
     			"discussion is the last part of the presentation period",
@@ -143,7 +143,7 @@ public class ConfigurePanel extends JPanel {
      * @param tip for the entry widget, as well
      * @return the JTextField object
      */
-    private JTextField label_entry(Container parent, int row, 
+    public JTextField label_entry(Container parent, int row, 
     		String labelText, String labelTip, String text, String tip) {
     	GridBagConstraints c = new GridBagConstraints();
     	c.fill = GridBagConstraints.BOTH;
@@ -172,7 +172,7 @@ public class ConfigurePanel extends JPanel {
      * @param parent
      * @param row
      */
-    private void separator(Container parent, int row) {
+    public void separator(Container parent, int row) {
     	GridBagConstraints c = new GridBagConstraints();
     	c.fill = GridBagConstraints.BOTH;
     	c.gridx = 0;
