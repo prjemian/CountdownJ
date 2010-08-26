@@ -47,8 +47,8 @@ public class GuiSwing extends JFrame {
 	 */
 	private static final long serialVersionUID = 3167378700428228696L;
 
-	public int discussionTime_s = 5*60; // initial default
-	int overtimeReminder_s = 60;  		// initial default
+	public int discussionTime_s = 5*60; // TODO use TalkConfiguration object
+	int overtimeReminder_s = 60;  		// TODO use TalkConfiguration object
 
 	public ClockTimer clockTimer = null;
 	String lastPhaseText;
@@ -150,8 +150,8 @@ public class GuiSwing extends JFrame {
         presetButton2.setEnabled(false);
         presetButton3.setEnabled(false);
         presetButton4.setEnabled(false);
+
         // TODO: complete the configure dialog
-        //configureButton.setEnabled(false);
     }
 
     private void setTextStartButtons(String text) {
