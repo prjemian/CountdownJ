@@ -11,10 +11,10 @@
 
 package org.jemian.countdownj.Swing;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.Container;
+import java.awt.Font;
 
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -37,28 +37,24 @@ public class Configure extends javax.swing.JDialog {
     }
 
     private void alternativeInitMethod() {
+    	Container pane = getContentPane();
+    	this.setLayout(new BoxLayout(pane, BoxLayout.PAGE_AXIS));
     	JPanel mainPanel = new JPanel();
-    	mainPanel.setLayout(new GridBagLayout());
 
-    	GridBagConstraints c;
-    	c = new GridBagConstraints();
-    	c.fill = GridBagConstraints.BOTH;
-    	c.gridx = 0;
-    	c.gridy = 0;
-    	c.insets = new Insets(10, 10, 10, 10);
     	JLabel title = new JLabel("Configuration details");
-    	mainPanel.add(title, c);
+    	title.setFont(new Font("Tahoma", Font.BOLD, 24));
+    	title.setAlignmentX(CENTER_ALIGNMENT);
+    	this.add(title);
 
-    	c = new GridBagConstraints();
-    	c.fill = GridBagConstraints.BOTH;
-    	c.gridx = 0;
-    	c.gridy = 1;
-    	c.insets = new Insets(2, 2, 2, 2);
-    	c.weightx = 1.0;
-    	c.weighty = 1.0;
-    	ConfigurePanel panel = new ConfigurePanel(mainPanel);
-    	mainPanel.add(panel, c);
-
+    	// TODO this inside a JTabbedPane
+    	// mainTabbedPane = new javax.swing.JTabbedPane();
+    	JPanel jPanel = new JPanel();
+    	this.add(jPanel);
+    	ConfigurePanel panel = new ConfigurePanel(jPanel);
+    	
+    	// TODO panel with buttons here for [Ok] [Cancel] and perhaps [Accept]
+    	
+    	pack();
     }
 
     /** This method is called from within the constructor to

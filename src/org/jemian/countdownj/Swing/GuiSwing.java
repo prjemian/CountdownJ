@@ -64,6 +64,7 @@ public class GuiSwing extends JFrame {
     	// setup the GUI
     	initializeColorTable();
         initComponents();
+        // TODO can we get most recent revision number from project directory?
         String svnRev = "$Revision$".split(" ")[1];
         String format = "CountdownJ, (svn:%s) prjemian@gmail.com";
         String title = String.format(format, svnRev);
