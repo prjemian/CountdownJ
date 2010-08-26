@@ -205,15 +205,33 @@ public class ConfigurePanel extends JPanel {
 
     	JButton btnDefaults = new JButton("set defaults");
     	panel.add(btnDefaults);
-    	btnDefaults.addActionListener(new SetDefaultsListener(this));
+    	btnDefaults.addActionListener(	// bind a button click to this action
+    		new ActionListener() {
+    		    public void actionPerformed(ActionEvent e) {
+    		        setDefaults();
+    		    }
+    		}
+    	);
 
     	JButton btnClear = new JButton("clear all");
     	panel.add(btnClear);
-    	btnClear.addActionListener(new ClearAllListener(this));
+    	btnClear.addActionListener(	// bind a button click to this action
+        		new ActionListener() {
+        		    public void actionPerformed(ActionEvent e) {
+        		        clearAll();
+        		    }
+        		}
+        	);
 
     	JButton btnReset = new JButton("reset all");
     	panel.add(btnReset);
-    	btnReset.addActionListener(new ResetAllListener(this));
+    	btnReset.addActionListener(	// bind a button click to this action
+        		new ActionListener() {
+        		    public void actionPerformed(ActionEvent e) {
+        		        resetAll();
+        		    }
+        		}
+        	);
     }
 
     /**
@@ -307,6 +325,7 @@ public class ConfigurePanel extends JPanel {
                 config.setPresentationStr("30:00");
                 config.setDiscussionStr("10:00");
                 config.setOvertimeStr("0:20");
+                config.setMsg_presentation("talk");
                 config.setMsg_overtime("stop talking now");
                 config.setMsg_discussion("Questions?");
                 config.setMsg_paused("a delay");
@@ -317,73 +336,5 @@ public class ConfigurePanel extends JPanel {
                 frame.pack();
                 frame.setVisible(true);            }
         });
-    }
-}
-
-
-
-/**
- * listen for button clicks from a ConfigurePanel object
- * @author Pete
- */
-class SetDefaultsListener implements ActionListener {
-	ConfigurePanel owner = null;
-    /**
-     * listen for button to be clicked,
-     * @param parent ConfigurePanel object
-     */
-    public SetDefaultsListener(ConfigurePanel parent) {
-        owner = parent;
-    }
-    /**
-     * respond to the event
-     * @param e
-     */
-    public void actionPerformed(ActionEvent e) {
-        owner.setDefaults();
-    }
-}
-
-/**
- * listen for button clicks from a ConfigurePanel object
- * @author Pete
- */
-class ClearAllListener implements ActionListener {
-	ConfigurePanel owner = null;
-    /**
-     * listen for button to be clicked,
-     * @param parent ConfigurePanel object
-     */
-    public ClearAllListener(ConfigurePanel parent) {
-        owner = parent;
-    }
-    /**
-     * respond to the event
-     * @param e
-     */
-    public void actionPerformed(ActionEvent e) {
-        owner.clearAll();
-    }
-}
-
-/**
- * listen for button clicks from a ConfigurePanel object
- * @author Pete
- */
-class ResetAllListener implements ActionListener {
-	ConfigurePanel owner = null;
-    /**
-     * listen for button to be clicked,
-     * @param parent ConfigurePanel object
-     */
-    public ResetAllListener(ConfigurePanel parent) {
-        owner = parent;
-    }
-    /**
-     * respond to the event
-     * @param e
-     */
-    public void actionPerformed(ActionEvent e) {
-        owner.resetAll();
     }
 }
