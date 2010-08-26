@@ -27,20 +27,21 @@
 	<property name="swt.dir" value="../org.eclipse.swt"/>
 	<property name="swt.jar" value="${swt.dir}/swt.jar"/>
 
-	<target  name="init" 
+	<target name="init" 
 	    description="first step">
 		<echo>Initializing ...</echo>
 		<tstamp />
 		<mkdir dir="${bin.dir}"/>
 	</target>
 
-	<target  name="clean" 
+	<target name="clean" 
 	    description="clean up">
 		<echo>Cleaning ...</echo>
 		<delete dir="${bin.dir}"/>
+		<delete file="CountdownJ*.jar"/>
 	</target>
 
-	<target  name="compile" 
+	<target name="compile" 
 	    description="Compilation target"
 	    depends="init">
 		<echo>Compiling ...</echo>
@@ -50,124 +51,27 @@
 		    debuglevel="${javac.debug.attrs}" 
 		    verbose="false">
 			<classpath path="${compile.classpath.contents}" />
-			<exclude name="example/" />
-			<exclude name="org/jemian/countdownj/swt/" />
+			<!-- <exclude name="org/jemian/countdownj/swt/" />-->
 		</javac>
 	</target>
 
 	<target name="gui" depends="compile">
-		<echo message=" Building main JAR file"/>
 		<property name="target.jar" 
 			value="CountdownJ-${version}.jar"/>
+		<echo message=" Building ${target.jar}"/>
 		<property name="main.class.short" value="GuiSwing"/>
 		<property name="main.class.path" value="org.jemian.countdownj.Swing"/>
 		<property name="main.class" value="${main.class.path}.${main.class.short}"/>
 		<echo message="target.jar = ${target.jar}"/>
 		<echo message="main.class = ${main.class}"/>
 		<jar 
-        	    destfile="${target.jar}" 
-        	    filesetmanifest="mergewithoutmain">
+    	    destfile="${target.jar}" 
+    	    filesetmanifest="mergewithoutmain">
 			<manifest>
 				<attribute name="Main-Class" value="${main.class}"/>
 				<attribute name="Class-Path" value="."/>
 			</manifest>
 			<fileset dir="${bin.dir}"/>
-		</jar>
-		<chmod file="${target.jar}" perm="ugo+rx"/>
-	</target>
-
-	<target name="swt_jar">
-		<property name="target.jar" 
-			value="CountdownJ-${version}-${host.arch}.jar"/>
-		<property name="main.class" value="org.jemian.countdownj.swt.Gui"/>
-		<echo message="target.jar = ${target.jar}"/>
-		<echo message="main.class = ${main.class}"/>
-		<jar 
-        	destfile="${target.jar}" 
-        	filesetmanifest="mergewithoutmain">
-			<manifest>
-				<attribute name="Main-Class" value="${main.class}"/>
-				<attribute name="Class-Path" value="."/>
-			</manifest>
-			<fileset dir="${bin.dir}"/>
-			<fileset dir="${swt.dir}"/>
-			<zipfileset excludes="META-INF/*.SF" src="${swt.jar}"/>
-		</jar>
-		<chmod file="${target.jar}" perm="ugo+rx"/>
-	</target>
-
-	<target name="MyFormLayoutTest">
-		<property name="main.class.short" value="MyFormLayoutTest"/>
-		<property name="main.class.path" value="example.code"/>
-		<property name="target.jar" value="${main.class.short}.jar"/>
-		<property name="main.class" value="${main.class.path}.${main.class.short}"/>
-		<echo message="target.jar = ${target.jar}"/>
-		<echo message="main.class = ${main.class}"/>
-		<jar destfile="${target.jar}">
-			<manifest>
-				<attribute name="Main-Class" value="${main.class}"/>
-				<attribute name="Class-Path" value="."/>
-			</manifest>
-			<fileset dir="${bin.dir}"/>
-			<fileset dir="${swt.dir}"/>
-			<zipfileset excludes="META-INF/*.SF" src="${swt.jar}"/>
-		</jar>
-		<chmod file="${target.jar}" perm="ugo+rx"/>
-	</target>
-
-	<target name="AnnoyingBeep">
-		<property name="main.class.short" value="AnnoyingBeep"/>
-		<property name="main.class.path" value="example.code"/>
-		<property name="target.jar" value="${main.class.short}.jar"/>
-		<property name="main.class" value="${main.class.path}.${main.class.short}"/>
-		<echo message="target.jar = ${target.jar}"/>
-		<echo message="main.class = ${main.class}"/>
-		<jar destfile="${target.jar}">
-			<manifest>
-				<attribute name="Main-Class" value="${main.class}"/>
-				<attribute name="Class-Path" value="."/>
-			</manifest>
-			<fileset dir="${bin.dir}"/>
-			<fileset dir="${swt.dir}"/>
-			<zipfileset excludes="META-INF/*.SF" src="${swt.jar}"/>
-		</jar>
-		<chmod file="${target.jar}" perm="ugo+rx"/>
-	</target>
-
-	<target name="Snippet184">
-		<property name="main.class.short" value="Snippet184"/>
-		<property name="main.class.path" value="example.code"/>
-		<property name="target.jar" value="${main.class.short}.jar"/>
-		<property name="main.class" value="${main.class.path}.${main.class.short}"/>
-		<echo message="target.jar = ${target.jar}"/>
-		<echo message="main.class = ${main.class}"/>
-		<jar destfile="${target.jar}">
-			<manifest>
-				<attribute name="Main-Class" value="${main.class}"/>
-				<attribute name="Class-Path" value="."/>
-			</manifest>
-			<fileset dir="${bin.dir}"/>
-			<fileset dir="${swt.dir}"/>
-			<zipfileset excludes="META-INF/*.SF" src="${swt.jar}"/>
-		</jar>
-		<chmod file="${target.jar}" perm="ugo+rx"/>
-	</target>
-
-	<target name="ClockTimer">
-		<property name="main.class.short" value="ClockTimer"/>
-		<property name="main.class.path" value="org.jemian.countdownj"/>
-		<property name="target.jar" value="${main.class.short}.jar"/>
-		<property name="main.class" value="${main.class.path}.${main.class.short}"/>
-		<echo message="target.jar = ${target.jar}"/>
-		<echo message="main.class = ${main.class}"/>
-		<jar destfile="${target.jar}">
-			<manifest>
-				<attribute name="Main-Class" value="${main.class}"/>
-				<attribute name="Class-Path" value="."/>
-			</manifest>
-			<fileset dir="${bin.dir}"/>
-			<fileset dir="${swt.dir}"/>
-			<zipfileset excludes="META-INF/*.SF" src="${swt.jar}"/>
 		</jar>
 		<chmod file="${target.jar}" perm="ugo+rx"/>
 	</target>
