@@ -23,8 +23,6 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 
-import org.eclipse.swt.layout.FillLayout;
-
 
 /**
  * ConfigurePanel is used by the Configure dialog for the main
@@ -51,7 +49,7 @@ public class ConfigurePanel extends JPanel {
 	public JTextField msg_overtime;
 	public JTextField msg_paused;
 
-	TalkConfiguration initialConfig;
+	TalkConfiguration initialTalkConfig;
 
 	/**
 	 * Creates JPanel ConfigurePanel.
@@ -61,9 +59,8 @@ public class ConfigurePanel extends JPanel {
     public ConfigurePanel(Container parent) {
     	parent.setLayout(new GridBagLayout());
     	initializePanel(parent);
-    	initialConfig = new TalkConfiguration();
-    	initialConfig.setDefaults();
-    	setConfig(initialConfig);
+    	initialTalkConfig = new TalkConfiguration();
+    	setConfig(initialTalkConfig);
     }
 
 	/**
@@ -74,8 +71,8 @@ public class ConfigurePanel extends JPanel {
     public ConfigurePanel(Container parent, TalkConfiguration config) {
     	parent.setLayout(new GridBagLayout());
     	initializePanel(parent);
-    	initialConfig = config;
-    	setConfig(initialConfig);
+    	initialTalkConfig = config;
+    	setConfig(initialTalkConfig);
     }
 
 
@@ -130,6 +127,8 @@ public class ConfigurePanel extends JPanel {
     			"suggested: Paused");
 
     	separator(parent, row++);
+    	
+    	// TODO add checkbox to permit audible beeps
 
     	buttonRow(parent, row++);
     }
@@ -269,14 +268,14 @@ public class ConfigurePanel extends JPanel {
      * reset all fields
      */
     public void resetAll() {
-    	presentation.setText(initialConfig.getPresentationStr());
-    	discussion.setText(initialConfig.getDiscussionStr());
-    	overtime.setText(initialConfig.getOvertimeStr());
-    	msg_pretalk.setText(initialConfig.getMsg_pretalk());
-    	msg_presentation.setText(initialConfig.getMsg_presentation());
-    	msg_discussion.setText(initialConfig.getMsg_discussion());
-    	msg_overtime.setText(initialConfig.getMsg_overtime());
-    	msg_paused.setText(initialConfig.getMsg_paused());
+    	presentation.setText(initialTalkConfig.getPresentationStr());
+    	discussion.setText(initialTalkConfig.getDiscussionStr());
+    	overtime.setText(initialTalkConfig.getOvertimeStr());
+    	msg_pretalk.setText(initialTalkConfig.getMsg_pretalk());
+    	msg_presentation.setText(initialTalkConfig.getMsg_presentation());
+    	msg_discussion.setText(initialTalkConfig.getMsg_discussion());
+    	msg_overtime.setText(initialTalkConfig.getMsg_overtime());
+    	msg_paused.setText(initialTalkConfig.getMsg_paused());
     }
 
     /**
@@ -321,7 +320,6 @@ public class ConfigurePanel extends JPanel {
                 //Set up the content pane.
                 Container panel = frame.getContentPane();
                 TalkConfiguration config = new TalkConfiguration();
-                config.setDefaults();
                 config.setPresentationStr("30:00");
                 config.setDiscussionStr("10:00");
                 config.setOvertimeStr("0:20");

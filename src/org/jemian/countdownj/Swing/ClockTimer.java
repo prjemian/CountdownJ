@@ -35,6 +35,7 @@ public class ClockTimer {
 	 * @param endTime : (internal) when the presentation should end
 	 * @param initialDelay : always ZERO for this class
 	 * @param caller : to call caller.doTimer("mm:ss") every interval_ms
+	 * TODO target method caller.doTimer() will be moved to a new class
 	 */
 	public ClockTimer(GuiSwing callback) {
 		caller = callback;
@@ -151,6 +152,7 @@ public class ClockTimer {
 		else
 			mmss = "";
 		if (caller != null) {
+			// TODO target method doTimer() will be moved to a new class
 			caller.doTimer(mmss);
 		} else {
 			// development only

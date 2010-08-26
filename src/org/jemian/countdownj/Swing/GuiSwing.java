@@ -47,6 +47,7 @@ public class GuiSwing extends JFrame {
 	 */
 	private static final long serialVersionUID = 3167378700428228696L;
 
+	TalkConfiguration talkConfig;
 	public int discussionTime_s = 5*60; // TODO use TalkConfiguration object
 	int overtimeReminder_s = 60;  		// TODO use TalkConfiguration object
 
@@ -57,8 +58,8 @@ public class GuiSwing extends JFrame {
 
     /** Creates new form GuiSwing */
     public GuiSwing() {
-		// prepare the timer
-    	clockTimer = new ClockTimer(this);
+    	clockTimer = new ClockTimer(this);	// prepare the timer    
+    	talkConfig = new TalkConfiguration();	// basic talk parameters
 		
     	// setup the GUI
     	initializeColorTable();
@@ -249,26 +250,27 @@ public class GuiSwing extends JFrame {
         adjustLabelSize(msgText);
     }
 
-    public void adjustLabelSize(JLabel me) {
-        Font font = me.getFont();
+    public void adjustLabelSize(JLabel label) {
+        Font font = label.getFont();
         String fontName = font.getFontName();
         int fontStyle = font.getStyle();
-        Rectangle rect = me.getBounds();
+        Rectangle rect = label.getBounds();
         int height = rect.height * 4 / 10;
-        if (height < 12) height = 12;
+        if (height < 12) height = 12;  // but not too small
         Font newFont = new Font(fontName, fontStyle, height);
-        me.setFont(newFont);
+        label.setFont(newFont);
     }
     
 	public void doTimer(String str) {
+		// TODO move this function to a separate class
 		double time_s = clockTimer.getTime_s();
 
 		int numBeeps = 0;
 		String colorName = "white";
 		String msgTextStr = calcMsgText();
-		if ("Overtime".compareTo(msgTextStr)==0) {
+		if (talkConfig.getMsg_overtime().compareTo(msgTextStr)==0) {
 			colorName = "red";
-			if ("Discussion".compareTo(lastPhaseText) == 0)
+			if (talkConfig.getMsg_discussion().compareTo(lastPhaseText) == 0)
 				numBeeps = 2;
 			if (last_time_s < 0) {
 				double t1 = Math.abs(time_s) % overtimeReminder_s;
@@ -277,12 +279,12 @@ public class GuiSwing extends JFrame {
 					numBeeps = 3;				
 			}
 		}
-		if ("Discussion".compareTo(msgTextStr)==0) {
+		if (talkConfig.getMsg_discussion().compareTo(msgTextStr)==0) {
 			colorName = "yellow";
 			if ("Presentation".compareTo(lastPhaseText) == 0)
 				numBeeps = 1;
 		}
-		if ("Presentation".compareTo(msgTextStr)==0) {
+		if (talkConfig.getMsg_presentation().compareTo(msgTextStr)==0) {
 			colorName = "green";
 		}
 
@@ -332,16 +334,17 @@ public class GuiSwing extends JFrame {
 	}
 
 	private String calcMsgText() {
+		// TODO move this function to a separate class
 		double time_s = clockTimer.getTime_s();
 		String msgTextStr = "";
 		if (clockTimer.isCounting()) {
 			if (time_s < 0) {
-				msgTextStr = "Overtime";
+				msgTextStr = talkConfig.getMsg_overtime();
 			} else {
 				if (time_s > discussionTime_s) {
-					msgTextStr = "Presentation";
+					msgTextStr = talkConfig.getMsg_presentation();
 				} else  {
-					msgTextStr = "Discussion";
+					msgTextStr = talkConfig.getMsg_discussion();
 				}
 			}
 		}
