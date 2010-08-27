@@ -37,13 +37,13 @@ public class Configure extends javax.swing.JDialog {
     public Configure(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         // initComponents();
-        alternativeInitMethod();
+        initialize();
     }
 
-    private void alternativeInitMethod() {
+    private void initialize() {
     	Container pane = getContentPane();
     	this.setLayout(new BoxLayout(pane, BoxLayout.PAGE_AXIS));
-    	JPanel mainPanel = new JPanel();
+    	//JPanel mainPanel = new JPanel();
 
     	JLabel title = new JLabel("Configuration details (not yet ready)");
     	title.setFont(new Font("Tahoma", Font.BOLD, 24));
@@ -60,10 +60,17 @@ public class Configure extends javax.swing.JDialog {
     	tabs.add(mmssTab);
     	ConfigurePanel panel = new ConfigurePanel(mmssTab);
 
+    	JPanel presetsTab = new JPanel();
+    	presetsTab.setName("presets");
+    	tabs.add(presetsTab);
+
+    	JTabbedPane subtabs = new JTabbedPane();
+    	presetsTab.add(subtabs);
+
     	for (int i = 0; i < 4; i++) {
         	JPanel tab = new JPanel();
         	tab.setName("tab " + i);
-        	tabs.add(tab);
+        	subtabs.add(tab);
         	ConfigurePanel tabPanel = new ConfigurePanel(tab);
         	// TODO entry widget not same as others, move into ConfigurePanel
         	// TODO ConfigurePanel needs optional widgets like this one
