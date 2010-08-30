@@ -17,6 +17,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -48,6 +49,7 @@ public class ConfigurePanel extends JPanel {
 	public JTextField msg_discussion;
 	public JTextField msg_overtime;
 	public JTextField msg_paused;
+	public JCheckBox checkAudible;
 
 	TalkConfiguration initialTalkConfig;
 
@@ -203,6 +205,7 @@ public class ConfigurePanel extends JPanel {
     	panel.setLayout(layout);
 
     	JButton btnDefaults = new JButton("set defaults");
+    	btnDefaults.setToolTipText("set all fields to default values");
     	panel.add(btnDefaults);
     	btnDefaults.addActionListener(	// bind a button click to this action
     		new ActionListener() {
@@ -213,6 +216,7 @@ public class ConfigurePanel extends JPanel {
     	);
 
     	JButton btnClear = new JButton("clear all");
+    	btnClear.setToolTipText("clear all fields");
     	panel.add(btnClear);
     	btnClear.addActionListener(	// bind a button click to this action
         		new ActionListener() {
@@ -223,6 +227,7 @@ public class ConfigurePanel extends JPanel {
         	);
 
     	JButton btnReset = new JButton("reset all");
+    	btnReset.setToolTipText("set all fields to original values");
     	panel.add(btnReset);
     	btnReset.addActionListener(	// bind a button click to this action
         		new ActionListener() {
@@ -231,6 +236,11 @@ public class ConfigurePanel extends JPanel {
         		    }
         		}
         	);
+
+    	checkAudible = new JCheckBox("audible");
+    	checkAudible.setToolTipText("decide to make audible beeps at planned intervals");
+    	panel.add(checkAudible);
+    	// no listeners/bindings needed
     }
 
     /**
@@ -248,6 +258,7 @@ public class ConfigurePanel extends JPanel {
     	msg_discussion.setText(defaults.getMsg_discussion());
     	msg_overtime.setText(defaults.getMsg_overtime());
     	msg_paused.setText(defaults.getMsg_paused());
+    	checkAudible.setSelected(true);
     }
 
     /**
@@ -262,6 +273,7 @@ public class ConfigurePanel extends JPanel {
     	msg_discussion.setText("");
     	msg_overtime.setText("");
     	msg_paused.setText("");
+    	checkAudible.setSelected(false);
     }
 
     /**
@@ -276,6 +288,7 @@ public class ConfigurePanel extends JPanel {
     	msg_discussion.setText(initialTalkConfig.getMsg_discussion());
     	msg_overtime.setText(initialTalkConfig.getMsg_overtime());
     	msg_paused.setText(initialTalkConfig.getMsg_paused());
+    	checkAudible.setSelected(initialTalkConfig.isAudible());
     }
 
     /**
@@ -291,6 +304,7 @@ public class ConfigurePanel extends JPanel {
     	config.setMsg_paused(msg_paused.getText());
     	config.setMsg_presentation(msg_presentation.getText());
     	config.setMsg_pretalk(msg_pretalk.getText());
+    	config.setAudible(checkAudible.isSelected());
     	return config;
     }
 
@@ -306,6 +320,7 @@ public class ConfigurePanel extends JPanel {
     	msg_paused.setText(config.getMsg_paused());
     	msg_presentation.setText(config.getMsg_presentation());
     	msg_pretalk.setText(config.getMsg_pretalk());
+    	checkAudible.setSelected(config.isAudible());
     }
 
     public static void main(String[] args) {

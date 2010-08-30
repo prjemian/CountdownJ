@@ -232,13 +232,33 @@ public class GuiSwing extends JFrame {
 
     private void doConfigureButton() {
         Configure dialog = new Configure(new javax.swing.JFrame(), true);
+        // WindowConstants.HIDE_ON_CLOSE
         dialog.addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent e) {
                 //System.exit(0);
             }
         });
         dialog.setVisible(true);
-        // once window is closed, we ask the dialog some questions
+        // TODO once window is closed, we ask the dialog some questions
+        switch (dialog.getButtonPressed()) {
+		case Configure.OK_BUTTON:
+			System.out.println("<OK>");
+			break;
+
+		case Configure.CANCEL_BUTTON:
+			System.out.println("<Cancel>");
+			break;
+
+		case Configure.ACCEPT_BUTTON:
+			System.out.println("<Accept>");
+			break;
+
+		default:
+			System.out.println("other thing: " + dialog.getButtonPressed());
+			break;
+		}
+
+        dialog.dispose();        // finally
     }
 
     private void doPresetButton(String label) {

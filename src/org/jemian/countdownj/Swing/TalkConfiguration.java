@@ -21,6 +21,7 @@ public class TalkConfiguration {
 	private String msg_discussion;
 	private String msg_overtime;
 	private String msg_paused;
+	public boolean audible;
 
 	/**
 	 * Instance of the TalkConfiguration parameters for a single presentation
@@ -42,6 +43,7 @@ public class TalkConfiguration {
     	msg_discussion = "Discussion";
     	msg_overtime = "Overtime";
     	msg_paused = "Paused";
+    	audible = true;
 	}
 
 	/**
@@ -196,6 +198,20 @@ public class TalkConfiguration {
 	 */
 	public void setMsg_paused(String msgPaused) {
 		msg_paused = msgPaused;
+	}
+
+	/**
+	 * @return if client tool should make noise at planned intervals
+	 */
+	public boolean isAudible() {
+		return audible;
+	}
+
+	/**
+	 * @param audible Client tool should make noise at planned intervals
+	 */
+	public void setAudible(boolean audible) {
+		this.audible = audible;
 	}
 
 	/**
