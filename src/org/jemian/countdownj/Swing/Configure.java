@@ -57,7 +57,7 @@ public class Configure extends javax.swing.JDialog {
         buttonPressed = NO_BUTTON_PRESSED;
         settings = new Hashtable<String, ConfigurePanel>();
         initialize();
-        setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
 
     }
 
@@ -161,16 +161,19 @@ public class Configure extends javax.swing.JDialog {
     private void doOkAction() {
         buttonPressed = OK_BUTTON;
     	// TODO what else?
+        this.setVisible(false);
     }
     
     private void doCancelAction() {
         buttonPressed = CANCEL_BUTTON;
     	// TODO what else?
+        this.setVisible(false);
     }
     
     private void doAcceptAction() {
         buttonPressed = ACCEPT_BUTTON;
     	// TODO what else?
+        this.setVisible(false);
     }
 
     /**
@@ -180,11 +183,33 @@ public class Configure extends javax.swing.JDialog {
 		return settings;
 	}
 
+    /**
+	 * @return the settings of the named key or null
+	 */
+	public ConfigurePanel getSettings(String key) {
+		ConfigurePanel result;
+		if (settings.containsKey(key))
+			result = settings.get(key);
+		else
+			result = null;
+		return result;
+	}
+
 	/**
 	 * @param settings the settings to set
+	 * FIXME this is not right yet (how to standardize and control the key list)
 	 */
 	public void setSettings(Hashtable<String, ConfigurePanel> settings) {
 		this.settings = settings;
+	}
+
+	/**
+	 * @param key index key
+	 * @param value ConfigurePanel object
+	 * FIXME this is not right yet
+	 */
+	public void setSettings(String key, ConfigurePanel value) {
+		this.settings.put(key, value);
 	}
 
 	/**
@@ -207,6 +232,9 @@ public class Configure extends javax.swing.JDialog {
                     }
                 });
                 dialog.setVisible(true);
+                System.out.println("pressed: " + dialog.getButtonPressed());
+                dialog.dispose();
+                System.exit(0);
             }
         });
     }

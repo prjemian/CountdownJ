@@ -232,7 +232,7 @@ public class GuiSwing extends JFrame {
 
     private void doConfigureButton() {
         Configure dialog = new Configure(new javax.swing.JFrame(), true);
-        // WindowConstants.HIDE_ON_CLOSE
+        // TODO pass known configurations to dialog
         dialog.addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent e) {
                 //System.exit(0);
