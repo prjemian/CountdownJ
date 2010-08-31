@@ -37,19 +37,6 @@ import javax.swing.JTextField;
 public class Configure extends javax.swing.JDialog {
 
 	// @see http://download.oracle.com/javase/tutorial/uiswing/components/dialog.html
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -6246475747169907480L;
-
-	private Hashtable<String, ConfigurePanel> settings;
-	private final int NUMBER_OF_TABS = 4;
-	private int buttonPressed;
-	public static final int NO_BUTTON_PRESSED = 0;
-	public static final int OK_BUTTON = 1;
-	public static final int CANCEL_BUTTON = 2;
-	public static final int ACCEPT_BUTTON = 3;
 	
 	/** Creates new form Configure */
     public Configure(java.awt.Frame parent, boolean modal) {
@@ -100,14 +87,13 @@ public class Configure extends javax.swing.JDialog {
     	presetsTab.add(subtabs);
 
     	for (int i = 0; i < NUMBER_OF_TABS; i++) {
-    		String name = "preset" + (i+1);
+    		String name = getPresetTabKey(i+1);
         	JPanel tab = new JPanel();
         	tab.setName(name);
         	subtabs.add(tab);
         	ConfigurePanel tabPanel = new ConfigurePanel(tab);
         	settings.put(name, tabPanel);
-        	// TODO entry widget not same as others, move into ConfigurePanel
-        	// TODO ConfigurePanel needs optional widgets like this one
+        	// TODO entry widget not same as others
         	JTextField tabName = tabPanel.label_entry(tab, 0, 
         			"tab name", 
         			"title of this page of settings",
@@ -123,12 +109,15 @@ public class Configure extends javax.swing.JDialog {
         	tabPanel.separator(tab, 1);
     	}
     	
+    	// TODO Put the About box as the next tab
+    	
     	JPanel buttonPanel = new JPanel();
     	buttonPanel.setAlignmentX(CENTER_ALIGNMENT);
     	this.add(buttonPanel);
     	buttonPanel.setLayout(new FlowLayout());
     	JButton btnOk = new JButton("Ok");
     	buttonPanel.add(btnOk);
+    	// TODO set as default button
     	btnOk.addActionListener(	// bind a button click to this action
         		new ActionListener() {
         		    public void actionPerformed(ActionEvent e) {
@@ -145,48 +134,54 @@ public class Configure extends javax.swing.JDialog {
         		    }
         		}
         	);
-    	JButton btnAccept = new JButton("Accept");
-    	buttonPanel.add(btnAccept);
-    	btnAccept.addActionListener(	// bind a button click to this action
-        		new ActionListener() {
-        		    public void actionPerformed(ActionEvent e) {
-        		    	doAcceptAction();
-        		    }
-        		}
-        	);
+    	// ignore the Accept button for now
+//    	JButton btnAccept = new JButton("Accept");
+//    	buttonPanel.add(btnAccept);
+//    	btnAccept.addActionListener(	// bind a button click to this action
+//        		new ActionListener() {
+//        		    public void actionPerformed(ActionEvent e) {
+//        		    	doAcceptAction();
+//        		    }
+//        		}
+//        	);
     	
     	pack();
     }
     
+    /**
+     * @param index
+     * @return
+     */
+    private String getPresetTabKey(int index) {
+    	String key = null;
+    	if (1 <= index && index <= NUMBER_OF_TABS)
+    		key = "preset" + index;
+    	return key;
+    }
+    
     private void doOkAction() {
         buttonPressed = OK_BUTTON;
-    	// TODO what else?
         this.setVisible(false);
     }
     
     private void doCancelAction() {
         buttonPressed = CANCEL_BUTTON;
-    	// TODO what else?
         this.setVisible(false);
     }
     
     private void doAcceptAction() {
         buttonPressed = ACCEPT_BUTTON;
-    	// TODO what else?
         this.setVisible(false);
     }
 
-    /**
-	 * @return the settings
-	 */
-	public Hashtable<String, ConfigurePanel> getSettings() {
-		return settings;
-	}
-
-    /**
-	 * @return the settings of the named key or null
-	 */
-	public ConfigurePanel getSettings(String key) {
+//    /**
+//	 * @return the settings
+//	 */
+//	public Hashtable<String, ConfigurePanel> getSettings() {
+//		return settings;
+//	}
+	
+	private ConfigurePanel getSettingsByKey(String key) {
 		ConfigurePanel result;
 		if (settings.containsKey(key))
 			result = settings.get(key);
@@ -195,21 +190,29 @@ public class Configure extends javax.swing.JDialog {
 		return result;
 	}
 
-	/**
-	 * @param settings the settings to set
-	 * FIXME this is not right yet (how to standardize and control the key list)
+    /**
+	 * @return the settings of the basic panel
 	 */
-	public void setSettings(Hashtable<String, ConfigurePanel> settings) {
-		this.settings = settings;
+	public ConfigurePanel getBasicSettings() {
+		return getSettingsByKey("basic");
+	}
+
+    /**
+	 * @param index index number [1..NUMBER_OF_TABS]
+	 * @return the settings of the named key or null
+	 */
+	public ConfigurePanel getPresetSettings(int index) {
+		return getSettingsByKey(getPresetTabKey(index));
 	}
 
 	/**
-	 * @param key index key
+	 * @param index index number [1..NUMBER_OF_TABS]
 	 * @param value ConfigurePanel object
-	 * FIXME this is not right yet
 	 */
-	public void setSettings(String key, ConfigurePanel value) {
-		this.settings.put(key, value);
+	public void setSettings(int index, ConfigurePanel value) {
+		String key = getPresetTabKey(index);
+		if (key != null)
+			this.settings.put(key, value);
 	}
 
 	/**
@@ -232,11 +235,29 @@ public class Configure extends javax.swing.JDialog {
                     }
                 });
                 dialog.setVisible(true);
-                System.out.println("pressed: " + dialog.getButtonPressed());
+                int pressed = dialog.getButtonPressed();
+                System.out.println("pressed: " + pressed);
+                if (pressed == Configure.OK_BUTTON) {
+	                TalkConfiguration talk = dialog.getBasicSettings().getConfig();
+	                System.out.println("basic talk:\n" + talk);
+	                for (int i = 0; i < Configure.NUMBER_OF_TABS; i++) {
+	                	talk = dialog.getPresetSettings(i+1).getConfig();
+	                    System.out.println("preset " + (i+1) + " talk:\n" + talk);
+	                }
+                }
                 dialog.dispose();
                 System.exit(0);
             }
         });
     }
 
+	private static final long serialVersionUID = -6246475747169907480L;
+
+	private Hashtable<String, ConfigurePanel> settings;
+	public final static int NUMBER_OF_TABS = 4;
+	private int buttonPressed;
+	public static final int NO_BUTTON_PRESSED = 0;
+	public static final int OK_BUTTON = 1;
+	public static final int CANCEL_BUTTON = 2;
+	public static final int ACCEPT_BUTTON = 3;
 }

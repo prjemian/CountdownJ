@@ -13,16 +13,6 @@ package org.jemian.countdownj.Swing;
  */
 public class TalkConfiguration {
 
-	private int presentation;
-	private int discussion;
-	private int overtime;
-	private String msg_pretalk;
-	private String msg_presentation;
-	private String msg_discussion;
-	private String msg_overtime;
-	private String msg_paused;
-	public boolean audible;
-
 	/**
 	 * Instance of the TalkConfiguration parameters for a single presentation
 	 */
@@ -35,15 +25,30 @@ public class TalkConfiguration {
 	 * as defined in this method
 	 */
 	public void setDefaults() {
-		presentation = 15*60;
+    	audible = true;
 		discussion = 5*60;
     	overtime = 60;
-    	msg_pretalk = "Next Presentation";
-    	msg_presentation = "Presentation";
+		presentation = 15*60;
     	msg_discussion = "Discussion";
     	msg_overtime = "Overtime";
     	msg_paused = "Paused";
-    	audible = true;
+    	msg_presentation = "Presentation";
+    	msg_pretalk = "Next Presentation";
+	}
+	
+	public String toString() {
+		String result = "";
+		String format = "%s:\t%s\n"; 
+		result = result.concat(String.format(format, "audible", audible));
+		result = result.concat(String.format(format, "discussion", secondsToMmss(discussion)));
+		result = result.concat(String.format(format, "overtime", secondsToMmss(overtime)));
+		result = result.concat(String.format(format, "presentation", secondsToMmss(presentation)));
+		result = result.concat(String.format(format, "msg_discussion", msg_discussion));
+		result = result.concat(String.format(format, "msg_overtime", msg_overtime));
+		result = result.concat(String.format(format, "msg_paused", msg_paused));
+		result = result.concat(String.format(format, "msg_presentation", msg_presentation));
+		result = result.concat(String.format(format, "msg_pretalk", msg_pretalk));
+		return result;
 	}
 
 	/**
@@ -256,4 +261,14 @@ public class TalkConfiguration {
 		}
 		return seconds;
 	}
+
+	private int presentation;
+	private int discussion;
+	private int overtime;
+	private String msg_pretalk;
+	private String msg_presentation;
+	private String msg_discussion;
+	private String msg_overtime;
+	private String msg_paused;
+	public boolean audible;
 }

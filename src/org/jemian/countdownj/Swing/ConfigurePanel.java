@@ -36,24 +36,6 @@ import javax.swing.JTextField;
 public class ConfigurePanel extends JPanel {
 
 	/**
-	 * universal version identifier for a Serializable class
-	 * @see http://www.javapractices.com/topic/TopicAction.do?Id=45
-	 */
-	private static final long serialVersionUID = 5977631140257178413L;
-
-	public JTextField presentation;
-	public JTextField discussion;
-	public JTextField overtime;
-	public JTextField msg_pretalk;
-	public JTextField msg_presentation;
-	public JTextField msg_discussion;
-	public JTextField msg_overtime;
-	public JTextField msg_paused;
-	public JCheckBox checkAudible;
-
-	TalkConfiguration initialTalkConfig;
-
-	/**
 	 * Creates JPanel ConfigurePanel.
 	 * Initial talk configuration is the default settings.
 	 * @param parent of this panel
@@ -129,8 +111,6 @@ public class ConfigurePanel extends JPanel {
     			"suggested: Paused");
 
     	separator(parent, row++);
-    	
-    	// TODO add checkbox to permit audible beeps
 
     	buttonRow(parent, row++);
     }
@@ -350,4 +330,22 @@ public class ConfigurePanel extends JPanel {
                 frame.setVisible(true);            }
         });
     }
+
+	/**
+	 * universal version identifier for a Serializable class
+	 * @see http://www.javapractices.com/topic/TopicAction.do?Id=45
+	 */
+	private static final long serialVersionUID = 5977631140257178413L;
+
+	public JTextField presentation;
+	public JTextField discussion;
+	public JTextField overtime;
+	public JTextField msg_pretalk;
+	public JTextField msg_presentation;
+	public JTextField msg_discussion;
+	public JTextField msg_overtime;
+	public JTextField msg_paused;
+	public JCheckBox checkAudible;
+
+	TalkConfiguration initialTalkConfig;
 }
