@@ -159,11 +159,11 @@ public class ClockTimer {
 	 */
 	public String toString() {
 		int basis = Math.abs((int) (time_s + 0.5));		// roundoff
-		int h = basis / 60;
-		int m = basis % 60;
-		String mmss = String.format("%02d", h) 
+		int m = basis / 60;
+		int s = basis % 60;
+		String mmss = String.format("%02d", m) 
 					+ ":" 
-					+ String.format("%02d", m);
+					+ String.format("%02d", s);
 		return mmss;
 	}
 
