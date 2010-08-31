@@ -9,12 +9,12 @@ package org.jemian.countdownj.Swing;
 //########### SVN repository information ###################
 
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
@@ -49,7 +49,6 @@ public class Configure extends javax.swing.JDialog {
      * create the dialog's widgets and layouts
      */
     private void create() {
-    	Container pane = getContentPane();
     	setLayout(new GridBagLayout());
 
     	// + + + + + + + + + + + + + + + + + + + + + + + +
@@ -160,7 +159,44 @@ public class Configure extends javax.swing.JDialog {
     	// + + + + + + + + + + + + + + + + + + + + + + + +
     	// About Box
 
-        // TODO About Box is needed - do it here
+    	int row = 0;
+    	aboutBoxPanel.setLayout(new GridBagLayout());
+    	JLabel text = new JLabel("CountdownJ");
+    	text.setFont(new Font("Tahoma", Font.BOLD, 32));
+    	text.setAlignmentX(CENTER_ALIGNMENT);
+    	aboutBoxPanel.add(text, makeConstraints(0, row++, 1.0, 0.0, 1, 1));
+
+    	text = new JLabel("by Pete R. Jemian");
+    	text.setFont(new Font("Tahoma", Font.PLAIN, 16));
+    	aboutBoxPanel.add(text, makeConstraints(0, row++, 1.0, 0.0, 1, 1));
+
+    	text = new JLabel("<prjemian@gmail.com>");
+    	text.setFont(new Font("Courier", Font.PLAIN, 12));
+    	aboutBoxPanel.add(text, makeConstraints(0, row++, 1.0, 0.0, 1, 1));
+
+    	text = new JLabel(" ");
+    	text.setFont(new Font("Tahoma", Font.PLAIN, 12));
+    	aboutBoxPanel.add(text, makeConstraints(0, row++, 1.0, 0.0, 1, 1));
+
+    	text = new JLabel(svnId);
+    	text.setFont(new Font("Courier", Font.PLAIN, 12));
+    	aboutBoxPanel.add(text, makeConstraints(0, row++, 1.0, 0.0, 1, 1));
+
+    	text = new JLabel(" ");
+    	text.setFont(new Font("Tahoma", Font.PLAIN, 12));
+    	aboutBoxPanel.add(text, makeConstraints(0, row++, 1.0, 0.0, 1, 1));
+    	
+    	text = new JLabel("Software license");
+    	text.setFont(new Font("Tahoma", Font.PLAIN, 12));
+    	aboutBoxPanel.add(text, makeConstraints(0, row++, 1.0, 0.0, 1, 1));
+    	// TODO replace with actual Software License text from LICENSE file
+    	String license_text = "";
+    	String phrase = "\n This could be a lot of stuff to say.";
+    	for (int i = 0; i < 100; i++)
+    		license_text = license_text.concat(phrase);
+    	TextArea area = new TextArea(license_text);
+    	area.setEditable(false);
+    	aboutBoxPanel.add(area, makeConstraints(0, row++, 1.0, 1.0, 1, 1));
 
     	// + + + + + + + + + + + + + + + + + + + + + + + +
     	// set entry fields from current values
@@ -295,4 +331,14 @@ public class Configure extends javax.swing.JDialog {
 	public static final int NO_BUTTON_PRESSED = 0;
 	public static final int OK_BUTTON = 1;
 	public static final int CANCEL_BUTTON = 2;
+
+	//########### SVN repository information ###################
+	//# $Date$
+	//# $Author$
+	//# $Revision$
+	//# $URL$
+	//# $Id$
+	//########### SVN repository information ###################
+	private String svnRev = "$Revision$";
+	private String svnId = "$Id$";
 }
