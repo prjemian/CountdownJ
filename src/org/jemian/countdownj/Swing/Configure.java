@@ -17,7 +17,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -39,7 +39,7 @@ public class Configure extends javax.swing.JDialog {
     public Configure(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         buttonPressed = NO_BUTTON_PRESSED;
-        settings = new Hashtable<String, ConfigurePanel>();
+        settings = new HashMap<String, ConfigurePanel>();
         create();
         setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
 
@@ -289,7 +289,7 @@ public class Configure extends javax.swing.JDialog {
 
 	private static final long serialVersionUID = -6246475747169907480L;
 
-	private Hashtable<String, ConfigurePanel> settings;
+	private HashMap<String, ConfigurePanel> settings;
 	public final static int NUMBER_OF_TABS = 4;
 	private int buttonPressed;
 	public static final int NO_BUTTON_PRESSED = 0;

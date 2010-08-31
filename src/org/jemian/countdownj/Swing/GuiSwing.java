@@ -28,7 +28,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.HierarchyBoundsListener;
 import java.awt.event.HierarchyEvent;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -47,7 +47,7 @@ public class GuiSwing extends JFrame {
 	 */
 	private static final long serialVersionUID = 3167378700428228696L;
 
-	private Hashtable<String, ConfigurePanel> settings;
+	private HashMap<String, ConfigurePanel> settings;
 	TalkConfiguration talkConfig;
 	public int discussionTime_s = 5*60; // TODO use TalkConfiguration object
 	int overtimeReminder_s = 60;  		// TODO use TalkConfiguration object
@@ -55,13 +55,13 @@ public class GuiSwing extends JFrame {
 	public ClockTimer clockTimer = null;
 	String lastPhaseText;
 	double last_time_s;
-	Hashtable<String, Color> colorTable;
+	HashMap<String, Color> colorTable;
 
     /** Creates new form GuiSwing */
     public GuiSwing() {
     	clockTimer = new ClockTimer(this);	// prepare the timer    
     	talkConfig = new TalkConfiguration();	// basic talk parameters
-        settings = new Hashtable<String, ConfigurePanel>();
+        settings = new HashMap<String, ConfigurePanel>();
 		
     	// setup the GUI
     	initializeColorTable();
@@ -96,7 +96,7 @@ public class GuiSwing extends JFrame {
      * just once and re-use them as needed
      */
     private void initializeColorTable() {
-    	colorTable = new Hashtable<String, Color>();
+    	colorTable = new HashMap<String, Color>();
     	colorTable.put("black", new Color(0, 0, 0));
     	colorTable.put("white", new Color(0xff, 0xff, 0xff));
     	colorTable.put("red", new Color(0xff, 0, 0));
