@@ -1,5 +1,7 @@
 package org.jemian.countdownj.Swing;
 
+//TODO needs copyright and license header
+
 //########### SVN repository information ###################
 //# $Date$
 //# $Author$
@@ -238,6 +240,7 @@ public class Configure extends javax.swing.JDialog {
      */
     private String getPresetTabKey(int index) {
     	String key = null;
+    	// FIXME call by numbers or "A", "B", "C", "D" ... be consistent
     	if (1 <= index && index <= NUMBER_OF_TABS)
     		key = "preset" + index;
     	return key;

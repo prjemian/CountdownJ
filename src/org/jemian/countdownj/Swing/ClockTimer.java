@@ -1,5 +1,7 @@
 package org.jemian.countdownj.Swing;
 
+// TODO needs copyright and license header
+
 //########### SVN repository information ###################
 //# $Date$
 //# $Author$
@@ -18,14 +20,6 @@ import java.util.TimerTask;
 *
 */
 public class ClockTimer {
-
-	Timer timer;
-	boolean counting = false;
-	double time_s = 0;
-	int interval_ms = 50;
-	double endTime = 0;
-	int initialDelay = 0;
-	GuiSwing caller = null;
 
 	/**
 	 * @param timer : java.util.Timer object
@@ -185,4 +179,11 @@ public class ClockTimer {
 		System.out.println("Task scheduled.");
 	}
 
+	private Timer timer;
+	private boolean counting = false;
+	private double time_s = 0;
+	private int interval_ms = 50;
+	private double endTime = 0;
+	private int initialDelay = 0;
+	private GuiSwing caller = null;
 }
