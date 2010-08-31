@@ -47,6 +47,7 @@ public class GuiSwing extends JFrame {
 	 */
 	private static final long serialVersionUID = 3167378700428228696L;
 
+	private Hashtable<String, ConfigurePanel> settings;
 	TalkConfiguration talkConfig;
 	public int discussionTime_s = 5*60; // TODO use TalkConfiguration object
 	int overtimeReminder_s = 60;  		// TODO use TalkConfiguration object
@@ -60,6 +61,7 @@ public class GuiSwing extends JFrame {
     public GuiSwing() {
     	clockTimer = new ClockTimer(this);	// prepare the timer    
     	talkConfig = new TalkConfiguration();	// basic talk parameters
+        settings = new Hashtable<String, ConfigurePanel>();
 		
     	// setup the GUI
     	initializeColorTable();
@@ -247,10 +249,6 @@ public class GuiSwing extends JFrame {
 
 		case Configure.CANCEL_BUTTON:
 			System.out.println("<Cancel>");
-			break;
-
-		case Configure.ACCEPT_BUTTON:
-			System.out.println("<Accept>");
 			break;
 
 		default:
@@ -512,7 +510,7 @@ public class GuiSwing extends JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        tabbedPane.addTab("enter time", mmssTabPane);
+        tabbedPane.addTab("Basic", mmssTabPane);
 
         presetButton1.setText("jButton2-1");
         presetButton1.setName("< A >"); // NOI18N
@@ -562,7 +560,7 @@ public class GuiSwing extends JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        tabbedPane.addTab("preset time", presetTabPane);
+        tabbedPane.addTab("Presets", presetTabPane);
 
         configureButton.setText("Configure");
         configureButton.setToolTipText("change discussion time, overtime reminders, presets, and messages");

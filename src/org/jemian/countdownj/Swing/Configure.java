@@ -63,14 +63,14 @@ public class Configure extends javax.swing.JDialog {
     	this.add(mainTabs);
 
     	JPanel basicTab = new JPanel();
-    	basicTab.setName("basic");
+    	basicTab.setName("Basic");
     	basicTab.setAlignmentX(CENTER_ALIGNMENT);
     	mainTabs.add(basicTab);
     	ConfigurePanel panel = new ConfigurePanel(basicTab);
     	settings.put("basic", panel);
 
     	JPanel presetsTab = new JPanel();
-    	presetsTab.setName("presets");
+    	presetsTab.setName("Presets");
     	presetsTab.setAlignmentX(LEFT_ALIGNMENT);
     	presetsTab.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.GREEN),
@@ -97,8 +97,9 @@ public class Configure extends javax.swing.JDialog {
         	JTextField tabName = tabPanel.label_entry(tab, 0, 
         			"tab name", 
         			"title of this page of settings",
-        			"{tab name}", 
+        			name, 
         			"suggested: Invited or Plenary or Contributed or ...");
+        	// FIXME need to set the entry fields from current values
         	GridBagConstraints c = new GridBagConstraints();
         	c.fill = GridBagConstraints.BOTH;
         	c.gridx = 0;
@@ -110,6 +111,10 @@ public class Configure extends javax.swing.JDialog {
     	}
     	
     	// TODO Put the About box as the next tab
+    	JPanel aboutBoxPanel = new JPanel();
+    	aboutBoxPanel.setName("About");
+    	aboutBoxPanel.setAlignmentX(CENTER_ALIGNMENT);
+    	mainTabs.add(aboutBoxPanel);
     	
     	JPanel buttonPanel = new JPanel();
     	buttonPanel.setAlignmentX(CENTER_ALIGNMENT);
@@ -117,7 +122,7 @@ public class Configure extends javax.swing.JDialog {
     	buttonPanel.setLayout(new FlowLayout());
     	JButton btnOk = new JButton("Ok");
     	buttonPanel.add(btnOk);
-    	// TODO set as default button
+    	getRootPane().setDefaultButton(btnOk);
     	btnOk.addActionListener(	// bind a button click to this action
         		new ActionListener() {
         		    public void actionPerformed(ActionEvent e) {
@@ -134,16 +139,6 @@ public class Configure extends javax.swing.JDialog {
         		    }
         		}
         	);
-    	// ignore the Accept button for now
-//    	JButton btnAccept = new JButton("Accept");
-//    	buttonPanel.add(btnAccept);
-//    	btnAccept.addActionListener(	// bind a button click to this action
-//        		new ActionListener() {
-//        		    public void actionPerformed(ActionEvent e) {
-//        		    	doAcceptAction();
-//        		    }
-//        		}
-//        	);
     	
     	pack();
     }
@@ -168,18 +163,6 @@ public class Configure extends javax.swing.JDialog {
         buttonPressed = CANCEL_BUTTON;
         this.setVisible(false);
     }
-    
-    private void doAcceptAction() {
-        buttonPressed = ACCEPT_BUTTON;
-        this.setVisible(false);
-    }
-
-//    /**
-//	 * @return the settings
-//	 */
-//	public Hashtable<String, ConfigurePanel> getSettings() {
-//		return settings;
-//	}
 	
 	private ConfigurePanel getSettingsByKey(String key) {
 		ConfigurePanel result;
@@ -259,5 +242,4 @@ public class Configure extends javax.swing.JDialog {
 	public static final int NO_BUTTON_PRESSED = 0;
 	public static final int OK_BUTTON = 1;
 	public static final int CANCEL_BUTTON = 2;
-	public static final int ACCEPT_BUTTON = 3;
 }
