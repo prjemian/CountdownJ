@@ -38,10 +38,10 @@ public class ConfigurePanel extends JPanel {
 	/**
 	 * Creates JPanel ConfigurePanel.
 	 * Initial talk configuration is the default settings.
+	 * Caller has set the layout manager of parent to be GridBagLayout.
 	 * @param parent of this panel
 	 */
     public ConfigurePanel(Container parent) {
-    	parent.setLayout(new GridBagLayout());
     	initializePanel(parent);
     	initialTalkConfig = new TalkConfiguration();
     	setConfig(initialTalkConfig);
@@ -53,7 +53,6 @@ public class ConfigurePanel extends JPanel {
 	 * @param parent of this panel
 	 */
     public ConfigurePanel(Container parent, TalkConfiguration config) {
-    	parent.setLayout(new GridBagLayout());
     	initializePanel(parent);
     	initialTalkConfig = config;
     	setConfig(initialTalkConfig);
@@ -127,24 +126,13 @@ public class ConfigurePanel extends JPanel {
      */
     public JTextField label_entry(Container parent, int row, 
     		String labelText, String labelTip, String text, String tip) {
-    	GridBagConstraints c = new GridBagConstraints();
-    	c.fill = GridBagConstraints.BOTH;
-    	c.gridx = 0;
-    	c.gridy = row;
-    	c.insets = new Insets(2, 4, 2, 8);
     	JLabel label = new JLabel(labelText);
     	label.setToolTipText(labelTip);
-    	parent.add(label, c);
+    	parent.add(label, makeConstraints(0, row, 0, 0, 1, 1));
 
-    	c = new GridBagConstraints();
-    	c.fill = GridBagConstraints.BOTH;
-    	c.gridx = 1;
-    	c.gridy = row;
-    	c.insets = new Insets(2, 4, 2, 4);
-    	c.weightx = 1;
     	JTextField object = new JTextField(text);
     	object.setToolTipText(tip);
-    	parent.add(object, c);
+    	parent.add(object, makeConstraints(1, row, 1, 0, 1, 1));
 
     	return object;
     }
@@ -155,14 +143,8 @@ public class ConfigurePanel extends JPanel {
      * @param row
      */
     public void separator(Container parent, int row) {
-    	GridBagConstraints c = new GridBagConstraints();
-    	c.fill = GridBagConstraints.BOTH;
-    	c.gridx = 0;
-    	c.gridwidth = 2;
-    	c.gridy = row;
-    	c.insets = new Insets(4, 4, 4, 4);
     	JSeparator line = new JSeparator();
-    	parent.add(line, c);
+    	parent.add(line, makeConstraints(0, row, 1, 0, 2, 1));
     }
     
     /**
@@ -172,14 +154,8 @@ public class ConfigurePanel extends JPanel {
      * @param row
      */
     private void buttonRow(Container parent, int row) {
-    	GridBagConstraints c = new GridBagConstraints();
-    	c.fill = GridBagConstraints.BOTH;
-    	c.gridx = 0;
-    	c.gridwidth = 2;
-    	c.gridy = row;
-    	c.insets = new Insets(4, 4, 4, 4);
     	JPanel panel = new JPanel();
-    	parent.add(panel, c);
+    	parent.add(panel, makeConstraints(0, row, 1, 0, 2, 1));
 
     	BoxLayout layout = new BoxLayout(panel, BoxLayout.X_AXIS);
     	panel.setLayout(layout);
@@ -221,6 +197,30 @@ public class ConfigurePanel extends JPanel {
     	checkAudible.setToolTipText("decide to make audible beeps at planned intervals");
     	panel.add(checkAudible);
     	// no listeners/bindings needed
+    }
+    
+    /**
+     * make GridBagConstraints for a GridBagLayout item
+     * @param x
+     * @param y
+     * @param weightx
+     * @param weighty
+     * @param rows
+     * @param cols
+     * @return
+     */
+    private GridBagConstraints makeConstraints(int x, int y, 
+    		double weightx, double weighty, int cols, int rows) {
+    	GridBagConstraints c = new GridBagConstraints();
+    	c.fill = GridBagConstraints.BOTH;
+    	c.gridx = x;
+    	c.gridy = y;
+    	c.weightx = weightx;
+    	c.weighty = weighty;
+    	c.gridwidth = cols;
+    	c.gridheight = rows;
+    	c.insets = new Insets(2, 4, 2, 8);
+    	return c;
     }
 
     /**
@@ -314,6 +314,7 @@ public class ConfigurePanel extends JPanel {
 
                 //Set up the content pane.
                 Container panel = frame.getContentPane();
+                panel.setLayout(new GridBagLayout());
                 TalkConfiguration config = new TalkConfiguration();
                 config.setPresentationStr("30:00");
                 config.setDiscussionStr("10:00");

@@ -565,7 +565,7 @@ public class GuiSwing extends JFrame {
         configureButton.setText("Configure");
         configureButton.setToolTipText("change discussion time, overtime reminders, presets, and messages");
         configureButton.setName("Configure"); // NOI18N
-        tabbedPane.addTab("configure", configureButton);
+        tabbedPane.addTab("Configure", configureButton);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

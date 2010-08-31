@@ -1,28 +1,25 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
- * Configure.java
- *
- * Created on Aug 24, 2010, 10:14:35 AM
- */
-
 package org.jemian.countdownj.Swing;
+
+//########### SVN repository information ###################
+//# $Date$
+//# $Author$
+//# $Revision$
+//# $URL$
+//# $Id$
+//########### SVN repository information ###################
 
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -43,104 +40,160 @@ public class Configure extends javax.swing.JDialog {
         super(parent, modal);
         buttonPressed = NO_BUTTON_PRESSED;
         settings = new Hashtable<String, ConfigurePanel>();
-        initialize();
+        create();
         setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
 
     }
 
-    private void initialize() {
+    /**
+     * create the dialog's widgets and layouts
+     */
+    private void create() {
     	Container pane = getContentPane();
-    	BoxLayout layout = new BoxLayout(pane, BoxLayout.PAGE_AXIS);
-    	this.setLayout(layout);
+    	setLayout(new GridBagLayout());
 
-    	JLabel title = new JLabel("Configuration details (not yet ready)");
+    	// + + + + + + + + + + + + + + + + + + + + + + + +
+    	// main layout
+
+    	JLabel title = new JLabel("Configuration details");
     	title.setFont(new Font("Tahoma", Font.BOLD, 24));
     	title.setAlignmentX(CENTER_ALIGNMENT);
-    	this.add(title);
+    	add(title, makeConstraints(0, 0, 1, 0, 1, 1));
 
     	JTabbedPane mainTabs = new JTabbedPane();
-    	//mainTabs.setAlignmentX(CENTER_ALIGNMENT);
-    	this.add(mainTabs);
+    	add(mainTabs, makeConstraints(0, 1, 1, 0, 1, 1));
+    	
+    	JPanel buttonPanel = new JPanel();
+    	buttonPanel.setAlignmentX(CENTER_ALIGNMENT);
+    	add(buttonPanel, makeConstraints(0, 2, 1, 0, 1, 1));
+
+    	// + + + + + + + + + + + + + + + + + + + + + + + +
+    	// main button panel
+    	
+		buttonPanel.setAlignmentX(CENTER_ALIGNMENT);
+		buttonPanel.setLayout(new FlowLayout());
+		JButton btnOk = new JButton("Ok");
+		buttonPanel.add(btnOk);
+		getRootPane().setDefaultButton(btnOk);
+		btnOk.addActionListener( // bind a button click to this action
+				new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						doOkAction();
+					}
+				});
+
+		JButton btnCancel = new JButton("Cancel");
+		buttonPanel.add(btnCancel);
+		btnCancel.addActionListener( // bind a button click to this action
+				new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						doCancelAction();
+					}
+				});
+
+    	// + + + + + + + + + + + + + + + + + + + + + + + +
+    	// main tabs
 
     	JPanel basicTab = new JPanel();
     	basicTab.setName("Basic");
     	basicTab.setAlignmentX(CENTER_ALIGNMENT);
     	mainTabs.add(basicTab);
+    	basicTab.setLayout(new GridBagLayout());
+    	basicTab.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.BLACK),
+                basicTab.getBorder()));
     	ConfigurePanel panel = new ConfigurePanel(basicTab);
     	settings.put("basic", panel);
 
     	JPanel presetsTab = new JPanel();
     	presetsTab.setName("Presets");
-    	presetsTab.setAlignmentX(LEFT_ALIGNMENT);
+    	presetsTab.setAlignmentX(CENTER_ALIGNMENT);
     	presetsTab.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.GREEN),
+                BorderFactory.createLineBorder(Color.BLACK),
                 presetsTab.getBorder()));
     	mainTabs.add(presetsTab);
-    	// TODO Use a different layout container to control subitem width
-    	presetsTab.setLayout(new FlowLayout(FlowLayout.CENTER));
+
+    	JPanel aboutBoxPanel = new JPanel();
+    	aboutBoxPanel.setName("About");
+    	aboutBoxPanel.setAlignmentX(CENTER_ALIGNMENT);
+    	aboutBoxPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.BLACK),
+                aboutBoxPanel.getBorder()));
+    	mainTabs.add(aboutBoxPanel);
+
+    	// + + + + + + + + + + + + + + + + + + + + + + + +
+    	// presets tab panel
+    	
+    	presetsTab.setLayout(new GridBagLayout());
 
     	JTabbedPane subtabs = new JTabbedPane();
     	subtabs.setAlignmentX(CENTER_ALIGNMENT);
     	subtabs.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.RED),
+                BorderFactory.createLineBorder(Color.BLACK),
                 subtabs.getBorder()));
-    	presetsTab.add(subtabs);
+    	presetsTab.add(subtabs, makeConstraints(0, 0, 1, 0, 1, 1));
 
     	for (int i = 0; i < NUMBER_OF_TABS; i++) {
     		String name = getPresetTabKey(i+1);
         	JPanel tab = new JPanel();
-        	tab.setName(name);
+        	tab.setName(name);	// FIXME pick the supplied name
+        	tab.setLayout(new GridBagLayout());
         	subtabs.add(tab);
+
+        	// This part of the GUI is constructed irregularly.
+        	// The bootom ConfigurePanel comes first since it creates the panel
         	ConfigurePanel tabPanel = new ConfigurePanel(tab);
         	settings.put(name, tabPanel);
-        	// TODO entry widget not same as others
-        	JTextField tabName = tabPanel.label_entry(tab, 0, 
-        			"tab name", 
-        			"title of this page of settings",
-        			name, 
-        			"suggested: Invited or Plenary or Contributed or ...");
-        	// FIXME need to set the entry fields from current values
-        	GridBagConstraints c = new GridBagConstraints();
-        	c.fill = GridBagConstraints.BOTH;
-        	c.gridx = 0;
-        	c.gridwidth = 2;
-        	c.gridy = 0;
-        	c.insets = new Insets(4, 4, 4, 4);
-        	tab.add(tabName);
+
         	tabPanel.separator(tab, 1);
+
+        	// Label text entry at the top of panel
+        	JLabel label = new JLabel("tab name");
+        	label.setToolTipText("title of this page of settings");
+        	tab.add(label, makeConstraints(0, 0, 0.0, 0.0, 1, 1));
+
+        	JTextField object = new JTextField(name);
+        	object.setToolTipText("suggested: Invited or Plenary or Contributed or ...");
+        	tab.add(object, makeConstraints(1, 0, 1.0, 0.0, 1, 1));
     	}
-    	
-    	// TODO Put the About box as the next tab
-    	JPanel aboutBoxPanel = new JPanel();
-    	aboutBoxPanel.setName("About");
-    	aboutBoxPanel.setAlignmentX(CENTER_ALIGNMENT);
-    	mainTabs.add(aboutBoxPanel);
-    	
-    	JPanel buttonPanel = new JPanel();
-    	buttonPanel.setAlignmentX(CENTER_ALIGNMENT);
-    	this.add(buttonPanel);
-    	buttonPanel.setLayout(new FlowLayout());
-    	JButton btnOk = new JButton("Ok");
-    	buttonPanel.add(btnOk);
-    	getRootPane().setDefaultButton(btnOk);
-    	btnOk.addActionListener(	// bind a button click to this action
-        		new ActionListener() {
-        		    public void actionPerformed(ActionEvent e) {
-        		    	doOkAction();
-        		    }
-        		}
-        	);
-    	JButton btnCancel = new JButton("Cancel");
-    	buttonPanel.add(btnCancel);
-    	btnCancel.addActionListener(	// bind a button click to this action
-        		new ActionListener() {
-        		    public void actionPerformed(ActionEvent e) {
-        		    	doCancelAction();
-        		    }
-        		}
-        	);
-    	
+
+    	// + + + + + + + + + + + + + + + + + + + + + + + +
+    	// About Box
+
+        // TODO About Box is needed - do it here
+
+    	// + + + + + + + + + + + + + + + + + + + + + + + +
+    	// set entry fields from current values
+
+        // FIXME need to set the entry fields from current values
+
+    	// + + + + + + + + + + + + + + + + + + + + + + + +
+
     	pack();
+    }
+    
+    /**
+     * make GridBagConstraints for a GridBagLayout item
+     * @param x
+     * @param y
+     * @param weightx
+     * @param weighty
+     * @param rows
+     * @param cols
+     * @return
+     */
+    private GridBagConstraints makeConstraints(int x, int y, 
+    		double weightx, double weighty, int cols, int rows) {
+    	GridBagConstraints c = new GridBagConstraints();
+    	c.fill = GridBagConstraints.BOTH;
+    	c.gridx = x;
+    	c.gridy = y;
+    	c.weightx = weightx;
+    	c.weighty = weighty;
+    	c.gridwidth = cols;
+    	c.gridheight = rows;
+    	c.insets = new Insets(2, 4, 2, 8);
+    	return c;
     }
     
     /**
