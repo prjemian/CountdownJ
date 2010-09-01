@@ -191,7 +191,7 @@ public class Configure extends javax.swing.JDialog {
     	try {
 			// this file is found in JAR file at root level
     		// needs to be put there by build process (such as ANT)
-    		license_text = readFile("LICENSE");
+    		license_text = readResource("/LICENSE");
 		} catch (IOException e1) {
 			// backup license text if LICENSE cannot be found
 	    	license_text = "ConfigureJ - a timer for conference presentations\n" +
@@ -217,50 +217,26 @@ public class Configure extends javax.swing.JDialog {
     	for (int i = 0; i < NUMBER_OF_TABS; i++)
     		setPresetSettings(i+1, new TalkConfiguration());
     }
-    
+
     /**
-     * Read a file into a string
+     * Read a file resource into a string
      * @param filename
      * @return
      * @throws IOException
      */
-    private String readFile(String filename) throws IOException {
-    	System.out.println(filename + ":\n" + readResource(filename));
-    	StringBuffer stringBuffer = new StringBuffer("");
-    	BufferedReader in = new BufferedReader(new FileReader(filename));
-    	if (in != null) {
-	        //read file into a string
-	    	String input = "";
-	    	// FIXME need these to be characters, not string representation of ASCII numbers
-	    	while ((input = in.readLine()) != null)
-	    		stringBuffer.append(input + "\n");
-	    	in.close();
-    	}
-    	return stringBuffer.toString();
-    }
-
     private String readResource(String resourceName) throws IOException {
     	// better to get as a file resource from JAR
-    	// FIXME
-    	// @see http://download.oracle.com/javase/1.5.0/docs/guide/lang/resources.html
-    	// @see http://www.eclipsezone.com/eclipse/forums/t101557.html
-    	System.out.println(resourceName);
-    	System.out.println(getClass().getResource(resourceName));
-    	System.out.println(getClass().getResource("/"+resourceName));
-    	System.out.println(getClass().getResource("src/"+resourceName));
-    	System.out.println(getClass().getResource("src."+resourceName));
-    	StringBuffer buff = new StringBuffer("");
     	InputStream input = getClass().getResourceAsStream(resourceName);
+    	String str = "";
     	if (input != null) {
 	    	int size = input.available();
-	    	int data = input.read();
-	    	while(data != -1) {
-	    	  buff.append(data);
-	    	  data = input.read();
-	    	}
+	    	byte[] bytes = new byte[size];
+	    	int r = input.read(bytes);
 	    	input.close();
+	    	if (r == size)
+	    		str = new String(bytes);
     	}
-    	return buff.toString();
+    	return str;
     }
     
     /**
