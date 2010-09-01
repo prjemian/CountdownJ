@@ -36,8 +36,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-
-
 /**
  *
  * @author Pete
@@ -49,21 +47,23 @@ public class GuiSwing extends JFrame {
 	 */
 	private static final long serialVersionUID = 3167378700428228696L;
 
-	private HashMap<String, ConfigurePanel> settings;
-	TalkConfiguration talkConfig;
-	public int discussionTime_s = 5*60; // TODO use TalkConfiguration object
-	int overtimeReminder_s = 60;  		// TODO use TalkConfiguration object
+	private HashMap<String, Color> colorTable;
+	private HashMap<String, TalkConfiguration> settings;
 
 	public ClockTimer clockTimer = null;
-	String lastPhaseText;
-	double last_time_s;
-	HashMap<String, Color> colorTable;
+	private String lastPhaseText;
+	private double last_time_s;
 
     /** Creates new form GuiSwing */
     public GuiSwing() {
-    	clockTimer = new ClockTimer(this);	// prepare the timer    
-    	talkConfig = new TalkConfiguration();	// basic talk parameters
-        settings = new HashMap<String, ConfigurePanel>();
+    	clockTimer = new ClockTimer(this);	// prepare the timer
+
+    	settings = new HashMap<String, TalkConfiguration>();
+        settings.put("basic", new TalkConfiguration());
+        for (int i = 0; i < Configure.NUMBER_OF_TABS; i++) {
+        	String key = "preset" + (i+1);
+        	settings.put(key, new TalkConfiguration());
+        }
 		
     	// setup the GUI
     	initializeColorTable();
@@ -76,10 +76,15 @@ public class GuiSwing extends JFrame {
         initializeButtonLabels();
 
         // font sizes track with window size
-        blackPanel.addHierarchyBoundsListener(new windowResizeListener(this));
+        blackPanel.addHierarchyBoundsListener(
+				new HierarchyBoundsListener() {
+				    public void ancestorResized(HierarchyEvent e) {
+				        doAdjustLabelSizes();
+				    }
+				    public void ancestorMoved(HierarchyEvent e) {}
+				});
 
-        // full screen
-        setExtendedState(MAXIMIZED_BOTH);
+        setExtendedState(MAXIMIZED_BOTH);     // full screen
 
         // initial talk is 15 minutes
         clockTimer.setTime_s(15 * 60);
@@ -115,7 +120,13 @@ public class GuiSwing extends JFrame {
     private void initializeButton(JButton button) {
         String text = button.getName();
         button.setText(text);
-        button.addActionListener(new ButtonListener(this, text));
+        final JButton fButton = button;
+        button.addActionListener( // bind a button click to this action
+				new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						doButton(fButton);
+					}
+				});
     }
 
     /**
@@ -146,18 +157,15 @@ public class GuiSwing extends JFrame {
         mmssButton3.setToolTipText("add ten seconds to clock");
         mmssButton4.setToolTipText("add one second to clock");
 
-        presetButton1.setToolTipText("preset button A");
-        presetButton2.setToolTipText("preset button B");
-        presetButton3.setToolTipText("preset button C");
-        presetButton4.setToolTipText("preset button D");
+        presetButton1.setToolTipText("preset button 1");
+        presetButton2.setToolTipText("preset button 2");
+        presetButton3.setToolTipText("preset button 3");
+        presetButton4.setToolTipText("preset button 4");
 
-        // TODO: complete the presets capability
-        presetButton1.setEnabled(false);
-        presetButton2.setEnabled(false);
-        presetButton3.setEnabled(false);
-        presetButton4.setEnabled(false);
-
-        // TODO: complete the configure dialog
+        presetButton1.setName("preset1");
+        presetButton2.setName("preset2");
+        presetButton3.setName("preset3");
+        presetButton4.setName("preset4");
     }
 
     private void setTextStartButtons(String text) {
@@ -170,8 +178,9 @@ public class GuiSwing extends JFrame {
         presetButtonStop.setText(text);
     }
 
-    public void doButton(JButton button, String label) {
-        Container parent = button.getParent();
+    public void doButton(JButton button) {
+    	String label = button.getName();
+    	Container parent = button.getParent();
         if (parent == mmssTabPane) {
             if (label.compareTo(mmssButton1.getName()) == 0) {incrementTime(10*60);}
             if (label.compareTo(mmssButton2.getName()) == 0) {incrementTime(60);}
@@ -236,34 +245,47 @@ public class GuiSwing extends JFrame {
 
     private void doConfigureButton() {
         Configure dialog = new Configure(new javax.swing.JFrame(), true);
-        // TODO pass known configurations to dialog
         dialog.addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent e) {
                 //System.exit(0);
             }
         });
+        // =========================================
+        // pass known configurations to dialog
+        dialog.setBasicSettings(settings.get("basic"));
+        for (int i = 0; i < Configure.NUMBER_OF_TABS; i++) {
+        	String key = "preset" + (i+1);
+        	dialog.setPresetSettings(i+1, settings.get(key));
+        }
+        // =========================================
         dialog.setVisible(true);
-        // TODO once window is closed, we ask the dialog some questions
+        // =========================================
+        // get configurations from dialog
         switch (dialog.getButtonPressed()) {
 		case Configure.OK_BUTTON:
-			System.out.println("<OK>");
+			settings.put("basic", dialog.getBasicSettings());
+	        for (int i = 0; i < Configure.NUMBER_OF_TABS; i++) {
+	        	String key = "preset" + (i+1);
+	        	settings.put(key, dialog.getPresetSettings(i+1));
+	        }
 			break;
 
 		case Configure.CANCEL_BUTTON:
-			System.out.println("<Cancel>");
+			// System.out.println("<Cancel>");
 			break;
 
 		default:
-			System.out.println("other thing: " + dialog.getButtonPressed());
+			// System.out.println("other thing: " + dialog.getButtonPressed());
 			break;
 		}
-
+        // =========================================
         dialog.dispose();        // finally
     }
 
     private void doPresetButton(String label) {
-        // TODO: complete the presets capability
-        msgText.setText("not yet");
+    	// copy these settings
+    	// FIXME this sets the basic object tp the preset object!
+		settings.put("basic", settings.get(label));
     }
 
     public void doAdjustLabelSizes() {
@@ -284,28 +306,30 @@ public class GuiSwing extends JFrame {
     
 	public void doTimer(String str) {
 		// TODO move this function to a separate class
+		TalkConfiguration talk = settings.get("basic");
 		double time_s = clockTimer.getTime_s();
 
 		int numBeeps = 0;
 		String colorName = "white";
 		String msgTextStr = calcMsgText();
-		if (talkConfig.getMsg_overtime().compareTo(msgTextStr)==0) {
+		if (talk.getMsg_overtime().compareTo(msgTextStr)==0) {
 			colorName = "red";
-			if (talkConfig.getMsg_discussion().compareTo(lastPhaseText) == 0)
+			if (talk.getMsg_discussion().compareTo(lastPhaseText) == 0)
 				numBeeps = 2;
 			if (last_time_s < 0) {
+				int overtimeReminder_s = talk.getOvertime();
 				double t1 = Math.abs(time_s) % overtimeReminder_s;
 				double t2 = Math.abs(last_time_s) % overtimeReminder_s;
 				if ( t1 < t2)
 					numBeeps = 3;				
 			}
 		}
-		if (talkConfig.getMsg_discussion().compareTo(msgTextStr)==0) {
+		if (talk.getMsg_discussion().compareTo(msgTextStr)==0) {
 			colorName = "yellow";
-			if ("Presentation".compareTo(lastPhaseText) == 0)
+			if (talk.getMsg_presentation().compareTo(lastPhaseText) == 0)
 				numBeeps = 1;
 		}
-		if (talkConfig.getMsg_presentation().compareTo(msgTextStr)==0) {
+		if (talk.getMsg_presentation().compareTo(msgTextStr)==0) {
 			colorName = "green";
 		}
 
@@ -357,15 +381,16 @@ public class GuiSwing extends JFrame {
 	private String calcMsgText() {
 		// TODO move this function to a separate class
 		double time_s = clockTimer.getTime_s();
+		TalkConfiguration talk = settings.get("basic");
 		String msgTextStr = "";
 		if (clockTimer.isCounting()) {
 			if (time_s < 0) {
-				msgTextStr = talkConfig.getMsg_overtime();
+				msgTextStr = talk.getMsg_overtime();
 			} else {
-				if (time_s > discussionTime_s) {
-					msgTextStr = talkConfig.getMsg_presentation();
+				if (time_s > talk.getDiscussion()) {
+					msgTextStr = talk.getMsg_presentation();
 				} else  {
-					msgTextStr = talkConfig.getMsg_discussion();
+					msgTextStr = talk.getMsg_discussion();
 				}
 			}
 		}
@@ -626,47 +651,3 @@ public class GuiSwing extends JFrame {
 
 }
 
-
-/**
- * listen for button clicks from a GuiSwing object
- * @author Pete
- */
-class ButtonListener implements ActionListener {
-    GuiSwing owner = null;
-    String label = null;
-    /**
-     * listen for button to be clicked, call the doButton()
-     * @param parent GuiSwing object
-     * @param text label (internal) of the button
-     */
-    public ButtonListener(GuiSwing parent, String text) {
-        owner = parent;
-        label = text;
-    }
-    /**
-     * respond to the event
-     * @param e
-     */
-    public void actionPerformed(ActionEvent e) {
-        owner.doButton((JButton) e.getSource(), label);
-    }
-}
-
-
-class windowResizeListener implements HierarchyBoundsListener {
-    GuiSwing me = null;
-    public windowResizeListener(GuiSwing parent) {
-        me = parent;
-    }
-    public void ancestorResized(HierarchyEvent e) {
-        // System.out.println("resized: " + e.paramString());
-        me.doAdjustLabelSizes();
-    }
-    public void ancestorMoved(HierarchyEvent e) {}
-}
-
-
-//class SomethingRunnable implements Runnable {
-//    public SomethingRunnable() {}
-//    public void run() {}
-//}

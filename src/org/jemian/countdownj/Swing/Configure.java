@@ -19,6 +19,9 @@ import java.awt.Insets;
 import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 
 import javax.swing.BorderFactory;
@@ -27,7 +30,6 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
 
 /**
  *
@@ -41,10 +43,11 @@ public class Configure extends javax.swing.JDialog {
     public Configure(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         buttonPressed = NO_BUTTON_PRESSED;
-        settings = new HashMap<String, ConfigurePanel>();
+        settings = new HashMap<String, TalkConfiguration>();
+        panel = new HashMap<String, ConfigurePanel>();
         create();
+        setTalkDefaults();
         setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
-
     }
 
     /**
@@ -95,7 +98,7 @@ public class Configure extends javax.swing.JDialog {
     	// + + + + + + + + + + + + + + + + + + + + + + + +
     	// main tabs
 
-    	JPanel basicTab = new JPanel();
+		JPanel basicTab = new JPanel();
     	basicTab.setName("Basic");
     	basicTab.setAlignmentX(CENTER_ALIGNMENT);
     	mainTabs.add(basicTab);
@@ -103,8 +106,7 @@ public class Configure extends javax.swing.JDialog {
     	basicTab.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.BLACK),
                 basicTab.getBorder()));
-    	ConfigurePanel panel = new ConfigurePanel(basicTab);
-    	settings.put("basic", panel);
+    	panel.put("basic", new ConfigurePanel(basicTab, false));
 
     	JPanel presetsTab = new JPanel();
     	presetsTab.setName("Presets");
@@ -137,25 +139,17 @@ public class Configure extends javax.swing.JDialog {
     	for (int i = 0; i < NUMBER_OF_TABS; i++) {
     		String name = getPresetTabKey(i+1);
         	JPanel tab = new JPanel();
-        	tab.setName(name);	// FIXME pick the supplied name
+        	if (settings.get(name) != null)
+        		tab.setName(settings.get(name).getName());
+        	else
+            	tab.setName(name);
         	tab.setLayout(new GridBagLayout());
         	subtabs.add(tab);
 
         	// This part of the GUI is constructed irregularly.
-        	// The bootom ConfigurePanel comes first since it creates the panel
-        	ConfigurePanel tabPanel = new ConfigurePanel(tab);
-        	settings.put(name, tabPanel);
-
-        	tabPanel.separator(tab, 1);
-
-        	// Label text entry at the top of panel
-        	JLabel label = new JLabel("tab name");
-        	label.setToolTipText("title of this page of settings");
-        	tab.add(label, makeConstraints(0, 0, 0.0, 0.0, 1, 1));
-
-        	JTextField object = new JTextField(name);
-        	object.setToolTipText("suggested: Invited or Plenary or Contributed or ...");
-        	tab.add(object, makeConstraints(1, 0, 1.0, 0.0, 1, 1));
+        	// The bottom ConfigurePanel comes first since it creates the panel
+        	ConfigurePanel tabPanel = new ConfigurePanel(tab, true);
+        	panel.put(name, tabPanel);
     	}
 
     	// + + + + + + + + + + + + + + + + + + + + + + + +
@@ -191,23 +185,51 @@ public class Configure extends javax.swing.JDialog {
     	text = new JLabel("Software license");
     	text.setFont(new Font("Tahoma", Font.PLAIN, 12));
     	aboutBoxPanel.add(text, makeConstraints(0, row++, 1.0, 0.0, 1, 1));
-    	// TODO replace with actual Software License text from LICENSE file
+
     	String license_text = "";
-    	String phrase = "\n This could be a lot of stuff to say.";
-    	for (int i = 0; i < 100; i++)
-    		license_text = license_text.concat(phrase);
+    	try {
+			license_text = readFile("LICENSE");
+		} catch (IOException e1) {
+			// backup license text if LICENSE cannot be found
+	    	license_text = "ConfigureJ - a timer for conference presentations\n" +
+	    			"Copyright (c) 2010 - Pete R. Jemian\n" +
+	    			"\n" +
+	    			"See the LICENSE file included in the " +
+	    			"distribution for full details.";
+		}
     	TextArea area = new TextArea(license_text);
     	area.setEditable(false);
     	aboutBoxPanel.add(area, makeConstraints(0, row++, 1.0, 1.0, 1, 1));
 
     	// + + + + + + + + + + + + + + + + + + + + + + + +
-    	// set entry fields from current values
-
-        // FIXME need to set the entry fields from current values
-
-    	// + + + + + + + + + + + + + + + + + + + + + + + +
 
     	pack();
+    }
+
+    /**
+     * initially, assign defaults for each talk's settings
+     */
+    private void setTalkDefaults() {
+    	setBasicSettings(new TalkConfiguration());
+    	for (int i = 0; i < NUMBER_OF_TABS; i++)
+    		setPresetSettings(i+1, new TalkConfiguration());
+    }
+    
+    /**
+     * Read a file into a string
+     * @param filename
+     * @return
+     * @throws IOException
+     */
+    private String readFile(String filename) throws IOException {
+    	BufferedReader in = new BufferedReader(new FileReader(filename));
+    	StringBuffer stringBuffer = new StringBuffer("");
+        //read file into a string
+    	String input = "";
+    	while ((input = in.readLine()) != null)
+    		stringBuffer.append(input + "\n");
+    	in.close();
+    	return stringBuffer.toString();
     }
     
     /**
@@ -240,7 +262,6 @@ public class Configure extends javax.swing.JDialog {
      */
     private String getPresetTabKey(int index) {
     	String key = null;
-    	// FIXME call by numbers or "A", "B", "C", "D" ... be consistent
     	if (1 <= index && index <= NUMBER_OF_TABS)
     		key = "preset" + index;
     	return key;
@@ -248,46 +269,64 @@ public class Configure extends javax.swing.JDialog {
     
     private void doOkAction() {
         buttonPressed = OK_BUTTON;
-        this.setVisible(false);
+        setVisible(false);
     }
     
     private void doCancelAction() {
         buttonPressed = CANCEL_BUTTON;
-        this.setVisible(false);
+        setVisible(false);
     }
 	
-	private ConfigurePanel getSettingsByKey(String key) {
-		ConfigurePanel result;
+	private TalkConfiguration getSettingsByKey(String key) {
+		TalkConfiguration talk;
 		if (settings.containsKey(key))
-			result = settings.get(key);
+			talk = settings.get(key);
 		else
-			result = null;
-		return result;
+			talk = null;
+		return talk;
 	}
 
     /**
 	 * @return the settings of the basic panel
 	 */
-	public ConfigurePanel getBasicSettings() {
+	public TalkConfiguration getBasicSettings() {
+		// copy widget values to local HashMap
+		settings.put("basic", panel.get("basic").getConfig());
 		return getSettingsByKey("basic");
+	}
+
+	/**
+	 * @param index index number [1..NUMBER_OF_TABS]
+	 * @param talk ConfigurePanel object
+	 */
+	public void setBasicSettings(TalkConfiguration talk) {
+		settings.put("basic", talk);
+		panel.get("basic").setConfig(talk, true);	// set the widgets, too
 	}
 
     /**
 	 * @param index index number [1..NUMBER_OF_TABS]
 	 * @return the settings of the named key or null
 	 */
-	public ConfigurePanel getPresetSettings(int index) {
-		return getSettingsByKey(getPresetTabKey(index));
+	public TalkConfiguration getPresetSettings(int index) {
+		String key = getPresetTabKey(index);
+		if (key != null) {
+			// copy widget values to local HashMap
+			settings.put(key, panel.get(key).getConfig());
+		}
+		return getSettingsByKey(key);
 	}
 
 	/**
 	 * @param index index number [1..NUMBER_OF_TABS]
-	 * @param value ConfigurePanel object
+	 * @param talk ConfigurePanel object
 	 */
-	public void setSettings(int index, ConfigurePanel value) {
+	public void setPresetSettings(int index, TalkConfiguration talk) {
 		String key = getPresetTabKey(index);
-		if (key != null)
-			this.settings.put(key, value);
+		if (key != null) {
+			settings.put(key, talk);
+			panel.get(key).setConfig(talk, true);	// set the widgets, too
+		}
 	}
 
 	/**
@@ -303,21 +342,34 @@ public class Configure extends javax.swing.JDialog {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                Configure dialog = new Configure(new javax.swing.JFrame(), true);
+            	TalkConfiguration talk;
+            	Configure dialog = new Configure(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     public void windowClosing(java.awt.event.WindowEvent e) {
                         System.exit(0);
                     }
                 });
-                dialog.setVisible(true);
+                // =========================================
+                // set the Configurations
+                talk = new TalkConfiguration();
+                talk.setDiscussion(3*60);
+                talk.setOvertime(15);
+                dialog.setBasicSettings(talk);
+                for (int i = 0; i < Configure.NUMBER_OF_TABS; i++)
+                	dialog.setPresetSettings(i+1, new TalkConfiguration());
+                // =========================================
+                dialog.setVisible(true);	// run the dialog and wait ...
+                // =========================================
                 int pressed = dialog.getButtonPressed();
                 System.out.println("pressed: " + pressed);
                 if (pressed == Configure.OK_BUTTON) {
-	                TalkConfiguration talk = dialog.getBasicSettings().getConfig();
-	                System.out.println("basic talk:\n" + talk);
+	                talk = dialog.getBasicSettings();
+	                String str = String.format("<talk id=\"basic\" %s />", talk);
+                    System.out.println(str);
 	                for (int i = 0; i < Configure.NUMBER_OF_TABS; i++) {
-	                	talk = dialog.getPresetSettings(i+1).getConfig();
-	                    System.out.println("preset " + (i+1) + " talk:\n" + talk);
+	                	talk = dialog.getPresetSettings(i+1);
+	                	str = String.format("<talk id=\"preset%s\" %s />", i+1, talk);
+	                    System.out.println(str);
 	                }
                 }
                 dialog.dispose();
@@ -328,20 +380,15 @@ public class Configure extends javax.swing.JDialog {
 
 	private static final long serialVersionUID = -6246475747169907480L;
 
-	private HashMap<String, ConfigurePanel> settings;
-	public final static int NUMBER_OF_TABS = 4;
+	private HashMap<String, TalkConfiguration> settings;
+	private HashMap<String, ConfigurePanel> panel;
 	private int buttonPressed;
-	public static final int NO_BUTTON_PRESSED = 0;
-	public static final int OK_BUTTON = 1;
+
+	public static final int NUMBER_OF_TABS = 4;
+	public static final int OK_BUTTON = 0;
+	public static final int NO_BUTTON_PRESSED = 1;
 	public static final int CANCEL_BUTTON = 2;
 
-	//########### SVN repository information ###################
-	//# $Date$
-	//# $Author$
-	//# $Revision$
-	//# $URL$
-	//# $Id$
-	//########### SVN repository information ###################
-	private String svnRev = "$Revision$";
+	//private String svnRev = "$Revision$";
 	private String svnId = "$Id$";
 }

@@ -42,22 +42,28 @@ public class ConfigurePanel extends JPanel {
 	 * Initial talk configuration is the default settings.
 	 * Caller has set the layout manager of parent to be GridBagLayout.
 	 * @param parent of this panel
+	 * @param preset is this a preset panel (true) or a basic panel (false)
 	 */
-    public ConfigurePanel(Container parent) {
-    	initializePanel(parent);
-    	initialTalkConfig = new TalkConfiguration();
-    	setConfig(initialTalkConfig);
+    public ConfigurePanel(Container parent, boolean preset) {
+    	fullConstructor(parent, preset, new TalkConfiguration());
     }
 
 	/**
 	 * Creates JPanel ConfigurePanel.
 	 * Caller supplies initial configuration of the talk.
 	 * @param parent of this panel
+	 * @param preset is this a preset panel (true) or a basic panel (false)
+	 * @param config configuration of this talk
 	 */
-    public ConfigurePanel(Container parent, TalkConfiguration config) {
+    public ConfigurePanel(Container parent, boolean preset, TalkConfiguration config) {
+    	fullConstructor(parent, preset, config);
+    }
+    
+    private void fullConstructor(Container parent, boolean preset, TalkConfiguration config) {
+    	this.preset = preset;
     	initializePanel(parent);
     	initialTalkConfig = config;
-    	setConfig(initialTalkConfig);
+    	setConfig(initialTalkConfig, false);
     }
 
 
@@ -67,11 +73,19 @@ public class ConfigurePanel extends JPanel {
      */
     private void initializePanel(Container parent) {
     	int row = 2;
-    	presentation = label_entry(parent, row++, 
-    			"time allowed for presentation (and discussion)", 
-    			"discussion is the last part of the presentation period",
-    			"{mm:ss | seconds}", 
-    			"enter either minutes:seconds (12:30) or seconds (750)");
+    	if (this.preset) {
+	    	name = label_entry(parent, row++, 
+	    			"name", 
+	    			"short description (1 word) of these settings",
+	    			"{name}", 
+	    			"enter either minutes:seconds (12:30) or seconds (750)");
+	    	separator(parent, row++);
+	    	presentation = label_entry(parent, row++, 
+	    			"time allowed for presentation", 
+	    			"includes discussion time at end of the presentation period",
+	    			"{mm:ss | seconds}", 
+	    			"Suggested: Invited, Plenary, Contributed, ...");
+    	}
     	discussion = label_entry(parent, row++, 
     			"time allowed for discussion", 
     			"discussion is the last part of the presentation period",
@@ -202,6 +216,20 @@ public class ConfigurePanel extends JPanel {
     }
     
     /**
+	 * @return the initialTalkConfig
+	 */
+	public TalkConfiguration getInitialTalkConfig() {
+		return initialTalkConfig;
+	}
+
+	/**
+	 * @param initialTalkConfig the initialTalkConfig to set
+	 */
+	public void setInitialTalkConfig(TalkConfiguration initialTalkConfig) {
+		this.initialTalkConfig = initialTalkConfig;
+	}
+
+	/**
      * make GridBagConstraints for a GridBagLayout item
      * @param x
      * @param y
@@ -232,7 +260,10 @@ public class ConfigurePanel extends JPanel {
     	TalkConfiguration defaults = new TalkConfiguration();
     	defaults.setDefaults();
 
-    	presentation.setText(defaults.getPresentationStr());
+    	if (this.preset) {
+    		name.setText(defaults.getName());
+    		presentation.setText(defaults.getPresentationStr());
+    	}
     	discussion.setText(defaults.getDiscussionStr());
     	overtime.setText(defaults.getOvertimeStr());
     	msg_pretalk.setText(defaults.getMsg_pretalk());
@@ -247,7 +278,10 @@ public class ConfigurePanel extends JPanel {
      * clear all fields
      */
     public void clearAll() {
-    	presentation.setText("");
+    	if (this.preset) {
+    		name.setText("");
+    		presentation.setText("");
+    	}
     	discussion.setText("");
     	overtime.setText("");
     	msg_pretalk.setText("");
@@ -262,7 +296,10 @@ public class ConfigurePanel extends JPanel {
      * reset all fields
      */
     public void resetAll() {
-    	presentation.setText(initialTalkConfig.getPresentationStr());
+    	if (this.preset) {
+    		name.setText(initialTalkConfig.getName());
+    		presentation.setText(initialTalkConfig.getPresentationStr());
+    	}
     	discussion.setText(initialTalkConfig.getDiscussionStr());
     	overtime.setText(initialTalkConfig.getOvertimeStr());
     	msg_pretalk.setText(initialTalkConfig.getMsg_pretalk());
@@ -277,32 +314,41 @@ public class ConfigurePanel extends JPanel {
      * get talk configuration from the widget fields
      */
     public TalkConfiguration getConfig() {
-    	TalkConfiguration config = new TalkConfiguration();
-    	config.setPresentationStr(presentation.getText());
-    	config.setDiscussionStr(discussion.getText());
-    	config.setOvertimeStr(overtime.getText());
-    	config.setMsg_discussion(msg_discussion.getText());
-    	config.setMsg_overtime(msg_overtime.getText());
-    	config.setMsg_paused(msg_paused.getText());
-    	config.setMsg_presentation(msg_presentation.getText());
-    	config.setMsg_pretalk(msg_pretalk.getText());
-    	config.setAudible(checkAudible.isSelected());
-    	return config;
+    	TalkConfiguration talk = new TalkConfiguration();
+    	if (this.preset) {
+    		talk.setName(name.getText());
+    		talk.setPresentationStr(presentation.getText());
+    	}
+    	talk.setDiscussionStr(discussion.getText());
+    	talk.setOvertimeStr(overtime.getText());
+    	talk.setMsg_discussion(msg_discussion.getText());
+    	talk.setMsg_overtime(msg_overtime.getText());
+    	talk.setMsg_paused(msg_paused.getText());
+    	talk.setMsg_presentation(msg_presentation.getText());
+    	talk.setMsg_pretalk(msg_pretalk.getText());
+    	talk.setAudible(checkAudible.isSelected());
+    	return talk;
     }
 
     /**
      * set widget fields from talk configuration
+     * @param talk settings for this talk
      */
-    public void setConfig(TalkConfiguration config) {
-    	presentation.setText(config.getPresentationStr());
-    	discussion.setText(config.getDiscussionStr());
-    	overtime.setText(config.getOvertimeStr());
-    	msg_discussion.setText(config.getMsg_discussion());
-    	msg_overtime.setText(config.getMsg_overtime());
-    	msg_paused.setText(config.getMsg_paused());
-    	msg_presentation.setText(config.getMsg_presentation());
-    	msg_pretalk.setText(config.getMsg_pretalk());
-    	checkAudible.setSelected(config.isAudible());
+    public void setConfig(TalkConfiguration talk, boolean setInitial) {
+    	if (setInitial)
+    		initialTalkConfig = talk;	// FIXME deep copy needed?
+    	if (this.preset) {
+    		name.setText(talk.getName());
+    		presentation.setText(talk.getPresentationStr());
+    	}
+    	discussion.setText(talk.getDiscussionStr());
+    	overtime.setText(talk.getOvertimeStr());
+    	msg_discussion.setText(talk.getMsg_discussion());
+    	msg_overtime.setText(talk.getMsg_overtime());
+    	msg_paused.setText(talk.getMsg_paused());
+    	msg_presentation.setText(talk.getMsg_presentation());
+    	msg_pretalk.setText(talk.getMsg_pretalk());
+    	checkAudible.setSelected(talk.isAudible());
     }
 
     public static void main(String[] args) {
@@ -318,6 +364,7 @@ public class ConfigurePanel extends JPanel {
                 Container panel = frame.getContentPane();
                 panel.setLayout(new GridBagLayout());
                 TalkConfiguration config = new TalkConfiguration();
+                config.setName("Plenary");
                 config.setPresentationStr("30:00");
                 config.setDiscussionStr("10:00");
                 config.setOvertimeStr("0:20");
@@ -326,11 +373,13 @@ public class ConfigurePanel extends JPanel {
                 config.setMsg_discussion("Questions?");
                 config.setMsg_paused("a delay");
                 config.setMsg_pretalk("");
-                new ConfigurePanel(panel, config);
+                ConfigurePanel cp = new ConfigurePanel(panel, true, config);
 
                 //Display the window.
                 frame.pack();
-                frame.setVisible(true);            }
+                frame.setVisible(true); 
+                System.out.println(cp.getConfig().toString());
+            }
         });
     }
 
@@ -340,6 +389,7 @@ public class ConfigurePanel extends JPanel {
 	 */
 	private static final long serialVersionUID = 5977631140257178413L;
 
+	public JTextField name;
 	public JTextField presentation;
 	public JTextField discussion;
 	public JTextField overtime;
@@ -349,6 +399,7 @@ public class ConfigurePanel extends JPanel {
 	public JTextField msg_overtime;
 	public JTextField msg_paused;
 	public JCheckBox checkAudible;
+	private boolean preset;
 
-	TalkConfiguration initialTalkConfig;
+	private TalkConfiguration initialTalkConfig;
 }

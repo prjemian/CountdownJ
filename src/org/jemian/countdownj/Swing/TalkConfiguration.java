@@ -27,7 +27,8 @@ public class TalkConfiguration {
 	 * as defined in this method
 	 */
 	public void setDefaults() {
-    	audible = true;
+    	name = "talk";
+		audible = true;
 		discussion = 5*60;
     	overtime = 60;
 		presentation = 15*60;
@@ -39,18 +40,19 @@ public class TalkConfiguration {
 	}
 	
 	public String toString() {
-		String result = "";
-		String format = "%s:\t%s\n"; 
-		result = result.concat(String.format(format, "audible", audible));
-		result = result.concat(String.format(format, "discussion", secondsToMmss(discussion)));
-		result = result.concat(String.format(format, "overtime", secondsToMmss(overtime)));
-		result = result.concat(String.format(format, "presentation", secondsToMmss(presentation)));
-		result = result.concat(String.format(format, "msg_discussion", msg_discussion));
-		result = result.concat(String.format(format, "msg_overtime", msg_overtime));
-		result = result.concat(String.format(format, "msg_paused", msg_paused));
-		result = result.concat(String.format(format, "msg_presentation", msg_presentation));
-		result = result.concat(String.format(format, "msg_pretalk", msg_pretalk));
-		return result;
+		StringBuffer buff = new StringBuffer("");
+		String format = " %s=\"%s\""; 
+		buff.append(String.format(format, "name", name));
+		buff.append(String.format(format, "audible", audible));
+		buff.append(String.format(format, "discussion", secondsToMmss(discussion)));
+		buff.append(String.format(format, "overtime", secondsToMmss(overtime)));
+		buff.append(String.format(format, "presentation", secondsToMmss(presentation)));
+		buff.append(String.format(format, "msg_discussion", msg_discussion));
+		buff.append(String.format(format, "msg_overtime", msg_overtime));
+		buff.append(String.format(format, "msg_paused", msg_paused));
+		buff.append(String.format(format, "msg_presentation", msg_presentation));
+		buff.append(String.format(format, "msg_pretalk", msg_pretalk));
+		return buff.toString();
 	}
 
 	/**
@@ -222,6 +224,20 @@ public class TalkConfiguration {
 	}
 
 	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
 	 * converts integer seconds into mm:ss format
 	 * @param seconds
 	 * @return mm:ss String
@@ -264,6 +280,7 @@ public class TalkConfiguration {
 		return seconds;
 	}
 
+	private String name;
 	private int presentation;
 	private int discussion;
 	private int overtime;
@@ -272,5 +289,5 @@ public class TalkConfiguration {
 	private String msg_discussion;
 	private String msg_overtime;
 	private String msg_paused;
-	public boolean audible;
+	private boolean audible;
 }
