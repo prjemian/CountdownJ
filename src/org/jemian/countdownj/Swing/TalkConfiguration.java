@@ -74,7 +74,12 @@ public class TalkConfiguration implements Serializable {
 	
 	/**
 	 * used by Serializable objects
+	 * @see http://www.tutorialspoint.com/java/java_serialization.htm
+	 * @see http://www.devx.com/tips/Tip/13341
+	 * also:
 	 * @see http://java.sun.com/developer/technicalArticles/Programming/serialization/
+	 * @see http://java.sun.com/j2se/1.4.2/docs/guide/serialization/index.html
+	 * @see http://www.javaworld.com/javaworld/javatips/jw-javatip76.html
 	 * @param out
 	 * @throws IOException
 	 */
