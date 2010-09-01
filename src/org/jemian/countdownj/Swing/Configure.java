@@ -189,8 +189,11 @@ public class Configure extends javax.swing.JDialog {
 
     	String license_text = "";
     	try {
-			// this file is found in JAR file at root level
-    		// needs to be put there by build process (such as ANT)
+    		// The LICENSE file is at the root of the development tree.
+    		// getResourceAsStream() expects to find it either:
+    		//	root of ${bin.dir} during code development
+    		//	root of JAR executable file
+			// An ANT build target ("resources") copies it to ${bin.dir}.
     		license_text = readResource("/LICENSE");
 		} catch (IOException e1) {
 			// backup license text if LICENSE cannot be found
@@ -318,7 +321,7 @@ public class Configure extends javax.swing.JDialog {
 	public TalkConfiguration getPresetSettings(int index) {
 		String key = getPresetTabKey(index);
 		if (key != null) {
-			// copy widget values to local HashMap
+			// copy widget values (not objects) to object in local HashMap
 			settings.put(key, panel.get(key).getConfig());
 		}
 		return getSettingsByKey(key);

@@ -1,5 +1,10 @@
 package org.jemian.countdownj.Swing;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
 //TODO needs copyright and license header
 
 //########### SVN repository information ###################
@@ -13,8 +18,7 @@ package org.jemian.countdownj.Swing;
 /**
  * Configuration parameters for running the clock timer for a single presentation
  */
-public class TalkConfiguration {
-
+public class TalkConfiguration implements Serializable {
 	/**
 	 * Instance of the TalkConfiguration parameters for a single presentation
 	 */
@@ -53,6 +57,30 @@ public class TalkConfiguration {
 		buff.append(String.format(format, "msg_presentation", msg_presentation));
 		buff.append(String.format(format, "msg_pretalk", msg_pretalk));
 		return buff.toString();
+	}
+	
+	/**
+	 * used by Serializable objects
+	 * @see http://java.sun.com/developer/technicalArticles/Programming/serialization/
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) 
+	throws IOException, ClassNotFoundException {
+		// our "pseudo-constructor"
+		in.defaultReadObject();
+	}
+	
+	/**
+	 * used by Serializable objects
+	 * @see http://java.sun.com/developer/technicalArticles/Programming/serialization/
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) 
+	throws IOException {
+		out.defaultWriteObject();
 	}
 
 	/**
@@ -290,4 +318,9 @@ public class TalkConfiguration {
 	private String msg_overtime;
 	private String msg_paused;
 	private boolean audible;
-}
+
+	/**
+	 * Serializable objects need this to 
+	 * identify when the interface changes.
+	 */
+	private static final long serialVersionUID = 1160508479712297454L;}
