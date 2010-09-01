@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<!--
+########### SVN repository information ###################
+# $Date: 2010-08-23 16:30:21 -0500 (Mon, 23 Aug 2010) $
+# $Author: jemian $
+# $Revision: 1304 $
+# $URL: http://svn.jemian.org/svn/regitte/CountdownJ/hostarch.xml $
+# $Id: hostarch.xml 1304 2010-08-23 21:30:21Z jemian $
+########### SVN repository information ###################
+-->
+
+<CountdownJ version="1.0j" name="CountdownJ">
+  <author>Pete R. Jemian</author>
+  <email>prjemian@gmail.com</email>
+  <copyright>(c) 2010 Pete R. Jemian</copyright>
+</CountdownJ>
