@@ -11,89 +11,91 @@
 -->
 
 
-<project 
-	default="gui" 
-	name="Create Runnable Jar for GUI in project CountdownJ">
+<project  name="Create Runnable Jar for GUI in project CountdownJ"
+	default="gui" >
 
-	<import file="hostarch.xml"/>
+	<import file="hostarch.xml" />
 
-	<property name="version" value="1.0j"/>
+	<property name="version" value="1.0j" />
 	<!-- get this elsewhere? -->
 
-	<property name="bin.dir" value="bin"/>
-	<property name="src.dir" value="src"/>
+	<property name="bin.dir" value="bin" />
+	<property name="src.dir" value="src" />
 
 	<target name="init" 
-	    description="first step">
-		<echo>Initializing ...</echo>
+		description="first step">
+		<echo message="Initializing" />
 		<tstamp />
-		<mkdir dir="${bin.dir}"/>
+		<mkdir dir="${bin.dir}" />
 	</target>
 
 	<target name="clean" 
-	    description="clean up">
-		<echo>Cleaning ...</echo>
-		<delete dir="${bin.dir}"/>
-		<delete file="CountdownJ*.jar"/>
-		</target>
+		description="clean up">
+		<echo message="Cleaning" />
+		<delete dir="${bin.dir}" />
+		<delete file="CountdownJ*.jar" />
+	</target>
 
-		<target name="resources" 
-		    description="Copy resources to bin.dir"
-		    depends="init">
-			<echo>Copying resources to bin.dir ...</echo>
-			<copy file="LICENSE" todir="${bin.dir}" />
-			<copy file="config.xml" todir="${bin.dir}" />
-		</target>
+	<target name="resources" 
+		description="Copy resources to bin.dir" 
+		depends="init">
+		<echo message="Copying resources to bin.dir" />
+		<copy file="LICENSE" todir="${bin.dir}" />
+		<copy file="config.xml" todir="${bin.dir}" />
+	</target>
 
-		<target name="compile" 
-		    description="Compilation target"
-		    depends="init,resources">
-			<echo>Compiling ...</echo>
-		<javac
-		    srcdir="${src.dir}" 
-		    destdir="${bin.dir}" 
-		    debuglevel="${javac.debug.attrs}" 
-		    verbose="false">
+	<target name="compile" 
+		description="Compilation target" 
+		depends="init,resources">
+		<echo message="Compiling ..." />
+		<javac 
+			srcdir="${src.dir}" 
+			destdir="${bin.dir}" 
+			debuglevel="${javac.debug.attrs}" 
+			verbose="false">
 			<classpath path="${compile.classpath.contents}" />
 			<exclude name="example/code/" />
 		</javac>
 	</target>
 
-	<target name="gui" depends="compile">
+	<target name="gui" 
+		depends="compile">
 		<property name="target.jar" 
-			value="CountdownJ-${version}.jar"/>
-		<echo message=" Building ${target.jar}"/>
-		<property name="main.class.short" value="GuiSwing"/>
-		<property name="main.class.path" value="org.jemian.countdownj.Swing"/>
-		<property name="main.class" value="${main.class.path}.${main.class.short}"/>
-		<echo message="target.jar = ${target.jar}"/>
-		<echo message="main.class = ${main.class}"/>
-		<jar 
-    	    destfile="${target.jar}" 
-    	    filesetmanifest="mergewithoutmain">
+			value="CountdownJ-${version}.jar" />
+		<echo message="Building ${target.jar}" />
+		<property name="main.class.short" 
+			value="GuiSwing" />
+		<property name="main.class.path" 
+			value="org.jemian.countdownj.Swing" />
+		<property name="main.class" 
+			value="${main.class.path}.${main.class.short}" />
+		<echo message="target.jar = ${target.jar}" />
+		<echo message="main.class = ${main.class}" />
+		<jar destfile="${target.jar}" 
+			filesetmanifest="mergewithoutmain">
 			<manifest>
-				<attribute name="Main-Class" value="${main.class}"/>
-				<attribute name="Class-Path" value="."/>
+				<attribute name="Main-Class" value="${main.class}" />
+				<attribute name="Class-Path" value="." />
 			</manifest>
-			<fileset dir="${bin.dir}"/>
+			<fileset dir="${bin.dir}" />
 		</jar>
-		<chmod file="${target.jar}" perm="ugo+rx"/>
+		<chmod file="${target.jar}" perm="ugo+rx" />
 	</target>
 
 	<target name="info">
-		<echoproperties/>
-		<echo message="ant.file = ${ant.file}"/>
-		<echo message="ant.home = ${ant.home}"/>
-		<echo message="ant.java.version = ${ant.java.version}"/>
-		<echo message="ant.project.name = ${ant.project.name}"/>
-		<echo message="eclipse.home = ${eclipse.home}"/>
-		<echo message="basedir = ${basedir}"/>
-		<echo message="os.name = ${os.name}"/>
-		<echo message="os.arch = ${os.arch}"/>
-		<echo message="sun.arch.data.model = ${sun.arch.data.model}"/>
-		<echo message="sun.desktop = ${sun.desktop}"/>
-		<echo message="os = ${os}"/>
-		<echo message="host.arch = ${host.arch}"/>
+		<echoproperties />
+		<echo message="ant.file = ${ant.file}" />
+		<echo message="ant.home = ${ant.home}" />
+		<echo message="ant.java.version = ${ant.java.version}" />
+		<echo message="ant.project.name = ${ant.project.name}" />
+		<echo message="eclipse.home = ${eclipse.home}" />
+		<echo message="basedir = ${basedir}" />
+		<echo message="os.name = ${os.name}" />
+		<echo message="os.arch = ${os.arch}" />
+		<echo message="sun.arch.data.model = ${sun.arch.data.model}" />
+		<echo message="sun.desktop = ${sun.desktop}" />
+		<echo message="os = ${os}" />
+		<echo message="host.arch = ${host.arch}" />
 	</target>
 
 </project>
