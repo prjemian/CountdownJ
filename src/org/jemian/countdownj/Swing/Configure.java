@@ -22,6 +22,7 @@ import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 
 import javax.swing.BorderFactory;
@@ -188,7 +189,9 @@ public class Configure extends javax.swing.JDialog {
 
     	String license_text = "";
     	try {
-			license_text = readFile("LICENSE");
+			// this file is found in JAR file at root level
+    		// needs to be put there by build process (such as ANT)
+    		license_text = readFile("LICENSE");
 		} catch (IOException e1) {
 			// backup license text if LICENSE cannot be found
 	    	license_text = "ConfigureJ - a timer for conference presentations\n" +
@@ -222,14 +225,42 @@ public class Configure extends javax.swing.JDialog {
      * @throws IOException
      */
     private String readFile(String filename) throws IOException {
-    	BufferedReader in = new BufferedReader(new FileReader(filename));
+    	System.out.println(filename + ":\n" + readResource(filename));
     	StringBuffer stringBuffer = new StringBuffer("");
-        //read file into a string
-    	String input = "";
-    	while ((input = in.readLine()) != null)
-    		stringBuffer.append(input + "\n");
-    	in.close();
+    	BufferedReader in = new BufferedReader(new FileReader(filename));
+    	if (in != null) {
+	        //read file into a string
+	    	String input = "";
+	    	// FIXME need these to be characters, not string representation of ASCII numbers
+	    	while ((input = in.readLine()) != null)
+	    		stringBuffer.append(input + "\n");
+	    	in.close();
+    	}
     	return stringBuffer.toString();
+    }
+
+    private String readResource(String resourceName) throws IOException {
+    	// better to get as a file resource from JAR
+    	// FIXME
+    	// @see http://download.oracle.com/javase/1.5.0/docs/guide/lang/resources.html
+    	// @see http://www.eclipsezone.com/eclipse/forums/t101557.html
+    	System.out.println(resourceName);
+    	System.out.println(getClass().getResource(resourceName));
+    	System.out.println(getClass().getResource("/"+resourceName));
+    	System.out.println(getClass().getResource("src/"+resourceName));
+    	System.out.println(getClass().getResource("src."+resourceName));
+    	StringBuffer buff = new StringBuffer("");
+    	InputStream input = getClass().getResourceAsStream(resourceName);
+    	if (input != null) {
+	    	int size = input.available();
+	    	int data = input.read();
+	    	while(data != -1) {
+	    	  buff.append(data);
+	    	  data = input.read();
+	    	}
+	    	input.close();
+    	}
+    	return buff.toString();
     }
     
     /**

@@ -35,19 +35,27 @@
 		<echo>Cleaning ...</echo>
 		<delete dir="${bin.dir}"/>
 		<delete file="CountdownJ*.jar"/>
-	</target>
+		</target>
 
-	<target name="compile" 
-	    description="Compilation target"
-	    depends="init">
-		<echo>Compiling ...</echo>
+		<target name="resources" 
+		    description="Copy resources to bin.dir"
+		    depends="init">
+			<echo>Copying resources to bin.dir ...</echo>
+			<copy file="LICENSE" todir="${bin.dir}" />
+			<copy file="config.xml" todir="${bin.dir}" />
+		</target>
+
+		<target name="compile" 
+		    description="Compilation target"
+		    depends="init,resources">
+			<echo>Compiling ...</echo>
 		<javac
 		    srcdir="${src.dir}" 
 		    destdir="${bin.dir}" 
 		    debuglevel="${javac.debug.attrs}" 
 		    verbose="false">
 			<classpath path="${compile.classpath.contents}" />
-			<!-- <exclude name="org/jemian/countdownj/swt/" />-->
+			<exclude name="example/code/" />
 		</javac>
 	</target>
 
