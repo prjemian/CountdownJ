@@ -64,8 +64,20 @@ public class GuiSwing extends JFrame {
         	String key = "preset" + (i+1);
         	settings.put(key, new TalkConfiguration());
         }
-		
-    	// setup the GUI
+
+        TalkConfiguration talk = settings.get("basic");
+		talk.setAudible(true);
+		talk.setPresentation(5 * 60);
+		talk.setDiscussion(60);
+		talk.setOvertime(15);
+		talk.setMsg_pretalk("coming up next");
+		talk.setMsg_presentation("listen up");
+		talk.setMsg_discussion("questions?");
+		talk.setMsg_overtime("stop");
+		talk.setMsg_paused("... waiting ...");
+		talk.setName("5 minutes");
+
+		// setup the GUI
     	initializeColorTable();
         initComponents();
         // TODO can we get most recent revision number from project directory?
@@ -86,8 +98,6 @@ public class GuiSwing extends JFrame {
 
         setExtendedState(MAXIMIZED_BOTH);     // full screen
 
-        // initial talk is 15 minutes
-        clockTimer.setTime_s(15 * 60);
 		clockTimer.update();
     }
 

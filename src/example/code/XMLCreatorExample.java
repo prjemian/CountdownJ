@@ -21,6 +21,8 @@ import org.w3c.dom.Text;
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
+import example.code.Book;
+
 //For jdk1.5 with built in xerces parser
 //import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 //import com.sun.org.apache.xml.internal.serialize.XMLSerializer;

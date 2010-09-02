@@ -60,6 +60,7 @@ public class TalkConfiguration implements Serializable {
 	}
 	
 	/**
+	 * Serializable: receives object from stream
 	 * used by Serializable objects
 	 * @see http://java.sun.com/developer/technicalArticles/Programming/serialization/
 	 * @param in
@@ -73,6 +74,7 @@ public class TalkConfiguration implements Serializable {
 	}
 	
 	/**
+	 * Serializable: sends object to stream
 	 * used by Serializable objects
 	 * @see http://www.tutorialspoint.com/java/java_serialization.htm
 	 * @see http://www.devx.com/tips/Tip/13341
