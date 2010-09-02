@@ -11,16 +11,19 @@ package org.jemian.countdownj.Swing;
 //########### SVN repository information ###################
 
 import java.awt.Color;
+import java.awt.Container;
+import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -33,21 +36,24 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 /**
- *
- * @author Pete
+ * the Configure dialog for the CountdownJ program
  */
-public class Configure extends javax.swing.JDialog {
+public class Configure extends JDialog {
 
 	// @see http://download.oracle.com/javase/tutorial/uiswing/components/dialog.html
 	
-	/** Creates new form Configure */
-    public Configure(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+	/**
+	 * Creates Configure dialog
+	 * @param parent AWT Frame that owns this dialog
+	 * @param modal whether to make this a modal dialog
+	 */
+    public Configure(Frame parent) {
+        super(parent, true);  // always make this a modal dialog
         buttonPressed = NO_BUTTON_PRESSED;
         settings = new HashMap<String, TalkConfiguration>();
         panel = new HashMap<String, ConfigurePanel>();
         create();
-        setTalkDefaults();
+        setTalkDefaultsAndWidgets();
         setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
     }
 
@@ -140,17 +146,14 @@ public class Configure extends javax.swing.JDialog {
     	for (int i = 0; i < NUMBER_OF_TABS; i++) {
     		String name = getPresetTabKey(i+1);
         	JPanel tab = new JPanel();
+        	String tabName = name;
         	if (settings.get(name) != null)
-        		tab.setName(settings.get(name).getName());
-        	else
-            	tab.setName(name);
+        		tabName = settings.get(name).getName();
+        	tab.setName(tabName);	// sets tab title
         	tab.setLayout(new GridBagLayout());
         	subtabs.add(tab);
 
-        	// This part of the GUI is constructed irregularly.
-        	// The bottom ConfigurePanel comes first since it creates the panel
-        	ConfigurePanel tabPanel = new ConfigurePanel(tab, true);
-        	panel.put(name, tabPanel);
+        	panel.put(name, new ConfigurePanel(tab, true));
     	}
 
     	// + + + + + + + + + + + + + + + + + + + + + + + +
@@ -191,10 +194,11 @@ public class Configure extends javax.swing.JDialog {
     	try {
     		// The LICENSE file is at the root of the development tree.
     		// getResourceAsStream() expects to find it either:
-    		//	root of ${bin.dir} during code development
-    		//	root of JAR executable file
+    		//	  [1] root of ${bin.dir} during code development
+    		//	  [2] root of JAR executable file
 			// An ANT build target ("resources") copies it to ${bin.dir}.
-    		license_text = readResource("/LICENSE");
+    		// Another ANT target copies all of ${bin.dir} to the JAR
+    		license_text = readResourceAsString("/LICENSE");
 		} catch (IOException e1) {
 			// backup license text if LICENSE cannot be found
 	    	license_text = "ConfigureJ - a timer for conference presentations\n" +
@@ -209,13 +213,13 @@ public class Configure extends javax.swing.JDialog {
 
     	// + + + + + + + + + + + + + + + + + + + + + + + +
 
-    	pack();
+    	pack();	// adjust the sizes of everything to fit
     }
 
     /**
      * initially, assign defaults for each talk's settings
      */
-    private void setTalkDefaults() {
+    private void setTalkDefaultsAndWidgets() {
     	setBasicSettings(new TalkConfiguration());
     	for (int i = 0; i < NUMBER_OF_TABS; i++)
     		setPresetSettings(i+1, new TalkConfiguration());
@@ -227,7 +231,7 @@ public class Configure extends javax.swing.JDialog {
      * @return
      * @throws IOException
      */
-    private String readResource(String resourceName) throws IOException {
+    private String readResourceAsString(String resourceName) throws IOException {
     	// better to get as a file resource from JAR
     	InputStream input = getClass().getResourceAsStream(resourceName);
     	String str = "";
@@ -267,7 +271,7 @@ public class Configure extends javax.swing.JDialog {
     }
     
     /**
-     * @param index
+     * @param index [1..NUMBER_OF_TABS]
      * @return
      */
     private String getPresetTabKey(int index) {
@@ -288,11 +292,9 @@ public class Configure extends javax.swing.JDialog {
     }
 	
 	private TalkConfiguration getSettingsByKey(String key) {
-		TalkConfiguration talk;
+		TalkConfiguration talk = null;
 		if (settings.containsKey(key))
-			talk = settings.get(key);
-		else
-			talk = null;
+			talk = settings.get(key).deepCopy();
 		return talk;
 	}
 
@@ -300,8 +302,10 @@ public class Configure extends javax.swing.JDialog {
 	 * @return the settings of the basic panel
 	 */
 	public TalkConfiguration getBasicSettings() {
-		// copy widget values to local HashMap
-		settings.put("basic", panel.get("basic").getConfig());
+		// Copy widget values to local HashMap.
+		// No need for deep copy here.
+		TalkConfiguration talk = panel.get("basic").getConfig();
+		settings.put("basic", talk);
 		return getSettingsByKey("basic");
 	}
 
@@ -310,8 +314,10 @@ public class Configure extends javax.swing.JDialog {
 	 * @param talk ConfigurePanel object
 	 */
 	public void setBasicSettings(TalkConfiguration talk) {
+		// update the local dictionary
 		settings.put("basic", talk);
-		panel.get("basic").setConfig(talk, true);	// set the widgets, too
+		// update the widgets
+		panel.get("basic").setConfig(talk.deepCopy(), true);
 	}
 
     /**
@@ -321,8 +327,10 @@ public class Configure extends javax.swing.JDialog {
 	public TalkConfiguration getPresetSettings(int index) {
 		String key = getPresetTabKey(index);
 		if (key != null) {
-			// copy widget values (not objects) to object in local HashMap
-			settings.put(key, panel.get(key).getConfig());
+			// copy widget values to object in local HashMap
+			// No need for deep copy here.
+			TalkConfiguration talk = panel.get(key).getConfig();
+			settings.put(key, talk);
 		}
 		return getSettingsByKey(key);
 	}
@@ -334,8 +342,12 @@ public class Configure extends javax.swing.JDialog {
 	public void setPresetSettings(int index, TalkConfiguration talk) {
 		String key = getPresetTabKey(index);
 		if (key != null) {
+			// update our local dictionary
 			settings.put(key, talk);
-			panel.get(key).setConfig(talk, true);	// set the widgets, too
+			// update the widget fields
+			panel.get(key).setConfig(talk.deepCopy(), true);
+			// update the tab title
+			setTabTitle(panel.get(key), index-1, talk.getName());
 		}
 	}
 
@@ -347,15 +359,27 @@ public class Configure extends javax.swing.JDialog {
 	}
 
 	/**
+	 * standard call to set tab title
+	 * @param panel
+	 * @param index
+	 * @param title
+	 */
+	private void setTabTitle(ConfigurePanel panel, int index, String title) {
+		Container grandparent = panel.getParent().getParent();
+		JTabbedPane tabbedPane = (JTabbedPane) grandparent;
+		tabbedPane.setTitleAt(index, title);
+	}
+
+	/**
     * @param args the command line arguments
     */
     public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
+        EventQueue.invokeLater(new Runnable() {
             public void run() {
             	TalkConfiguration talk;
-            	Configure dialog = new Configure(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    public void windowClosing(java.awt.event.WindowEvent e) {
+            	Configure dialog = new Configure(new javax.swing.JFrame());
+                dialog.addWindowListener(new WindowAdapter() {
+                    public void windowClosing(WindowEvent e) {
                         System.exit(0);
                     }
                 });
@@ -364,9 +388,17 @@ public class Configure extends javax.swing.JDialog {
                 talk = new TalkConfiguration();
                 talk.setDiscussion(3*60);
                 talk.setOvertime(15);
+                talk.setName("adjusted");
+        		talk.setAudible(false);
                 dialog.setBasicSettings(talk);
-                for (int i = 0; i < Configure.NUMBER_OF_TABS; i++)
-                	dialog.setPresetSettings(i+1, new TalkConfiguration());
+                for (int i = 0; i < Configure.NUMBER_OF_TABS; i++) {
+                	TalkConfiguration item = new TalkConfiguration();
+                	item.setPresentation((i+1)*5*60);
+                	item.setDiscussion((i+1)*60);
+                	item.setOvertime((i+1)*15);
+                	item.setName(item.getPresentationStr() + " talk");
+                	dialog.setPresetSettings(i+1, item);
+                }
                 // =========================================
                 dialog.setVisible(true);	// run the dialog and wait ...
                 // =========================================

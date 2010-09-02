@@ -254,7 +254,7 @@ public class GuiSwing extends JFrame {
 	}
 
     private void doConfigureButton() {
-        Configure dialog = new Configure(new javax.swing.JFrame(), true);
+        Configure dialog = new Configure(new javax.swing.JFrame());
         dialog.addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent e) {
                 //System.exit(0);

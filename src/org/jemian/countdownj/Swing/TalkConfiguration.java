@@ -5,6 +5,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import com.devx.tip13341.DeepCopyMaker;
+
 //TODO needs copyright and license header
 
 //########### SVN repository information ###################
@@ -288,31 +290,50 @@ public class TalkConfiguration implements Serializable {
 	 */
 	private int mmssToSeconds(String mmss) {
 		int seconds = 0;
-		String[] split = mmss.split(":");
-		switch (split.length) {
-		case 1:
-			try {
-				seconds = Integer.parseInt(mmss);
-			} catch (NumberFormatException e) {
+		if (mmss.length() > 0) {
+			String[] split = mmss.split(":");
+			switch (split.length) {
+			case 1:
+				try {
+					seconds = Integer.parseInt(mmss);
+				} catch (NumberFormatException e) {
+					seconds = -1;	// this is an error in mmss format
+				}
+				break;
+	
+			case 2:
+				try {
+					int mm = Integer.parseInt(split[0]);
+					int ss = Integer.parseInt(split[1]);
+					seconds = mm*60 + ss;
+				} catch (NumberFormatException e) {
+					seconds = -1;	// this is an error in mmss format
+				}
+				break;
+	
+			default:
 				seconds = -1;	// this is an error in mmss format
+				break;
 			}
-			break;
-
-		case 2:
-			try {
-				int mm = Integer.parseInt(split[0]);
-				int ss = Integer.parseInt(split[1]);
-				seconds = mm*60 + ss;
-			} catch (NumberFormatException e) {
-				seconds = -1;	// this is an error in mmss format
-			}
-			break;
-
-		default:
-			seconds = -1;	// this is an error in mmss format
-			break;
-		}
+		} else 
+			seconds = 0;  // empty string
 		return seconds;
+	}
+
+	/**
+	 * localize & standardize the call to deepcopy routine
+	 * @param talk
+	 * @return
+	 */
+	public TalkConfiguration deepCopy() {
+		Object object = null;
+		try {
+			object = DeepCopyMaker.makeDeepCopy(this);
+		} catch (Exception e) {
+			// This should not ever fail.  Sound the alarm if it does.
+			e.printStackTrace();
+		}
+		return (TalkConfiguration) object;
 	}
 
 	private String name;

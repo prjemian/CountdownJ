@@ -16,6 +16,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -24,6 +26,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
 
@@ -45,7 +48,7 @@ public class ConfigurePanel extends JPanel {
 	 * @param preset is this a preset panel (true) or a basic panel (false)
 	 */
     public ConfigurePanel(Container parent, boolean preset) {
-    	fullConstructor(parent, preset, new TalkConfiguration());
+    	commonConstructor(parent, preset, new TalkConfiguration());
     }
 
 	/**
@@ -56,10 +59,17 @@ public class ConfigurePanel extends JPanel {
 	 * @param config configuration of this talk
 	 */
     public ConfigurePanel(Container parent, boolean preset, TalkConfiguration config) {
-    	fullConstructor(parent, preset, config);
+    	commonConstructor(parent, preset, config);
     }
     
-    private void fullConstructor(Container parent, boolean preset, TalkConfiguration config) {
+    /**
+     * Called by Constructor methods
+     * @param parent
+     * @param preset
+     * @param config
+     */
+    private void commonConstructor(Container parent, boolean preset, TalkConfiguration config) {
+    	this.parent = parent;
     	this.preset = preset;
     	initializePanel(parent);
     	initialTalkConfig = config;
@@ -71,7 +81,7 @@ public class ConfigurePanel extends JPanel {
      * setup each row of the panel
      * @param parent
      */
-    private void initializePanel(Container parent) {
+    private void initializePanel(final Container parent) {
     	int row = 2;
     	if (this.preset) {
 	    	name = label_entry(parent, row++, 
@@ -79,6 +89,25 @@ public class ConfigurePanel extends JPanel {
 	    			"short description (1 word) of these settings",
 	    			"{name}", 
 	    			"enter either minutes:seconds (12:30) or seconds (750)");
+	    	// Change the tab title when this JPanel is wrapped in a JTabbedPane.
+	    	// The only time this does not happen is during development when
+	    	// this panel is tested by itself.
+	    	name.addKeyListener(new KeyListener() {
+				
+				@Override
+				public void keyTyped(KeyEvent e) {
+					String str = name.getText();
+					int sel = name.getCaretPosition();
+					str = str.substring(0, sel) + e.getKeyChar() + str.substring(sel);
+					setTabTitle(str);
+				}
+
+				@Override
+				public void keyReleased(KeyEvent e) {}
+				
+				@Override
+				public void keyPressed(KeyEvent e) {}
+			});
 	    	separator(parent, row++);
 	    	presentation = label_entry(parent, row++, 
 	    			"time allowed for presentation", 
@@ -198,7 +227,7 @@ public class ConfigurePanel extends JPanel {
         		}
         	);
 
-    	JButton btnReset = new JButton("reset all");
+    	JButton btnReset = new JButton("reset");
     	btnReset.setToolTipText("set all fields to original values");
     	panel.add(btnReset);
     	btnReset.addActionListener(	// bind a button click to this action
@@ -230,6 +259,20 @@ public class ConfigurePanel extends JPanel {
 	}
 
 	/**
+	 * @return the parent
+	 */
+	public Container getParent() {
+		return parent;
+	}
+
+	/**
+	 * @param parent the parent to set
+	 */
+	public void setParent(Container parent) {
+		this.parent = parent;
+	}
+
+	/**
      * make GridBagConstraints for a GridBagLayout item
      * @param x
      * @param y
@@ -257,12 +300,14 @@ public class ConfigurePanel extends JPanel {
      * set the defaults for all fields
      */
     public void setDefaults() {
+    	// object is initialized with default content
     	TalkConfiguration defaults = new TalkConfiguration();
-    	defaults.setDefaults();
 
+    	// transfer the default object content into the widget fields
     	if (this.preset) {
     		name.setText(defaults.getName());
     		presentation.setText(defaults.getPresentationStr());
+    		setTabTitle(defaults.getName());
     	}
     	discussion.setText(defaults.getDiscussionStr());
     	overtime.setText(defaults.getOvertimeStr());
@@ -281,6 +326,7 @@ public class ConfigurePanel extends JPanel {
     	if (this.preset) {
     		name.setText("");
     		presentation.setText("");
+    		setTabTitle("");
     	}
     	discussion.setText("");
     	overtime.setText("");
@@ -296,9 +342,11 @@ public class ConfigurePanel extends JPanel {
      * reset all fields
      */
     public void resetAll() {
+    	// change the widget fields back to the original the object content
     	if (this.preset) {
     		name.setText(initialTalkConfig.getName());
     		presentation.setText(initialTalkConfig.getPresentationStr());
+    		setTabTitle(initialTalkConfig.getName());
     	}
     	discussion.setText(initialTalkConfig.getDiscussionStr());
     	overtime.setText(initialTalkConfig.getOvertimeStr());
@@ -314,6 +362,7 @@ public class ConfigurePanel extends JPanel {
      * get talk configuration from the widget fields
      */
     public TalkConfiguration getConfig() {
+    	// transfer the content of the widget fields to the object
     	TalkConfiguration talk = new TalkConfiguration();
     	if (this.preset) {
     		talk.setName(name.getText());
@@ -335,8 +384,9 @@ public class ConfigurePanel extends JPanel {
      * @param talk settings for this talk
      */
     public void setConfig(TalkConfiguration talk, boolean setInitial) {
+    	// transfer the object content into the widget fields
     	if (setInitial)
-    		initialTalkConfig = talk;	// FIXME deep copy needed?
+    		initialTalkConfig = talk.deepCopy();
     	if (this.preset) {
     		name.setText(talk.getName());
     		presentation.setText(talk.getPresentationStr());
@@ -351,6 +401,37 @@ public class ConfigurePanel extends JPanel {
     	checkAudible.setSelected(talk.isAudible());
     }
 
+	/**
+	 * standard call to set tab title
+	 * @param panel
+	 * @param index
+	 * @param title
+	 */
+	private void setTabTitle(String title) {
+		if (sameClassAs("javax.swing.JPanel", parent)) {
+			Container grandparent = parent.getParent();
+			if (sameClassAs("javax.swing.JTabbedPane", grandparent)) {
+				JTabbedPane tabbedPane = (JTabbedPane) grandparent;
+				int index = tabbedPane.getSelectedIndex();
+				tabbedPane.setTitleAt(index, title);
+			}
+		}
+	}
+
+	/**
+	 * This test needs a short name
+	 * @param name
+	 * @param object
+	 * @return
+	 */
+	private boolean sameClassAs(String name, Container object) {
+		return name.compareTo(object.getClass().getCanonicalName()) == 0;
+	}
+
+    /**
+     * for development only: test this panel
+     * @param args
+     */
     public static void main(String[] args) {
         //Schedule a job for the event-dispatching thread:
         //creating and showing this application's GUI.
@@ -381,24 +462,26 @@ public class ConfigurePanel extends JPanel {
                 System.out.println(cp.getConfig().toString());
             }
         });
-    }
+    }	
 
 	/**
 	 * universal version identifier for a Serializable class
 	 * @see http://www.javapractices.com/topic/TopicAction.do?Id=45
+	 * @note prefix a field with "transient" to indicate it should be serialized
 	 */
 	private static final long serialVersionUID = 5977631140257178413L;
 
-	public JTextField name;
-	public JTextField presentation;
-	public JTextField discussion;
-	public JTextField overtime;
-	public JTextField msg_pretalk;
-	public JTextField msg_presentation;
-	public JTextField msg_discussion;
-	public JTextField msg_overtime;
-	public JTextField msg_paused;
-	public JCheckBox checkAudible;
+	transient private Container parent;
+	private JTextField name;
+	private JTextField presentation;
+	private JTextField discussion;
+	private JTextField overtime;
+	private JTextField msg_pretalk;
+	private JTextField msg_presentation;
+	private JTextField msg_discussion;
+	private JTextField msg_overtime;
+	private JTextField msg_paused;
+	private JCheckBox checkAudible;
 	private boolean preset;
 
 	private TalkConfiguration initialTalkConfig;
