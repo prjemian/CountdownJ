@@ -93,6 +93,23 @@ public class TalkConfiguration implements Serializable {
 	}
 
 	/**
+	 * localize & standardize the call to deepcopy 
+	 * routine using Serializable implementation
+	 * @param talk
+	 * @return
+	 */
+	public TalkConfiguration deepCopy() {
+		Object object = null;
+		try {
+			object = DeepCopyMaker.makeDeepCopy(this);
+		} catch (Exception e) {
+			// This should not ever fail.  Sound the alarm if it does.
+			e.printStackTrace();
+		}
+		return (TalkConfiguration) object;
+	}
+
+	/**
 	 * @return
 	 */
 	public String getPresentationStr() {
@@ -318,22 +335,6 @@ public class TalkConfiguration implements Serializable {
 		} else 
 			seconds = 0;  // empty string
 		return seconds;
-	}
-
-	/**
-	 * localize & standardize the call to deepcopy routine
-	 * @param talk
-	 * @return
-	 */
-	public TalkConfiguration deepCopy() {
-		Object object = null;
-		try {
-			object = DeepCopyMaker.makeDeepCopy(this);
-		} catch (Exception e) {
-			// This should not ever fail.  Sound the alarm if it does.
-			e.printStackTrace();
-		}
-		return (TalkConfiguration) object;
 	}
 
 	private String name;
