@@ -93,8 +93,8 @@ public class GuiSwing extends JFrame {
     private void overrideInitialTalkConfigurations() {
         TalkConfiguration talk = settings.get("basic");
 		talk.setAudible(true);
-		talk.setPresentation(5 * 60);
-		talk.setDiscussion(60);
+		talk.setPresentation(15 * 60);
+		talk.setDiscussion(5*60);
 		talk.setOvertime(15);
 		talk.setMsg_pretalk("coming up next");
 		talk.setMsg_presentation("listen up");
@@ -110,6 +110,8 @@ public class GuiSwing extends JFrame {
         	talk.setDiscussion((i+1)*60);
         	talk.setOvertime((i+1)*15);
         	talk.setName(talk.getPresentationStr() + " talk");
+        	talk.setMsg_presentation(talk.getPresentationStr() + " talk");
+        	talk.setMsg_pretalk(talk.getPresentationStr() + " talk is next");
         	talk.setMsg_discussion(talk.getDiscussionStr() + " period");
         	talk.setMsg_overtime(talk.getPresentationStr() + " is over");
         }
