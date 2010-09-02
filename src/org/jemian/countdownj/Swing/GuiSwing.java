@@ -58,24 +58,12 @@ public class GuiSwing extends JFrame {
     public GuiSwing() {
     	clockTimer = new ClockTimer(this);	// prepare the timer
 
+    	// define the TalkConfigurations
     	settings = new HashMap<String, TalkConfiguration>();
         settings.put("basic", new TalkConfiguration());
-        for (int i = 0; i < Configure.NUMBER_OF_TABS; i++) {
-        	String key = "preset" + (i+1);
-        	settings.put(key, new TalkConfiguration());
-        }
-
-        TalkConfiguration talk = settings.get("basic");
-		talk.setAudible(true);
-		talk.setPresentation(5 * 60);
-		talk.setDiscussion(60);
-		talk.setOvertime(15);
-		talk.setMsg_pretalk("coming up next");
-		talk.setMsg_presentation("listen up");
-		talk.setMsg_discussion("questions?");
-		talk.setMsg_overtime("stop");
-		talk.setMsg_paused("... waiting ...");
-		talk.setName("5 minutes");
+        for (int i = 0; i < Configure.NUMBER_OF_TABS; i++)
+        	settings.put("preset" + (i+1), new TalkConfiguration());
+        overrideInitialTalkConfigurations();
 
 		// setup the GUI
     	initializeColorTable();
@@ -96,9 +84,35 @@ public class GuiSwing extends JFrame {
 				    public void ancestorMoved(HierarchyEvent e) {}
 				});
 
+		clockTimer.setTime_s(settings.get("basic").getPresentation());
+		msgText.setText(settings.get("basic").getMsg_pretalk());
+        clockTimer.update();
         setExtendedState(MAXIMIZED_BOTH);     // full screen
+    }
+    
+    private void overrideInitialTalkConfigurations() {
+        TalkConfiguration talk = settings.get("basic");
+		talk.setAudible(true);
+		talk.setPresentation(5 * 60);
+		talk.setDiscussion(60);
+		talk.setOvertime(15);
+		talk.setMsg_pretalk("coming up next");
+		talk.setMsg_presentation("listen up");
+		talk.setMsg_discussion("questions?");
+		talk.setMsg_overtime("stop");
+		talk.setMsg_paused("... waiting ...");
+		talk.setName("5 minutes");
 
-		clockTimer.update();
+		for (int i = 0; i < Configure.NUMBER_OF_TABS; i++) {
+        	String key = "preset" + (i+1);
+        	talk = settings.get(key);
+        	talk.setPresentation((i+1)*5*60);
+        	talk.setDiscussion((i+1)*60);
+        	talk.setOvertime((i+1)*15);
+        	talk.setName(talk.getPresentationStr() + " talk");
+        	talk.setMsg_discussion(talk.getDiscussionStr() + " period");
+        	talk.setMsg_overtime(talk.getPresentationStr() + " is over");
+        }
     }
 
     /**
@@ -176,6 +190,11 @@ public class GuiSwing extends JFrame {
         presetButton2.setName("preset2");
         presetButton3.setName("preset3");
         presetButton4.setName("preset4");
+
+        presetButton1.setText(settings.get("preset1").getName());
+        presetButton2.setText(settings.get("preset2").getName());
+        presetButton3.setText(settings.get("preset3").getName());
+        presetButton4.setText(settings.get("preset4").getName());
     }
 
     private void setTextStartButtons(String text) {
@@ -200,7 +219,8 @@ public class GuiSwing extends JFrame {
             if (label.compareTo(mmssButtonStop.getName()) == 0) {doStopButton();}
         }
         if (parent == presetTabPane) {
-            if (label.compareTo(presetButton1.getName()) == 0) {doPresetButton(label);}
+            System.out.println(label);
+        	if (label.compareTo(presetButton1.getName()) == 0) {doPresetButton(label);}
             if (label.compareTo(presetButton2.getName()) == 0) {doPresetButton(label);}
             if (label.compareTo(presetButton3.getName()) == 0) {doPresetButton(label);}
             if (label.compareTo(presetButton4.getName()) == 0) {doPresetButton(label);}
@@ -216,6 +236,7 @@ public class GuiSwing extends JFrame {
         if (!clockTimer.isCounting()) {
             clockTimer.incrTime_s(seconds);
             clockTimer.update();
+    		msgText.setText(settings.get("basic").getMsg_pretalk());
         }
     }
 
@@ -278,6 +299,11 @@ public class GuiSwing extends JFrame {
 	        	String key = "preset" + (i+1);
 	        	settings.put(key, dialog.getPresetSettings(i+1));
 	        }
+	        // update the button labels
+	        presetButton1.setText(settings.get("preset1").getName());
+	        presetButton2.setText(settings.get("preset2").getName());
+	        presetButton3.setText(settings.get("preset3").getName());
+	        presetButton4.setText(settings.get("preset4").getName());
 			break;
 
 		case Configure.CANCEL_BUTTON:
@@ -293,9 +319,10 @@ public class GuiSwing extends JFrame {
     }
 
     private void doPresetButton(String label) {
-    	// copy these settings
-    	// FIXME this sets the basic object tp the preset object!
-		settings.put("basic", settings.get(label));
+    	// copy presets to basic settings
+		settings.put("basic", settings.get(label).deepCopy());
+		clockTimer.setTime_s(settings.get("basic").getPresentation());
+		msgText.setText(settings.get("basic").getMsg_pretalk());
     }
 
     public void doAdjustLabelSizes() {

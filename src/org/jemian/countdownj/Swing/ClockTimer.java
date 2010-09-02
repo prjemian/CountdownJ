@@ -87,14 +87,20 @@ public class ClockTimer {
 	 * define the programmed countdown interval
 	 */
 	public void setTime_s(double seconds) {
-		if (!counting)  time_s = seconds;
+		if (!counting) {
+			time_s = seconds;
+			update();
+		}
 	}
 	
 	/**
 	 * increment the programmed countdown interval
 	 */
 	public void incrTime_s(double seconds) {
-		if (!counting)  time_s += seconds;
+		if (!counting) {
+			time_s += seconds;
+			update();
+		}
 	}
 	
 	/**
@@ -103,6 +109,7 @@ public class ClockTimer {
 	public void clearCounter() {
 		setTime_s(0);
 		endTime = 0;
+		update();
 	}
 	
 	/**

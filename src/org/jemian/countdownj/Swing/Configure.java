@@ -199,6 +199,7 @@ public class Configure extends JDialog {
 			// An ANT build target ("resources") copies it to ${bin.dir}.
     		// Another ANT target copies all of ${bin.dir} to the JAR
     		license_text = readResourceAsString("/LICENSE");
+    		// FIXME on Linux, the license_text is scrolled to the bottom.  Need to display the top line.  Linux-only bug?
 		} catch (IOException e1) {
 			// backup license text if LICENSE cannot be found
 	    	license_text = "ConfigureJ - a timer for conference presentations\n" +
