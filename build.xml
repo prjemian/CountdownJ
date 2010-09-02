@@ -54,7 +54,7 @@
 			debuglevel="${javac.debug.attrs}" 
 			verbose="false">
 			<classpath path="${compile.classpath.contents}" />
-			<exclude name="example/code/" />
+			<exclude name="example/" />
 		</javac>
 	</target>
 
