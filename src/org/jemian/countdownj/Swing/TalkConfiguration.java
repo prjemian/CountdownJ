@@ -352,4 +352,5 @@ public class TalkConfiguration implements Serializable {
 	 * Serializable objects need this to 
 	 * identify when the interface changes.
 	 */
-	private static final long serialVersionUID = 1160508479712297454L;}
+	private static final long serialVersionUID = 1160508479712297454L;
+}

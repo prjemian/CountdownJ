@@ -28,11 +28,10 @@ public class ClockTimer {
 	 * @param interval_ms : reporting interval
 	 * @param endTime : (internal) when the presentation should end
 	 * @param initialDelay : always ZERO for this class
-	 * @param caller : to call caller.doTimer("mm:ss") every interval_ms
-	 * TODO target method caller.doTimer() will be moved to a new class
+	 * @param timerEventCaller : to call timerEventCaller.doTimerEvent("mm:ss") every interval_ms
 	 */
-	public ClockTimer(GuiSwing callback) {
-		caller = callback;
+	public ClockTimer(TimerEventImpl callback) {
+		timerEventCaller = callback;
 	}
 
 	/**
@@ -40,7 +39,7 @@ public class ClockTimer {
 	 * @param i
 	 */
 	public ClockTimer(int i) {
-		caller = null;
+		timerEventCaller = null;
 	}
 
 	/**
@@ -55,8 +54,7 @@ public class ClockTimer {
 		 * @param clockTimer
 		 */
 		public UpdateTask(ClockTimer clockTimer) {
-			// TODO: Can this be found without passing from the caller?
-			this.ct = clockTimer;
+			ct = clockTimer;
 		}
 
 		/**
@@ -152,15 +150,17 @@ public class ClockTimer {
 			mmss = toString();
 		else
 			mmss = "";
-		if (caller != null) {
-			// TODO target method doTimer() will be moved to a new class
-			caller.doTimer(mmss);
+		if (timerEventCaller != null) {
+			timerEventCaller.doTimerEvent(mmss);
 		} else {
 			// development only
-			System.out.println("ClockTimer: " + mmss);
+			String format = "ClockTimer:  %s  <%.2f>";
+			System.out.println(String.format(format, mmss, time_s));
+			if (time_s <= -2)
+				System.exit(0);
 		}
 	}
-	
+
 	/**
 	 * render the value of interval as mm:ss
 	 */
@@ -175,7 +175,7 @@ public class ClockTimer {
 	}
 
 	/**
-	 * test this routine (needs to be interrupted with ^C or similar)
+	 * test this routine (quits at time_s <= -2)
 	 * @param args
 	 */
 	public static void main(String args[]) {
@@ -187,10 +187,10 @@ public class ClockTimer {
 	}
 
 	private Timer timer;
+	private TimerEventImpl timerEventCaller;
 	private boolean counting = false;
 	private double time_s = 0;
 	private int interval_ms = 50;
 	private double endTime = 0;
 	private int initialDelay = 0;
-	private GuiSwing caller = null;
 }
