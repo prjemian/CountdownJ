@@ -47,17 +47,14 @@ public class GuiSwing extends JFrame {
 	 */
 	private static final long serialVersionUID = 3167378700428228696L;
 
+	private TalkTimer talkTimer;
 	private HashMap<String, Color> colorTable;
 	private HashMap<String, TalkConfiguration> settings;
 
-	public ClockTimer clockTimer = null;
-	private String lastPhaseText;
-	private double last_time_s;
-
-    /** Creates new form GuiSwing */
+    /**
+     * creates ConfigureJ application main display
+     */
     public GuiSwing() {
-    	clockTimer = new ClockTimer(this);	// prepare the timer
-
     	// define the TalkConfigurations
     	settings = new HashMap<String, TalkConfiguration>();
         settings.put("basic", new TalkConfiguration());
@@ -84,9 +81,8 @@ public class GuiSwing extends JFrame {
 				    public void ancestorMoved(HierarchyEvent e) {}
 				});
 
-		clockTimer.setTime_s(settings.get("basic").getPresentation());
-		msgText.setText(settings.get("basic").getMsg_pretalk());
-        clockTimer.update();
+
+    	talkTimer = new TalkTimer(this, settings.get("basic"));
         setExtendedState(MAXIMIZED_BOTH);     // full screen
     }
     
@@ -118,13 +114,6 @@ public class GuiSwing extends JFrame {
     }
 
     /**
-     * local name for the audible annunciator
-     */
-    private void beep() {
-        Toolkit.getDefaultToolkit().beep();
-    }
-
-    /**
      * Create the different color objects 
      * just once and re-use them as needed
      */
@@ -135,6 +124,7 @@ public class GuiSwing extends JFrame {
     	colorTable.put("red", new Color(0xff, 0, 0));
     	colorTable.put("yellow", new Color(0xff, 0xff, 0));
     	colorTable.put("green", new Color(0, 0xff, 0));
+    	colorTable.put("lightblue", new Color(0xad, 0xd8, 0xe6));
     	colorTable.put("default", new Color(0, 0, 0xff));
     }
 
@@ -200,13 +190,17 @@ public class GuiSwing extends JFrame {
     }
 
     private void setTextStartButtons(String text) {
-        mmssButtonStart.setText(text);
-        presetButtonStart.setText(text);
+        if (text.compareTo(mmssButtonStart.getText()) != 0)
+        	mmssButtonStart.setText(text);
+        if (text.compareTo(presetButtonStart.getText()) != 0)
+        	presetButtonStart.setText(text);
     }
 
     private void setTextStopButtons(String text) {
-        mmssButtonStop.setText(text);
-        presetButtonStop.setText(text);
+        if (text.compareTo(mmssButtonStop.getText()) != 0)
+        	mmssButtonStop.setText(text);
+        if (text.compareTo(presetButtonStop.getText()) != 0)
+        	presetButtonStop.setText(text);
     }
 
     public void doButton(JButton button) {
@@ -221,7 +215,6 @@ public class GuiSwing extends JFrame {
             if (label.compareTo(mmssButtonStop.getName()) == 0) {doStopButton();}
         }
         if (parent == presetTabPane) {
-            System.out.println(label);
         	if (label.compareTo(presetButton1.getName()) == 0) {doPresetButton(label);}
             if (label.compareTo(presetButton2.getName()) == 0) {doPresetButton(label);}
             if (label.compareTo(presetButton3.getName()) == 0) {doPresetButton(label);}
@@ -235,22 +228,18 @@ public class GuiSwing extends JFrame {
     }
 
     private void incrementTime(int seconds) {
-        if (!clockTimer.isCounting()) {
-            clockTimer.incrTime_s(seconds);
-            clockTimer.update();
-    		msgText.setText(settings.get("basic").getMsg_pretalk());
-        }
+        talkTimer.incrementTime(seconds);
     }
 
     private void doStartButton() {
-		if (!clockTimer.isCounting() && clockTimer.getTime_s()>0) {
-			clockTimer.start();
+		if (!talkTimer.isCounting() && talkTimer.getClockTime()>0) {
+			talkTimer.start();
 			setTextStartButtons("pause");
 			setTextStopButtons("stop");
 		} else {
-			clockTimer.stop();
-			// endTime = 0;
-			if (clockTimer.getTime_s()>0) {
+			talkTimer.pause();
+			talkTimer.incrementTime(0);  // force a timer event?
+			if (talkTimer.getClockTime()>0) {
 				setTextStartButtons("resume");
 				setTextStopButtons("clear");
 			} else {
@@ -258,22 +247,20 @@ public class GuiSwing extends JFrame {
 				doStopButton();
 			}
 		}
-		clockTimer.update();
     }
 
     private void doStopButton() {
-		if (!clockTimer.isCounting()) {
-			clockTimer.stop();
-			clockTimer.clearCounter();
+		if (!talkTimer.isCounting()) {
+			talkTimer.stop();
+			talkTimer.clearCounter();
 			setTextStartButtons("start");
 			setTextStopButtons("clear");
 		} else {
-			clockTimer.stop();
-			clockTimer.clearCounter();
+			talkTimer.stop();
+			talkTimer.clearCounter();
 			setTextStartButtons("start");
 			setTextStopButtons("clear");
-		}
-		clockTimer.update();    
+		}   
 	}
 
     private void doConfigureButton() {
@@ -321,10 +308,16 @@ public class GuiSwing extends JFrame {
     }
 
     private void doPresetButton(String label) {
-    	// copy presets to basic settings
-		settings.put("basic", settings.get(label).deepCopy());
-		clockTimer.setTime_s(settings.get("basic").getPresentation());
-		msgText.setText(settings.get("basic").getMsg_pretalk());
+    	if (talkTimer.isPaused() || talkTimer.isCounting()) {
+    		// do not install a new preset while talk is paused or running
+    		smartSetText(msgText, "must [clear] first");
+    	} else {
+	    	// copy presets to basic settings
+			settings.put("basic", settings.get(label).deepCopy());
+			// and make a new timer object
+			talkTimer.stop();	// stop the old one first
+			talkTimer = new TalkTimer(this, settings.get("basic"));
+    	}
     }
 
     public void doAdjustLabelSizes() {
@@ -342,55 +335,51 @@ public class GuiSwing extends JFrame {
         Font newFont = new Font(fontName, fontStyle, height);
         label.setFont(newFont);
     }
-    
-	public void doTimer(String str) {
-		// TODO move this function to a separate class
-		TalkConfiguration talk = settings.get("basic");
-		double time_s = clockTimer.getTime_s();
 
-		int numBeeps = 0;
-		String colorName = "white";
-		String msgTextStr = calcMsgText();
-		if (talk.getMsg_overtime().compareTo(msgTextStr)==0) {
-			colorName = "red";
-			if (talk.getMsg_discussion().compareTo(lastPhaseText) == 0)
-				numBeeps = 2;
-			if (last_time_s < 0) {
-				int overtimeReminder_s = talk.getOvertime();
-				double t1 = Math.abs(time_s) % overtimeReminder_s;
-				double t2 = Math.abs(last_time_s) % overtimeReminder_s;
-				if ( t1 < t2)
-					numBeeps = 3;				
-			}
-		}
-		if (talk.getMsg_discussion().compareTo(msgTextStr)==0) {
-			colorName = "yellow";
-			if (talk.getMsg_presentation().compareTo(lastPhaseText) == 0)
-				numBeeps = 1;
-		}
-		if (talk.getMsg_presentation().compareTo(msgTextStr)==0) {
-			colorName = "green";
-		}
+	/**
+	 * This routine is called by TalkTimer.doTimerEvent() 
+	 * in response to timer updates.
+	 * @param mmss
+	 * @param msgTextStr
+	 * @param numBeeps
+	 * @param color
+	 */
+    public void doDisplayCallback(
+			double time,
+    		String mmss,
+			String msgTextStr, 
+			int numBeeps, 
+			String color) {
 
-		// for next time
-		lastPhaseText = msgTextStr;
-		last_time_s = time_s;
+		smartSetText(mmssText, mmss);
+		if (smartSetText(msgText, msgTextStr))
+			setColor(color);
+		soundBeeps(numBeeps);
 
-		smartSetText(mmssText, str);	// Can it be this easy?
-		if (smartSetText(msgText, msgTextStr)) {
-			Color color = null;
-			if (colorTable.containsKey(colorName)) {
-				color = colorTable.get(colorName);
-			} else {
-				color = colorTable.get("default");
-			}
-			mmssText.setForeground(color);
-			msgText.setForeground(color);
-		}
-
-		if (time_s < 0) {
+		if (time < 0)
 			setTextStopButtons("stop");
+	}
+	
+	/**
+	 * choose a color by name
+	 * @param colorName
+	 */
+    private void setColor(String colorName) {
+		Color color = null;
+		if (colorTable.containsKey(colorName)) {
+			color = colorTable.get(colorName);
+		} else {
+			color = colorTable.get("default");
 		}
+		mmssText.setForeground(color);
+		msgText.setForeground(color);
+	}
+	
+	/**
+	 * sound an alert at key transitions in the talk
+	 * @param numBeeps
+	 */
+	private void soundBeeps(int numBeeps) {
 		for (int i = 0; i < numBeeps; i++) {
 			try {
 				Thread.sleep(500);  // intervals between beeps
@@ -401,6 +390,13 @@ public class GuiSwing extends JFrame {
 			beep();
 		}
 	}
+
+    /**
+     * local name for the audible annunciator
+     */
+    private void beep() {
+        Toolkit.getDefaultToolkit().beep();
+    }
 
 	/**
 	 * only set the widget text if the new text is different
@@ -415,25 +411,6 @@ public class GuiSwing extends JFrame {
 			widget.setText(text);
 		}
 		return result;
-	}
-
-	private String calcMsgText() {
-		// TODO move this function to a separate class
-		double time_s = clockTimer.getTime_s();
-		TalkConfiguration talk = settings.get("basic");
-		String msgTextStr = "";
-		if (clockTimer.isCounting()) {
-			if (time_s < 0) {
-				msgTextStr = talk.getMsg_overtime();
-			} else {
-				if (time_s > talk.getDiscussion()) {
-					msgTextStr = talk.getMsg_presentation();
-				} else  {
-					msgTextStr = talk.getMsg_discussion();
-				}
-			}
-		}
-		return msgTextStr;
 	}
 
     /** This method is called from within the constructor to
@@ -660,8 +637,6 @@ public class GuiSwing extends JFrame {
                 new GuiSwing().setVisible(true);
             }
         });
-
-		// TODO: on destroy: gui.clockTimer.stop();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

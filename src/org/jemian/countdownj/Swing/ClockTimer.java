@@ -123,7 +123,7 @@ public class ClockTimer {
 	 */
 	public void start() {
 		endTime = _now_() + time_s;
-      counting = true;
+		counting = true;
 		timer = new Timer();
 		timer.schedule(new UpdateTask(this), initialDelay, interval_ms);
 		update();
