@@ -15,18 +15,20 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.jemian.countdownj.Swing.TalkConfiguration;
-import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
 
 import com.sun.org.apache.xml.internal.serializer.OutputPropertiesFactory;
 
 public class TestXml {
 
 	public TestXml(HashMap<String, TalkConfiguration> config) throws ParserConfigurationException {
-		doc = makeXmlDoc();
+		doc = makeNewXmlDoc();
 		this.config = config;
 	}
 	
@@ -36,7 +38,7 @@ public class TestXml {
 	 */
 	public Document writeFullConfiguration() {
         //create the root element and add it to the document
-        Element root = xmlRootElement(doc, "TalkConfiguration");
+        Element root = xmlRootElement(doc, ROOTNODE);
         root.setAttribute("version", VERSION);
         // TODO add date & time file was written and program that wrote it
         root.setAttribute("programName", programName);
@@ -95,13 +97,24 @@ public class TestXml {
 	 * @return
 	 * @throws ParserConfigurationException
 	 */
-	private Document makeXmlDoc() throws ParserConfigurationException {
+	private Document makeNewXmlDoc() throws ParserConfigurationException {
         // We need an XML DOM Document
         DocumentBuilderFactory dbfac = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = dbfac.newDocumentBuilder();
         return docBuilder.newDocument();
 	}
 
+	public static Document openXmlDoc(String filename) throws Exception {
+		// Step 1: create a DocumentBuilderFactory
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+
+		// Step 2: create a DocumentBuilder
+		DocumentBuilder db = dbf.newDocumentBuilder();
+
+		// Step 3: parse the input file to get a Document object
+		Document doc = db.parse(new File(filename));
+		return doc;
+	}
 	
 	/**
 	 * Define the root node in the DOM document
@@ -169,13 +182,37 @@ public class TestXml {
 	/**
 	 * This method will read an XML file into a DOM document
 	 * @return
+	 * @throws Exception 
 	 */
-	public String readXmlFile() {
-		return "";
+	public static Document readXmlFile(String filename) throws Exception {
+		return openXmlDoc(filename);
 		
 	}
 
-	public static void main(String[] args) throws ParserConfigurationException {
+	/**
+	 * get a single node from an XML file indexed by an XPath expression
+	 * @param filename
+	 * @param xpathExpr
+	 * @return
+	 * @throws XPathExpressionException
+	 */
+	public static String readXpathNode(String filename, String xpathExpr)
+			throws XPathExpressionException {
+		// 1. Instantiate an XPathFactory.
+		XPathFactory factory = XPathFactory.newInstance();
+
+		// 2. Use the XPathFactory to create a new XPath object
+		javax.xml.xpath.XPath xpathObject = factory.newXPath();
+
+		// open the XML document
+		InputSource source = new InputSource(filename);
+
+		// 3. Compile an XPath string into an XPathExpression
+		// 4. Evaluate XPathExpression against XML document
+		return xpathObject.compile(xpathExpr).evaluate(source);
+	}
+
+	public static void main(String[] args) throws Exception {
 		HashMap<String, TalkConfiguration> theConfig = new HashMap<String, TalkConfiguration>();
 		for (int i = 0; i < keys.length; i++) {
 			TalkConfiguration talk = new TalkConfiguration();
@@ -187,6 +224,10 @@ public class TestXml {
 		TestXml test = new TestXml(theConfig);
 		Document xmldoc = test.writeFullConfiguration();
 		test.writeXmlFile(xmldoc, "test.xml");
+		TestXml.readXmlFile(TEST_FILE);
+
+		String programName = TestXml.readXpathNode("config.xml", "/CountdownJ/@name");
+		String version = TestXml.readXpathNode("config.xml", "/CountdownJ/@version");
 	}
 
 	private static final String TEST_FILE = "config.xml";
@@ -196,4 +237,5 @@ public class TestXml {
 	private HashMap<String, TalkConfiguration> config;
 	private static final String programName = "CountdownJ";		// can we get this from config.xml?
 	private static final String VERSION = "1.0j";		// can we get this from config.xml?
+	private static final String ROOTNODE = "TalkConfiguration";
 }
