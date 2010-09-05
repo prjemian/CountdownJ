@@ -5,7 +5,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.xml.sax.InputSource;
 
-public class TestXml {
+public class TestXmlXpath {
 
 	public static void readExample(String filename, String[] nodes)
 			throws XPathExpressionException {
@@ -52,17 +52,17 @@ public class TestXml {
 		try {
 			String[] nodes = "/CountdownJ/author /CountdownJ/copyright /CountdownJ/email"
 					.split(" ");
-			TestXml.readExample("config.xml", nodes);
+			TestXmlXpath.readExample("config.xml", nodes);
 
 			nodes = "/project/@name //isset/@property //property/@environment //condition/@value"
 					.split(" ");
-			TestXml.readExample("hostarch.xml", nodes);
+			TestXmlXpath.readExample("hostarch.xml", nodes);
 
-			String programName = TestXml.readXpathNode("config.xml", "/CountdownJ/@name");
-			String version = TestXml.readXpathNode("config.xml", "/CountdownJ/@version");
+			String programName = TestXmlXpath.readXpathNode("config.xml", "/CountdownJ/@name");
+			String version = TestXmlXpath.readXpathNode("config.xml", "/CountdownJ/@version");
 
-			System.out.println(TestXml.readXpathNode("test.xml", "/TalkConfiguration/@version"));
-			System.out.println(TestXml.readXpathNode("test.xml", "/TalkConfiguration/talk[@id='preset2']/seconds/@discussion"));
+			System.out.println(TestXmlXpath.readXpathNode("test.xml", "/TalkConfiguration/@version"));
+			System.out.println(TestXmlXpath.readXpathNode("test.xml", "/TalkConfiguration/talk[@id='preset2']/seconds/@discussion"));
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
