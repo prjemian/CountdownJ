@@ -36,18 +36,18 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 /**
- * the Configure dialog for the CountdownJ program
+ * the ConfigureDialog dialog for the CountdownJ program
  */
-public class Configure extends JDialog {
+public class ConfigureDialog extends JDialog {
 
 	// @see http://download.oracle.com/javase/tutorial/uiswing/components/dialog.html
 	
 	/**
-	 * Creates Configure dialog
+	 * Creates ConfigureDialog dialog
 	 * @param parent AWT Frame that owns this dialog
 	 * @param modal whether to make this a modal dialog
 	 */
-    public Configure(Frame parent) {
+    public ConfigureDialog(Frame parent) {
         super(parent, true);  // always make this a modal dialog
         buttonPressed = NO_BUTTON_PRESSED;
         settings = new HashMap<String, TalkConfiguration>();
@@ -378,7 +378,7 @@ public class Configure extends JDialog {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
             	TalkConfiguration talk;
-            	Configure dialog = new Configure(new javax.swing.JFrame());
+            	ConfigureDialog dialog = new ConfigureDialog(new javax.swing.JFrame());
                 dialog.addWindowListener(new WindowAdapter() {
                     public void windowClosing(WindowEvent e) {
                         System.exit(0);
@@ -392,7 +392,7 @@ public class Configure extends JDialog {
                 talk.setName("adjusted");
         		talk.setAudible(false);
                 dialog.setBasicSettings(talk);
-                for (int i = 0; i < Configure.NUMBER_OF_TABS; i++) {
+                for (int i = 0; i < ConfigureDialog.NUMBER_OF_TABS; i++) {
                 	TalkConfiguration item = new TalkConfiguration();
                 	item.setPresentation((i+1)*5*60);
                 	item.setDiscussion((i+1)*60);
@@ -405,11 +405,11 @@ public class Configure extends JDialog {
                 // =========================================
                 int pressed = dialog.getButtonPressed();
                 System.out.println("pressed: " + pressed);
-                if (pressed == Configure.OK_BUTTON) {
+                if (pressed == ConfigureDialog.OK_BUTTON) {
 	                talk = dialog.getBasicSettings();
 	                String str = String.format("<talk id=\"basic\" %s />", talk);
                     System.out.println(str);
-	                for (int i = 0; i < Configure.NUMBER_OF_TABS; i++) {
+	                for (int i = 0; i < ConfigureDialog.NUMBER_OF_TABS; i++) {
 	                	talk = dialog.getPresetSettings(i+1);
 	                	str = String.format("<talk id=\"preset%s\" %s />", i+1, talk);
 	                    System.out.println(str);

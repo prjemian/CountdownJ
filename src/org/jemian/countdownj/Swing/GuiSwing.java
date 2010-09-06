@@ -58,7 +58,7 @@ public class GuiSwing extends JFrame {
     	// define the TalkConfigurations
     	settings = new HashMap<String, TalkConfiguration>();
         settings.put("basic", new TalkConfiguration());
-        for (int i = 0; i < Configure.NUMBER_OF_TABS; i++)
+        for (int i = 0; i < ConfigureDialog.NUMBER_OF_TABS; i++)
         	settings.put("preset" + (i+1), new TalkConfiguration());
         overrideInitialTalkConfigurations();
 
@@ -99,7 +99,7 @@ public class GuiSwing extends JFrame {
 		talk.setMsg_paused("... waiting ...");
 		talk.setName("5 minutes");
 
-		for (int i = 0; i < Configure.NUMBER_OF_TABS; i++) {
+		for (int i = 0; i < ConfigureDialog.NUMBER_OF_TABS; i++) {
         	String key = "preset" + (i+1);
         	talk = settings.get(key);
         	talk.setPresentation((i+1)*5*60);
@@ -264,7 +264,7 @@ public class GuiSwing extends JFrame {
 	}
 
     private void doConfigureButton() {
-        Configure dialog = new Configure(new javax.swing.JFrame());
+    	ConfigureDialog dialog = new ConfigureDialog(new javax.swing.JFrame());
         dialog.addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent e) {
                 //System.exit(0);
@@ -273,7 +273,7 @@ public class GuiSwing extends JFrame {
         // =========================================
         // pass known configurations to dialog
         dialog.setBasicSettings(settings.get("basic"));
-        for (int i = 0; i < Configure.NUMBER_OF_TABS; i++) {
+        for (int i = 0; i < ConfigureDialog.NUMBER_OF_TABS; i++) {
         	String key = "preset" + (i+1);
         	dialog.setPresetSettings(i+1, settings.get(key));
         }
@@ -282,9 +282,9 @@ public class GuiSwing extends JFrame {
         // =========================================
         // get configurations from dialog
         switch (dialog.getButtonPressed()) {
-		case Configure.OK_BUTTON:
+		case ConfigureDialog.OK_BUTTON:
 			settings.put("basic", dialog.getBasicSettings());
-	        for (int i = 0; i < Configure.NUMBER_OF_TABS; i++) {
+	        for (int i = 0; i < ConfigureDialog.NUMBER_OF_TABS; i++) {
 	        	String key = "preset" + (i+1);
 	        	settings.put(key, dialog.getPresetSettings(i+1));
 	        }
@@ -295,7 +295,7 @@ public class GuiSwing extends JFrame {
 	        presetButton4.setText(settings.get("preset4").getName());
 			break;
 
-		case Configure.CANCEL_BUTTON:
+		case ConfigureDialog.CANCEL_BUTTON:
 			// System.out.println("<Cancel>");
 			break;
 
