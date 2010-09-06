@@ -158,19 +158,20 @@ public class ConfigureDialog extends JDialog {
 
     	// + + + + + + + + + + + + + + + + + + + + + + + +
     	// About Box
+    	ConfigFile cfg = ConfigFile.getInstance();
 
     	int row = 0;
     	aboutBoxPanel.setLayout(new GridBagLayout());
-    	JLabel text = new JLabel("CountdownJ");
+    	JLabel text = new JLabel(cfg.getName() + ", v" + cfg.getVersion());
     	text.setFont(new Font("Tahoma", Font.BOLD, 32));
     	text.setAlignmentX(CENTER_ALIGNMENT);
     	aboutBoxPanel.add(text, makeConstraints(0, row++, 1.0, 0.0, 1, 1));
 
-    	text = new JLabel("by Pete R. Jemian");
+    	text = new JLabel("by " + cfg.getAuthor());
     	text.setFont(new Font("Tahoma", Font.PLAIN, 16));
     	aboutBoxPanel.add(text, makeConstraints(0, row++, 1.0, 0.0, 1, 1));
 
-    	text = new JLabel("<prjemian@gmail.com>");
+    	text = new JLabel("<"+cfg.getEmail()+">");
     	text.setFont(new Font("Courier", Font.PLAIN, 12));
     	aboutBoxPanel.add(text, makeConstraints(0, row++, 1.0, 0.0, 1, 1));
 
@@ -202,7 +203,7 @@ public class ConfigureDialog extends JDialog {
     		// FIXME on Linux, the license_text is scrolled to the bottom.  Need to display the top line.  Linux-only bug?
 		} catch (IOException e1) {
 			// backup license text if LICENSE cannot be found
-	    	license_text = "ConfigureJ - a timer for conference presentations\n" +
+	    	license_text = "ConfigureJ - a timer for presentations\n" +
 	    			"Copyright (c) 2010 - Pete R. Jemian\n" +
 	    			"\n" +
 	    			"See the LICENSE file included in the " +

@@ -11,7 +11,9 @@
 -->
 
 <CountdownJ version="1.0j" name="CountdownJ">
+  <description>CountdownJ - a timer for presentations</description>
   <author>Pete R. Jemian</author>
   <email>prjemian@gmail.com</email>
   <copyright>(c) 2010 Pete R. Jemian</copyright>
+  <license>See the LICENSE file included in the distribution for full details.</license>
 </CountdownJ>
