@@ -1,8 +1,6 @@
 package org.jemian.countdownj.Swing;
 
-import java.util.HashMap;
-
-//TODO needs copyright and license header
+// CountdownJ, (c) 2010 Pete R. Jemian, See LICENSE (GPLv3) for details
 
 //########### SVN repository information ###################
 //# $Date$
@@ -11,6 +9,8 @@ import java.util.HashMap;
 //# $URL$
 //# $Id$
 //########### SVN repository information ###################
+
+import java.util.HashMap;
 
 public class TalkTimer extends TimerEventImpl {
 

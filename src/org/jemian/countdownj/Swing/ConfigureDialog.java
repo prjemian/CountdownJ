@@ -1,6 +1,6 @@
 package org.jemian.countdownj.Swing;
 
-//TODO needs copyright and license header
+// CountdownJ, (c) 2010 Pete R. Jemian, See LICENSE (GPLv3) for details
 
 //########### SVN repository information ###################
 //# $Date$
@@ -165,6 +165,10 @@ public class ConfigureDialog extends JDialog {
     	JLabel text = new JLabel(cfg.getName() + ", v" + cfg.getVersion());
     	text.setFont(new Font("Tahoma", Font.BOLD, 32));
     	text.setAlignmentX(CENTER_ALIGNMENT);
+    	aboutBoxPanel.add(text, makeConstraints(0, row++, 1.0, 0.0, 1, 1));
+
+    	text = new JLabel(cfg.getCopyright());
+    	text.setFont(new Font("Courier", Font.PLAIN, 12));
     	aboutBoxPanel.add(text, makeConstraints(0, row++, 1.0, 0.0, 1, 1));
 
     	text = new JLabel("by " + cfg.getAuthor());

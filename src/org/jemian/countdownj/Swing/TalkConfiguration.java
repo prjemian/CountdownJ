@@ -1,13 +1,6 @@
 package org.jemian.countdownj.Swing;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-
-import com.devx.tip13341.DeepCopyMaker;
-
-//TODO needs copyright and license header
+// CountdownJ, (c) 2010 Pete R. Jemian, See LICENSE (GPLv3) for details
 
 //########### SVN repository information ###################
 //# $Date$
@@ -16,6 +9,13 @@ import com.devx.tip13341.DeepCopyMaker;
 //# $URL$
 //# $Id$
 //########### SVN repository information ###################
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
+import com.devx.tip13341.DeepCopyMaker;
 
 /**
  * Configuration parameters for running the clock timer for a single presentation

@@ -1,6 +1,6 @@
 package org.jemian.countdownj.Swing;
 
-// TODO needs copyright and license header
+// CountdownJ, (c) 2010 Pete R. Jemian, See LICENSE (GPLv3) for details
 
 //########### SVN repository information ###################
 //# $Date$

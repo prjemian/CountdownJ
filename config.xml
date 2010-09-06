@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 
+<!-- CountdownJ, (c) 2010 Pete R. Jemian, See LICENSE (GPLv3) for details -->
+
 <!--
 ########### SVN repository information ###################
 # $Date: 2010-08-23 16:30:21 -0500 (Mon, 23 Aug 2010) $
@@ -15,5 +17,5 @@
   <author>Pete R. Jemian</author>
   <email>prjemian@gmail.com</email>
   <copyright>(c) 2010 Pete R. Jemian</copyright>
-  <license>See the LICENSE file included in the distribution for full details.</license>
+  <license>See the LICENSE file (GPLv3) included in the distribution for details.</license>
 </CountdownJ>

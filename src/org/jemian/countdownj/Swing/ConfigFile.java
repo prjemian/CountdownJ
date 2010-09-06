@@ -1,6 +1,6 @@
 package org.jemian.countdownj.Swing;
 
-//TODO needs copyright and license header
+// CountdownJ, (c) 2010 Pete R. Jemian, See LICENSE (GPLv3) for details
 
 //########### SVN repository information ###################
 //# $Date$
@@ -12,9 +12,7 @@ package org.jemian.countdownj.Swing;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 
-import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -25,12 +23,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 public class ConfigFile {
 
@@ -56,19 +49,14 @@ public class ConfigFile {
 			builder = factory.newDocumentBuilder();
 			doc = builder.parse(in);
 		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
 		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
 		}
 
+		// prepare to search using XPath expressions
 		XPathFactory xpFactory = XPathFactory.newInstance();
 		XPath xpath = xpFactory.newXPath();
-		XPathExpression expr;
+
 		name = getStringByXpath(xpath, "/CountdownJ/@name");
 		version = getStringByXpath(xpath, "/CountdownJ/@version");
 		description = getStringByXpath(xpath, "/CountdownJ/description");
@@ -170,7 +158,6 @@ public class ConfigFile {
 	private String license;
 
 	private static Document doc;
-	private static InputStream xmlInputStream;
 	private static final String RES_DIR = "/";
 	private static final ConfigFile CONFIGFILE = new ConfigFile();
 	private static final String xmlFile = "config.xml";

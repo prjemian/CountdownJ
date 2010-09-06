@@ -1,7 +1,6 @@
 package example.xml;
 
 import java.io.File;
-import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,6 +20,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.jemian.countdownj.Swing.ConfigFile;
 import org.jemian.countdownj.Swing.TalkConfiguration;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -45,6 +45,8 @@ public class TestXml {
         root.setAttribute("version", VERSION);
         // TODO add date & time file was written and program that wrote it
         root.setAttribute("programName", programName);
+        root.appendChild(
+        		doc.createComment("\n"+ConfigFile.getInstance().toString()+"\n"));
         attachXmlText(doc, 
         		attachXmlElement(doc, root, "timestamp"), 
         		timeStamp());
@@ -244,13 +246,8 @@ public class TestXml {
 		TestXml test = new TestXml(theConfig);
 		Document xmldoc = test.writeFullConfiguration();
 		test.writeXmlFile(xmldoc, "test.xml");
-		TestXml.readXmlFile(TEST_FILE);
-
-		String programName = TestXml.readXpathNode("config.xml", "/CountdownJ/@name");
-		String version = TestXml.readXpathNode("config.xml", "/CountdownJ/@version");
 	}
 
-	private static final String TEST_FILE = "config.xml";
 	private Document doc;
 	private static final String[] keys = 
 		{"basic", "preset1", "preset2", "preset3", "preset4"};
