@@ -1,6 +1,9 @@
 package example.xml;
 
 import java.io.File;
+import java.sql.Time;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -42,7 +45,9 @@ public class TestXml {
         root.setAttribute("version", VERSION);
         // TODO add date & time file was written and program that wrote it
         root.setAttribute("programName", programName);
-        //root.setAttribute("timestamp", timestamp);
+        attachXmlText(doc, 
+        		attachXmlElement(doc, root, "timestamp"), 
+        		timeStamp());
 		for (int i = 0; i < keys.length; i++)
 			writeTalkConfiguration (doc, root, keys[i], config.get(keys[i]));
 		return doc;
@@ -72,25 +77,27 @@ public class TestXml {
         		attachXmlElement(doc, talkNode, "audible"), 
         		talk.isAudible() ? "true" : "false");
 
-        Element msgNode = attachXmlElement(doc, talkNode, "messages");
-        msgNode.appendChild(doc.createComment("messages should be short"));
+        talkNode.appendChild(doc.createComment("messages should be brief"));
+        Element node = attachXmlElement(doc, talkNode, "message");
+        node.setAttribute("name", "pretalk");
+        attachXmlText(doc, node, talk.getMsg_pretalk());
 
-        attachXmlText(doc, 
-        		attachXmlElement(doc, msgNode, "pretalk"), 
-        		talk.getMsg_pretalk());
-        attachXmlText(doc, 
-        		attachXmlElement(doc, msgNode, "presentation"), 
-        		talk.getMsg_presentation());
-        attachXmlText(doc, 
-        		attachXmlElement(doc, msgNode, "discussion"), 
-        		talk.getMsg_discussion());
-        attachXmlText(doc, 
-        		attachXmlElement(doc, msgNode, "overtime"), 
-        		talk.getMsg_overtime());
-        attachXmlText(doc, 
-        		attachXmlElement(doc, msgNode, "paused"), 
-        		talk.getMsg_paused());
-	}
+        node = attachXmlElement(doc, talkNode, "message");
+        node.setAttribute("name", "presentation");
+        attachXmlText(doc, node, talk.getMsg_presentation());
+
+        node = attachXmlElement(doc, talkNode, "message");
+        node.setAttribute("name", "discussion");
+        attachXmlText(doc, node, talk.getMsg_discussion());
+
+        node = attachXmlElement(doc, talkNode, "message");
+        node.setAttribute("name", "overtime");
+        attachXmlText(doc, node, talk.getMsg_overtime());
+
+        node = attachXmlElement(doc, talkNode, "message");
+        node.setAttribute("name", "paused");
+        attachXmlText(doc, node, talk.getMsg_paused());
+    }
 
 	/**
 	 * initialize a new DOM document
@@ -190,7 +197,8 @@ public class TestXml {
 	}
 
 	/**
-	 * get a single node from an XML file indexed by an XPath expression
+	 * Get a single node from an XML file indexed by an XPath expression.
+	 * This code is inefficient for many reads from the same file.
 	 * @param filename
 	 * @param xpathExpr
 	 * @return
@@ -211,6 +219,18 @@ public class TestXml {
 		// 4. Evaluate XPathExpression against XML document
 		return xpathObject.compile(xpathExpr).evaluate(source);
 	}
+
+	/**
+	 * Allocates a Date object and initializes it so that it 
+	 * represents the time at which it was allocated, measured 
+	 * to the nearest millisecond.
+	 */
+	private String timeStamp() {
+        Date dateNow = new Date ();
+        SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd+hh:mm:ss");
+        StringBuilder timeStamp = new StringBuilder( timeFormat.format( dateNow ) );
+		return timeStamp.toString();
+    }
 
 	public static void main(String[] args) throws Exception {
 		HashMap<String, TalkConfiguration> theConfig = new HashMap<String, TalkConfiguration>();
