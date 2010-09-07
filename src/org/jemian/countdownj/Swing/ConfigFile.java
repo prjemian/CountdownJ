@@ -79,6 +79,13 @@ public class ConfigFile {
 		String result = null;
 		try {
 			expr = xpath.compile(xpathExpr);
+			/*
+			 * XPathConstants.NODESET
+		     * XPathConstants.BOOLEAN
+		     * XPathConstants.NUMBER
+		     * XPathConstants.STRING
+		     * XPathConstants.NODE
+			 */
 			result = (String) expr.evaluate(doc, XPathConstants.STRING);
 		} catch (XPathExpressionException e) {
 			result = xpathExpr + " not found";

@@ -203,15 +203,16 @@ public class ConfigureDialog extends JDialog {
     		//	  [2] root of JAR executable file
 			// An ANT build target ("resources") copies it to ${bin.dir}.
     		// Another ANT target copies all of ${bin.dir} to the JAR
-    		license_text = readResourceAsString("/LICENSE");
+    		license_text = readResourceAsString(LICENSE_FILE);
     		// FIXME on Linux, the license_text is scrolled to the bottom.  Need to display the top line.  Linux-only bug?
 		} catch (IOException e1) {
 			// backup license text if LICENSE cannot be found
-	    	license_text = "ConfigureJ - a timer for presentations\n" +
-	    			"Copyright (c) 2010 - Pete R. Jemian\n" +
-	    			"\n" +
-	    			"See the LICENSE file included in the " +
-	    			"distribution for full details.";
+			license_text = ConfigFile.getInstance().toString();
+	    	//license_text = "ConfigureJ - a timer for presentations\n" +
+	    	//		"Copyright (c) 2010 - Pete R. Jemian\n" +
+	    	//		"\n" +
+	    	//		"See the LICENSE file included in the " +
+	    	//		"distribution for full details.";
 		}
     	TextArea area = new TextArea(license_text);
     	area.setEditable(false);
@@ -232,24 +233,23 @@ public class ConfigureDialog extends JDialog {
     }
 
     /**
-     * Read a file resource into a string
+     * Read a file resource into a string from the JAR file
      * @param filename
      * @return
      * @throws IOException
      */
     private String readResourceAsString(String resourceName) throws IOException {
-    	// better to get as a file resource from JAR
     	InputStream input = getClass().getResourceAsStream(resourceName);
-    	String str = "";
-    	if (input != null) {
-	    	int size = input.available();
-	    	byte[] bytes = new byte[size];
-	    	int r = input.read(bytes);
-	    	input.close();
-	    	if (r == size)
-	    		str = new String(bytes);
-    	}
-    	return str;
+    	StringBuffer fileData = new StringBuffer();
+        byte[] buf = new byte[1024];        
+        int numRead=0;
+        while((numRead=input.read(buf)) != -1){
+            String str = new String(buf, 0, numRead);
+        	fileData.append(str);
+            buf = new byte[1024];
+        }
+        input.close();
+    	return fileData.toString();
     }
     
     /**
@@ -431,6 +431,7 @@ public class ConfigureDialog extends JDialog {
 	private HashMap<String, TalkConfiguration> settings;
 	private HashMap<String, ConfigurePanel> panel;
 	private int buttonPressed;
+	private static final String LICENSE_FILE = "/LICENSE";
 
 	public static final int NUMBER_OF_TABS = 4;
 	public static final int OK_BUTTON = 0;
