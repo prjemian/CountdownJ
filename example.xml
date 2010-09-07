@@ -41,56 +41,56 @@ See the LICENSE file (GPLv3) included in the distribution for details.
 -->
   <timestamp>2010-09-06T10:29:05</timestamp>
   <talk id="basic">
-    <seconds discussion="60" overtime="10"/>
+    <seconds discussion="300" overtime="30"/>
     <audible>true</audible>
     <!--messages should be brief-->
-    <message name="pretalk">Next Presentation</message>
-    <message name="presentation">Presentation</message>
-    <message name="discussion">Discussion</message>
+    <message name="pretalk">coming up next</message>
+    <message name="presentation">listen</message>
+    <message name="discussion">questions?</message>
+    <message name="overtime">time is up</message>
+    <message name="paused">... waiting ...</message>
+  </talk>
+  <talk id="preset1" name="Keynote">
+    <!--name is used for the tab to be selected-->
+    <seconds discussion="600" overtime="999999" presentation="3600"/>
+    <audible>false</audible>
+    <!--messages should be brief-->
+    <message name="pretalk">Keynote</message>
+    <message name="presentation">Keynote</message>
+    <message name="discussion">closing</message>
     <message name="overtime">Overtime</message>
     <message name="paused">Paused</message>
   </talk>
-  <talk id="preset1" name="talk 1">
+  <talk id="preset2" name="Plenary">
     <!--name is used for the tab to be selected-->
-    <seconds discussion="120" overtime="20" presentation="900"/>
+    <seconds discussion="600" overtime="60" presentation="2700"/>
     <audible>true</audible>
     <!--messages should be brief-->
-    <message name="pretalk">Next Presentation</message>
-    <message name="presentation">Presentation</message>
-    <message name="discussion">Discussion</message>
+    <message name="pretalk">Plenary</message>
+    <message name="presentation">Plenary</message>
+    <message name="discussion">closing</message>
     <message name="overtime">Overtime</message>
     <message name="paused">Paused</message>
   </talk>
-  <talk id="preset2" name="talk 2">
+  <talk id="preset3" name="15:00">
     <!--name is used for the tab to be selected-->
-    <seconds discussion="180" overtime="30" presentation="900"/>
+    <seconds discussion="300" overtime="30" presentation="900"/>
     <audible>true</audible>
     <!--messages should be brief-->
-    <message name="pretalk">Next Presentation</message>
+    <message name="pretalk">15:00 talk next</message>
     <message name="presentation">Presentation</message>
-    <message name="discussion">Discussion</message>
+    <message name="discussion">5:00 for discussion</message>
     <message name="overtime">Overtime</message>
     <message name="paused">Paused</message>
   </talk>
-  <talk id="preset3" name="talk 3">
+  <talk id="preset4" name="5:00">
     <!--name is used for the tab to be selected-->
-    <seconds discussion="240" overtime="40" presentation="900"/>
+    <seconds discussion="60" overtime="10" presentation="300"/>
     <audible>true</audible>
     <!--messages should be brief-->
-    <message name="pretalk">Next Presentation</message>
+    <message name="pretalk">5:00 talk</message>
     <message name="presentation">Presentation</message>
-    <message name="discussion">Discussion</message>
-    <message name="overtime">Overtime</message>
-    <message name="paused">Paused</message>
-  </talk>
-  <talk id="preset4" name="talk 4">
-    <!--name is used for the tab to be selected-->
-    <seconds discussion="300" overtime="50" presentation="900"/>
-    <audible>true</audible>
-    <!--messages should be brief-->
-    <message name="pretalk">Next Presentation</message>
-    <message name="presentation">Presentation</message>
-    <message name="discussion">Discussion</message>
+    <message name="discussion">1:00 warning</message>
     <message name="overtime">Overtime</message>
     <message name="paused">Paused</message>
   </talk>
