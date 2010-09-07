@@ -26,11 +26,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
-import com.sun.org.apache.xml.internal.serializer.OutputPropertiesFactory;
-
 public class TestXml {
 
-	public TestXml(HashMap<String, TalkConfiguration> config) throws ParserConfigurationException {
+	public TestXml(HashMap<String, TalkConfiguration> config) 
+	throws ParserConfigurationException {
 		doc = makeNewXmlDoc();
 		this.config = config;
 	}
@@ -179,7 +178,7 @@ public class TestXml {
 			Transformer xformer = TransformerFactory.newInstance()
 					.newTransformer();
 			xformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			xformer.setOutputProperty(OutputPropertiesFactory.S_KEY_INDENT_AMOUNT, "2");
+			xformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 			//xformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 			//xformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 			xformer.transform(source, result);
