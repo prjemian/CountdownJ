@@ -224,11 +224,6 @@ public class ConfigureDialog extends JDialog {
 		} catch (IOException e1) {
 			// backup license text if LICENSE cannot be found
 			license_text = ConfigFile.getInstance().toString();
-	    	//license_text = "ConfigureJ - a timer for presentations\n" +
-	    	//		"Copyright (c) 2010 - Pete R. Jemian\n" +
-	    	//		"\n" +
-	    	//		"See the LICENSE file included in the " +
-	    	//		"distribution for full details.";
 		}
     	TextArea area = new TextArea(license_text);
     	area.setEditable(false);
@@ -253,6 +248,9 @@ public class ConfigureDialog extends JDialog {
      * @param filename
      * @return
      * @throws IOException
+     * @note An alternate (not equivalent) method is
+     *  org.apache.commons.io.FileUtils.readFileToString(file);
+     * For example:  http://www.kodejava.org/examples/52.html
      */
     private String readResourceAsString(String resourceName) throws IOException {
     	InputStream input = getClass().getResourceAsStream(resourceName);
