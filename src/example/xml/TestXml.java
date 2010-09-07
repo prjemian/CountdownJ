@@ -228,7 +228,7 @@ public class TestXml {
 	 */
 	private String timeStamp() {
         Date dateNow = new Date ();
-        SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd+hh:mm:ss");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-ddThh:mm:ss");
         StringBuilder timeStamp = new StringBuilder( timeFormat.format( dateNow ) );
 		return timeStamp.toString();
     }

@@ -60,6 +60,8 @@
 		<echo message="Copying resources to bin.dir" />
 		<copy file="LICENSE" todir="${bin.dir}" />
 		<copy file="config.xml" todir="${bin.dir}" />
+		<copy file="example.xml" todir="${bin.dir}" />
+		<copy file="schema.xsd" todir="${bin.dir}" />
 	</target>
 
 	<target name="compile" 

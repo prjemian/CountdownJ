@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<!-- /*
+    CountdownJ, (c) 2010 Pete R. Jemian <prjemian@gmail.com>
+    See LICENSE (GPLv3) for details.
+    
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */ -->
+
+<!--
+########### SVN repository information ###################
+# $Date$
+# $Author$
+# $Revision$
+# $URL$
+# $Id$
+########### SVN repository information ###################
+-->
+
+<TalkConfiguration programName="CountdownJ" version="1.0j"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://jemian.org/CountdownJ/1.0j  schema.xsd">
+  <!--
+CountdownJ (1.0j)
+CountdownJ - a timer for presentations
+(c) 2010 Pete R. Jemian
+by: Pete R. Jemian <prjemian@gmail.com>
+
+See the LICENSE file (GPLv3) included in the distribution for details.
+-->
+  <timestamp>2010-09-06T10:29:05</timestamp>
+  <talk id="basic">
+    <seconds discussion="60" overtime="10"/>
+    <audible>true</audible>
+    <!--messages should be brief-->
+    <message name="pretalk">Next Presentation</message>
+    <message name="presentation">Presentation</message>
+    <message name="discussion">Discussion</message>
+    <message name="overtime">Overtime</message>
+    <message name="paused">Paused</message>
+  </talk>
+  <talk id="preset1" name="talk 1">
+    <!--name is used for the tab to be selected-->
+    <seconds discussion="120" overtime="20" presentation="900"/>
+    <audible>true</audible>
+    <!--messages should be brief-->
+    <message name="pretalk">Next Presentation</message>
+    <message name="presentation">Presentation</message>
+    <message name="discussion">Discussion</message>
+    <message name="overtime">Overtime</message>
+    <message name="paused">Paused</message>
+  </talk>
+  <talk id="preset2" name="talk 2">
+    <!--name is used for the tab to be selected-->
+    <seconds discussion="180" overtime="30" presentation="900"/>
+    <audible>true</audible>
+    <!--messages should be brief-->
+    <message name="pretalk">Next Presentation</message>
+    <message name="presentation">Presentation</message>
+    <message name="discussion">Discussion</message>
+    <message name="overtime">Overtime</message>
+    <message name="paused">Paused</message>
+  </talk>
+  <talk id="preset3" name="talk 3">
+    <!--name is used for the tab to be selected-->
+    <seconds discussion="240" overtime="40" presentation="900"/>
+    <audible>true</audible>
+    <!--messages should be brief-->
+    <message name="pretalk">Next Presentation</message>
+    <message name="presentation">Presentation</message>
+    <message name="discussion">Discussion</message>
+    <message name="overtime">Overtime</message>
+    <message name="paused">Paused</message>
+  </talk>
+  <talk id="preset4" name="talk 4">
+    <!--name is used for the tab to be selected-->
+    <seconds discussion="300" overtime="50" presentation="900"/>
+    <audible>true</audible>
+    <!--messages should be brief-->
+    <message name="pretalk">Next Presentation</message>
+    <message name="presentation">Presentation</message>
+    <message name="discussion">Discussion</message>
+    <message name="overtime">Overtime</message>
+    <message name="paused">Paused</message>
+  </talk>
+</TalkConfiguration>

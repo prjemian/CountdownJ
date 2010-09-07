@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- /*
+    CountdownJ, (c) 2010 Pete R. Jemian <prjemian@gmail.com>
+    See LICENSE (GPLv3) for details.
+    
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */ -->
+
+<!--
+########### SVN repository information ###################
+# $Date$
+# $Author$
+# $Revision$
+# $URL$
+# $Id$
+########### SVN repository information ###################
+-->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+  <xs:element name="TalkConfiguration">
+    <xs:annotation>
+      <xs:documentation>
+        Configuration of talks for the CountdownJ program
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="timestamp" type="xs:dateTime">
+          <xs:annotation>
+            <xs:documentation>
+              Date and time this file was written (ISO standard time representation)
+            </xs:documentation>
+          </xs:annotation>
+        </xs:element>
+
+        <xs:element name="talk" minOccurs="5" maxOccurs="5" type="talkType" >
+          <xs:annotation>
+            <xs:documentation>
+              Complete settings for one type of presentation
+            </xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+
+      <xs:attribute name="programName" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>
+            Name of the CountdownJ program
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="version" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>
+            Version code of the CountdownJ program
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + -->
+
+  <xs:complexType name="talkType">
+    <xs:group ref="talkGroup" />
+    <xs:attribute name="id" type="talkPhaseType">
+      <xs:annotation>
+        <xs:documentation>
+          Id values are fixed by the program to identify the various configuration settings.
+          Only choose from [ basic | preset1 | preset2 | preset3 | preset4 ].
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="name" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>
+          A short name for this presentation.  
+          This short name will be used as 
+          the button text and the tab title. 
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+
+  <xs:group name="talkGroup">
+  <xs:sequence>
+    <xs:element name="seconds" minOccurs="1" maxOccurs="1" type="durationType">
+      <xs:annotation>
+        <xs:documentation>
+          Duration (seconds) for various parts of a talk.  
+          In the GUI, it is permitted to enter duration
+          as minutes:seconds (so that 5:10 is 310 seconds).
+          In the XML file, duration must be in integer seconds only.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:element>
+    
+    <xs:element name="audible" type="xs:boolean">
+      <xs:annotation>
+        <xs:documentation>
+          If true, allow beeps at certain key transitions in the talk.
+          If false, no beeps will be played.
+          Sound 1 beep when the time remaining on the clock just falls below the time alotted for discussion.
+          Sound 2 beeps when the time remaining on the clock just falls below zero (time has run out).
+          Sound 3 beeps every {overtime} seconds in overtime.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:element>
+    
+    <xs:element name="message" minOccurs="5" maxOccurs="5" type="messageType">
+      <xs:annotation>
+        <xs:documentation>
+          A short message is displayed below the remaining clock 
+          time during each of the five phases of a presentation 
+          (pretalk, presentation, discussion, overtime, and paused).
+        </xs:documentation>
+      </xs:annotation>
+    </xs:element>
+  </xs:sequence>
+  </xs:group>
+  
+  <!-- + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + -->
+
+  <xs:complexType name="durationType">
+    <xs:attribute name="presentation" type="xs:nonNegativeInteger" use="optional">
+      <xs:annotation>
+        <xs:documentation>
+          Total duration (seconds) for the presentation and discussion parts of a talk.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="discussion" type="xs:nonNegativeInteger" use="required">
+      <xs:annotation>
+        <xs:documentation>
+          Time (seconds) alotted at the end of a talk for the discussion period.  
+          (Discussion is not required; the message text can be adjusted.  
+          For example, this could be an advisory that time is ending soon.)
+          To omit this part of a talk, set discussion time to zero.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="overtime" type="xs:nonNegativeInteger" use="required">
+      <xs:annotation>
+        <xs:documentation>
+          When time has run out, it is sometimes helpful to gently 
+          remind the speaker and audience of this situation.
+          CountdownJ is prepared to sound 3 beeps at this 
+          interval (seconds) until the timer is stopped.
+          To avoid the 3 beeps, either set audible to false 
+          or set overtime to an unreasonably large number 
+          such as 999999 which will, in effect, disable 
+          the overtime reminder beeps.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+
+  <xs:simpleType name="talkPhaseType">
+    <xs:restriction base="xs:string">
+      
+      <xs:enumeration value="basic">
+        <xs:annotation>
+          <xs:documentation>
+            Settings used by the "basic" controls, 
+            where time can be entered directly 
+            from the GUI for each talk.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      
+      <xs:enumeration value="preset1">
+        <xs:annotation>
+          <xs:documentation>
+            Settings used by the first preset talk (preset1).
+          </xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      
+      <xs:enumeration value="preset2">
+        <xs:annotation>
+          <xs:documentation>
+            Settings used by the second preset talk (preset2).
+          </xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      
+      <xs:enumeration value="preset3">
+        <xs:annotation>
+          <xs:documentation>
+            Settings used by the third preset talk (preset3).
+          </xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      
+      <xs:enumeration value="preset4">
+        <xs:annotation>
+          <xs:documentation>
+            Settings used by the fourth preset talk (preset4).
+          </xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="messageType">
+    <xs:complexContent>
+      <xs:extension base="xs:anyType">
+        <xs:attribute name="name">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+
+              <xs:enumeration value="pretalk">
+                <xs:annotation>
+                  <xs:documentation>
+                    This message is shown when there is time on the clock but the timer has not yet been started.
+                  </xs:documentation>
+                </xs:annotation>
+              </xs:enumeration>
+
+              <xs:enumeration value="presentation">
+                <xs:annotation>
+                  <xs:documentation>
+                    This message is shown when the timer has been started but the time on 
+                    the clock is greater than that allotted for discussion.
+                  </xs:documentation>
+                </xs:annotation>
+              </xs:enumeration>
+
+              <xs:enumeration value="discussion">
+                <xs:annotation>
+                  <xs:documentation>
+                    This message is shown when the timer has been started and the time on
+                    the clock is less than that allotted for discussion.
+                  </xs:documentation>
+                </xs:annotation>
+              </xs:enumeration>
+
+              <xs:enumeration value="overtime">
+                <xs:annotation>
+                  <xs:documentation>
+                    This message is shown when the timer has been started and the time on
+                    the clock is less than zero.
+                  </xs:documentation>
+                </xs:annotation>
+
+              </xs:enumeration>
+              <xs:enumeration value="paused">
+                <xs:annotation>
+                  <xs:documentation>
+                    This message is shown when the timer has been paused and 
+                    there is still time on the clock.
+                  </xs:documentation>
+                </xs:annotation>
+              </xs:enumeration>
+
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+</xs:schema>
