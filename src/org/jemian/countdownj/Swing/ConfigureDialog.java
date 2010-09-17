@@ -139,6 +139,14 @@ public class ConfigureDialog extends JDialog {
                 presetsTab.getBorder()));
     	mainTabs.add(presetsTab);
 
+    	JPanel fileIoTab = new JPanel();
+    	fileIoTab.setName("Read/Save Settings");
+    	fileIoTab.setAlignmentX(CENTER_ALIGNMENT);
+    	fileIoTab.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.BLACK),
+                fileIoTab.getBorder()));
+    	mainTabs.add(fileIoTab);
+
     	JPanel aboutBoxPanel = new JPanel();
     	aboutBoxPanel.setName("About");
     	aboutBoxPanel.setAlignmentX(CENTER_ALIGNMENT);
@@ -171,6 +179,30 @@ public class ConfigureDialog extends JDialog {
 
         	panel.put(name, new ConfigurePanel(tab, true));
     	}
+
+    	// + + + + + + + + + + + + + + + + + + + + + + + +
+    	// Read/Save Settings panel
+    	
+    	//--------------------------------------------
+    	//
+    	//   |  /the/default/settings/file              |
+    	//
+    	//   |  /last/user/settings/file/selected.xml   |
+    	//   [Open ...]     [Save]   [Save As ...]
+    	//
+    	//--------------------------------------------
+    	
+    	// needs two bordered panels stacked vertically
+
+    	// demo
+    	FlowLayout fl = new FlowLayout();
+    	fileIoTab.setLayout(fl);
+    	fileIoTab.add(new JButton("button 1"));
+    	fileIoTab.add(new JButton("button 2"));
+    	fileIoTab.add(new JButton("button 3"));
+    	fileIoTab.add(new JButton("button 4"));
+    	fileIoTab.add(new JButton("button 5"));
+    	fileIoTab.add(new JButton("button 6"));
 
     	// + + + + + + + + + + + + + + + + + + + + + + + +
     	// About Box
