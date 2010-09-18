@@ -1,0 +1,53 @@
+/*
+  color values (from /usr/X11/bin/showrgb command):
+  245 255 250  #f5fffa mintcream
+  230 230 250  #e6e6fa lavender
+  255 228 225  #ffe4e1 mistyrose
+  135 206 235  #87ceeb skyblue
+*/
+
+DT {
+    font-weight:        bold; 
+}
+
+PRE {
+    border-color:       black;
+    border-style:       dashed;
+    border-width:       1px;
+    background-color:   #f5fffa;
+    padding:            5px;
+    font-family:        "andale mono",
+                        "monotype.com",
+                        "courier new",
+                        courier,
+                        monospace;
+    font-size:          70%;
+}
+
+.macro_example {
+    background-color:   #e6e6fa;
+}
+
+.response_example {
+    background-color:   #ffe4e1;
+}
+
+.spec {
+    font-family:        verdana, arial, helvetica, sans-serif;
+}
+
+.top_background {
+    border-width:       0; 
+    width:              100%;
+    background-color:   #87ceeb;
+    padding:            5px;
+    font-family:        verdana, arial, helvetica, sans-serif;
+    font-size:          90%;
+}
+
+.top_title {
+    font-weight:        bold; 
+    font-size:          150%;
+    width:              100%;
+    background-color:   #87ceeb;
+}
