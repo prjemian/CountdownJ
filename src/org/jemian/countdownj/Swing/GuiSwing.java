@@ -52,6 +52,13 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+/*
+ * TODO read/write configuration as XML
+ * TODO make GUI to read/write configuration files
+ * TODO build code to validate XML files
+ * TODO add code to read/write default/working configuration as XML
+ */
+
 /**
  *
  * @author Pete
