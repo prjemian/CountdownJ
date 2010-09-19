@@ -186,15 +186,6 @@ public class ConfigureDialog extends JDialog {
     	// + + + + + + + + + + + + + + + + + + + + + + + +
     	// Read/Save Settings panel
     	
-    	//--------------------------------------------
-    	//
-    	//   |  /the/default/settings/file              |
-    	//
-    	//   |  /last/user/settings/file/selected.xml   |
-    	//   [Open ...]     [Save]   [Save As ...]
-    	//
-    	//--------------------------------------------
-    	
     	fileIoTab.setLayout(new GridBagLayout());
 
     	int row = 0;
@@ -248,15 +239,37 @@ public class ConfigureDialog extends JDialog {
     	c = makeConstraints(0, 1, 1.0, 0.0, 1, 1);
     	c.insets = new Insets(4, 10, 10, 10);
     	userFilePanel.add(userFilePanelText, c);
-    	//----- now some buttons
-    	// TODO add the buttons
+    	//----- now the buttons
     	JPanel userFilePanelButtons = new JPanel();
     	c = makeConstraints(0, 2, 1.0, 0.0, 1, 1);
     	c.insets = new Insets(10, 10, 10, 10);
     	userFilePanel.add(userFilePanelButtons, c);
-    	userFilePanelButtons.add(new JButton("Open ..."));
-    	userFilePanelButtons.add(new JButton("Save"));
-    	userFilePanelButtons.add(new JButton("Save As ..."));
+    	JButton btnOpen = new JButton("Open ...");
+    	userFilePanelButtons.add(btnOpen);
+    	btnOpen.addActionListener( // bind a button click to this action
+				new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						doOpenAction();
+					}
+				});
+
+    	JButton btnSave = new JButton("Save");
+    	userFilePanelButtons.add(btnSave);
+    	btnSave.addActionListener( // bind a button click to this action
+				new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						doSaveAction();
+					}
+				});
+
+    	JButton btnSaveAs = new JButton("Save As ...");
+    	userFilePanelButtons.add(btnSaveAs);
+    	btnSaveAs.addActionListener( // bind a button click to this action
+				new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						doSaveAsAction();
+					}
+				});
 
 
     	// empty space at bottom of panel
@@ -400,6 +413,21 @@ public class ConfigureDialog extends JDialog {
         buttonPressed = CANCEL_BUTTON;
         setVisible(false);
     }
+    
+    private void doOpenAction() {
+        System.out.println("doOpenAction()");
+        // TODO complete this action
+    }
+    
+    private void doSaveAction() {
+        System.out.println("doSaveAction()");
+        // TODO complete this action
+    }
+    
+    private void doSaveAsAction() {
+        System.out.println("doSaveAsAction()");
+        // TODO complete this action
+    }
 	
 	private TalkConfiguration getSettingsByKey(String key) {
 		TalkConfiguration talk = null;
@@ -537,6 +565,8 @@ public class ConfigureDialog extends JDialog {
                 	item.setName(item.getPresentationStr() + " talk");
                 	dialog.setPresetSettings(i+1, item);
                 }
+                dialog.setDefaultSettingsFile("/system/dependent/default/settings/file.xml");
+                dialog.setUserSettingsFile("/user/selected/settings/file.xml");
                 // =========================================
                 dialog.setVisible(true);	// run the dialog and wait ...
                 // =========================================
