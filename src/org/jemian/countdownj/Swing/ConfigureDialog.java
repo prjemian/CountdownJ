@@ -50,6 +50,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
 
 /**
  * the ConfigureDialog dialog for the CountdownJ program
@@ -68,6 +69,8 @@ public class ConfigureDialog extends JDialog {
         buttonPressed = NO_BUTTON_PRESSED;
         settings = new HashMap<String, TalkConfiguration>();
         panel = new HashMap<String, ConfigurePanel>();
+        defaultSettingsFile = "{not defined yet}";
+        userSettingsFile = "{not defined yet}";
         create();
         setTalkDefaultsAndWidgets();
         setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
@@ -88,7 +91,7 @@ public class ConfigureDialog extends JDialog {
     	add(title, makeConstraints(0, 0, 1, 0, 1, 1));
 
     	JTabbedPane mainTabs = new JTabbedPane();
-    	add(mainTabs, makeConstraints(0, 1, 1, 0, 1, 1));
+    	add(mainTabs, makeConstraints(0, 1, 1.0, 1.0, 1, 1));
     	
     	JPanel buttonPanel = new JPanel();
     	buttonPanel.setAlignmentX(CENTER_ALIGNMENT);
@@ -192,23 +195,78 @@ public class ConfigureDialog extends JDialog {
     	//
     	//--------------------------------------------
     	
-    	// needs two bordered panels stacked vertically
+    	fileIoTab.setLayout(new GridBagLayout());
 
-    	// demo
-    	FlowLayout fl = new FlowLayout();
-    	fileIoTab.setLayout(fl);
-    	fileIoTab.add(new JButton("button 1"));
-    	fileIoTab.add(new JButton("button 2"));
-    	fileIoTab.add(new JButton("button 3"));
-    	fileIoTab.add(new JButton("button 4"));
-    	fileIoTab.add(new JButton("button 5"));
-    	fileIoTab.add(new JButton("button 6"));
+    	int row = 0;
+    	// empty space at top of panel
+    	fileIoTab.add(new JPanel(), makeConstraints(0, row++, 1.0, 1.0, 1, 1));
+
+    	// JPanel for showing the default settings file
+    	JPanel defaultFilePanel = new JPanel();
+    	defaultFilePanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.BLACK),
+                subtabs.getBorder()));
+    	fileIoTab.add(defaultFilePanel, makeConstraints(0, row++, 1.0, 0.0, 1, 1));
+    	//---- layout this subpanel
+    	defaultFilePanel.setLayout(new GridBagLayout());
+    	JTextField defaultFilePanelLabel = new JTextField(" default settings file:");
+    	defaultFilePanelLabel.setBackground(new Color(0x656565));
+    	defaultFilePanelLabel.setForeground(Color.white);
+    	defaultFilePanelLabel.setBorder(null);
+    	defaultFilePanelLabel.setFont(new Font(Font.DIALOG, Font.BOLD, 12));
+    	GridBagConstraints c = makeConstraints(0, 0, 1.0, 0.0, 1, 1);
+    	c.insets = new Insets(4, 10, 4, 10);
+    	defaultFilePanel.add(defaultFilePanelLabel, c);
+    	JTextField defaultFilePanelText = new JTextField(defaultSettingsFile);
+    	defaultFilePanelText.setEditable(false);
+    	defaultFilePanelText.setBackground(Color.WHITE);
+    	defaultFilePanelText.setBorder(null);
+    	c = makeConstraints(0, 1, 1.0, 0.0, 1, 1);
+    	c.insets = new Insets(4, 10, 10, 10);
+    	defaultFilePanel.add(defaultFilePanelText, c);
+
+    	// empty space at middle of panel
+    	fileIoTab.add(new JPanel(), makeConstraints(0, row++, 1.0, 1.0, 1, 1));
+    	
+    	// JPanel for selecting/saving a user's settings file
+    	JPanel userFilePanel = new JPanel();
+    	userFilePanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.BLACK),
+                subtabs.getBorder()));
+    	fileIoTab.add(userFilePanel, makeConstraints(0, row++, 1.0, 0.0, 1, 1));
+    	//---- layout this subpanel
+    	userFilePanel.setLayout(new GridBagLayout());
+    	JTextField userFilePanelLabel = new JTextField(" user settings file:");
+    	userFilePanelLabel.setBackground(new Color(0x656565));
+    	userFilePanelLabel.setForeground(Color.white);
+    	userFilePanelLabel.setBorder(null);
+    	userFilePanelLabel.setFont(new Font(Font.DIALOG, Font.BOLD, 12));
+    	c = makeConstraints(0, 0, 1.0, 0.0, 1, 1);
+    	c.insets = new Insets(4, 10, 4, 10);
+    	userFilePanel.add(userFilePanelLabel, c);
+    	JTextField userFilePanelText = new JTextField(userSettingsFile);
+    	c = makeConstraints(0, 1, 1.0, 0.0, 1, 1);
+    	c.insets = new Insets(4, 10, 10, 10);
+    	userFilePanel.add(userFilePanelText, c);
+    	//----- now some buttons
+    	// TODO add the buttons
+    	JPanel userFilePanelButtons = new JPanel();
+    	c = makeConstraints(0, 2, 1.0, 0.0, 1, 1);
+    	c.insets = new Insets(10, 10, 10, 10);
+    	userFilePanel.add(userFilePanelButtons, c);
+    	userFilePanelButtons.add(new JButton("Open ..."));
+    	userFilePanelButtons.add(new JButton("Save"));
+    	userFilePanelButtons.add(new JButton("Save As ..."));
+
+
+    	// empty space at bottom of panel
+    	fileIoTab.add(new JPanel(), makeConstraints(0, row++, 1.0, 1.0, 1, 1));
 
     	// + + + + + + + + + + + + + + + + + + + + + + + +
     	// About Box
     	ConfigFile cfg = ConfigFile.getInstance();
 
-    	int row = 0;
+    	row = 0;
     	aboutBoxPanel.setLayout(new GridBagLayout());
     	JLabel text = new JLabel(cfg.getName() + ", v" + cfg.getVersion());
     	text.setFont(new Font("Tahoma", Font.BOLD, 32));
@@ -404,6 +462,34 @@ public class ConfigureDialog extends JDialog {
 	}
 
 	/**
+	 * @return the defaultSettingsFile
+	 */
+	public String getDefaultSettingsFile() {
+		return defaultSettingsFile;
+	}
+
+	/**
+	 * @param defaultSettingsFile the defaultSettingsFile to set
+	 */
+	public void setDefaultSettingsFile(String defaultSettingsFile) {
+		this.defaultSettingsFile = defaultSettingsFile;
+	}
+
+	/**
+	 * @return the userSettingsFile
+	 */
+	public String getUserSettingsFile() {
+		return userSettingsFile;
+	}
+
+	/**
+	 * @param userSettingsFile the userSettingsFile to set
+	 */
+	public void setUserSettingsFile(String userSettingsFile) {
+		this.userSettingsFile = userSettingsFile;
+	}
+
+	/**
 	 * @return the buttonPressed
 	 */
 	public int getButtonPressed() {
@@ -477,6 +563,8 @@ public class ConfigureDialog extends JDialog {
 	private HashMap<String, TalkConfiguration> settings;
 	private HashMap<String, ConfigurePanel> panel;
 	private int buttonPressed;
+	private String defaultSettingsFile;
+	private String userSettingsFile;
 	private static final String LICENSE_FILE = "/LICENSE";
 
 	public static final int NUMBER_OF_TABS = 4;
