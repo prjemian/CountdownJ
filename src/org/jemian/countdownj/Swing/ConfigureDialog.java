@@ -29,6 +29,7 @@ package org.jemian.countdownj.Swing;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.EventQueue;
+import java.awt.FileDialog;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
@@ -40,6 +41,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -69,9 +72,13 @@ public class ConfigureDialog extends JDialog {
         buttonPressed = NO_BUTTON_PRESSED;
         settings = new HashMap<String, TalkConfiguration>();
         panel = new HashMap<String, ConfigurePanel>();
+        defaultFilePanelText = null;
+        userFilePanelText = null;
         defaultSettingsFile = "{not defined yet}";
         userSettingsFile = "{not defined yet}";
+
         create();
+
         setTalkDefaultsAndWidgets();
         setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
     }
@@ -192,23 +199,12 @@ public class ConfigureDialog extends JDialog {
     	// empty space at top of panel
     	fileIoTab.add(new JPanel(), makeConstraints(0, row++, 1.0, 1.0, 1, 1));
 
+    	GridBagConstraints c;
     	// JPanel for showing the default settings file
-    	JPanel defaultFilePanel = new JPanel();
-    	defaultFilePanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.BLACK),
-                subtabs.getBorder()));
+    	JPanel defaultFilePanel = createLabeledPanel(subtabs, " default settings file:");
     	fileIoTab.add(defaultFilePanel, makeConstraints(0, row++, 1.0, 0.0, 1, 1));
     	//---- layout this subpanel
-    	defaultFilePanel.setLayout(new GridBagLayout());
-    	JTextField defaultFilePanelLabel = new JTextField(" default settings file:");
-    	defaultFilePanelLabel.setBackground(new Color(0x656565));
-    	defaultFilePanelLabel.setForeground(Color.white);
-    	defaultFilePanelLabel.setBorder(null);
-    	defaultFilePanelLabel.setFont(new Font(Font.DIALOG, Font.BOLD, 12));
-    	GridBagConstraints c = makeConstraints(0, 0, 1.0, 0.0, 1, 1);
-    	c.insets = new Insets(4, 10, 4, 10);
-    	defaultFilePanel.add(defaultFilePanelLabel, c);
-    	JTextField defaultFilePanelText = new JTextField(defaultSettingsFile);
+    	defaultFilePanelText = new JTextField(defaultSettingsFile);
     	defaultFilePanelText.setEditable(false);
     	defaultFilePanelText.setBackground(Color.WHITE);
     	defaultFilePanelText.setBorder(null);
@@ -220,22 +216,10 @@ public class ConfigureDialog extends JDialog {
     	fileIoTab.add(new JPanel(), makeConstraints(0, row++, 1.0, 1.0, 1, 1));
     	
     	// JPanel for selecting/saving a user's settings file
-    	JPanel userFilePanel = new JPanel();
-    	userFilePanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.BLACK),
-                subtabs.getBorder()));
+    	JPanel userFilePanel = createLabeledPanel(subtabs, " user settings file:");
     	fileIoTab.add(userFilePanel, makeConstraints(0, row++, 1.0, 0.0, 1, 1));
     	//---- layout this subpanel
-    	userFilePanel.setLayout(new GridBagLayout());
-    	JTextField userFilePanelLabel = new JTextField(" user settings file:");
-    	userFilePanelLabel.setBackground(new Color(0x656565));
-    	userFilePanelLabel.setForeground(Color.white);
-    	userFilePanelLabel.setBorder(null);
-    	userFilePanelLabel.setFont(new Font(Font.DIALOG, Font.BOLD, 12));
-    	c = makeConstraints(0, 0, 1.0, 0.0, 1, 1);
-    	c.insets = new Insets(4, 10, 4, 10);
-    	userFilePanel.add(userFilePanelLabel, c);
-    	JTextField userFilePanelText = new JTextField(userSettingsFile);
+    	userFilePanelText = new JTextField(userSettingsFile);
     	c = makeConstraints(0, 1, 1.0, 0.0, 1, 1);
     	c.insets = new Insets(4, 10, 10, 10);
     	userFilePanel.add(userFilePanelText, c);
@@ -246,13 +230,14 @@ public class ConfigureDialog extends JDialog {
     	userFilePanel.add(userFilePanelButtons, c);
     	JButton btnOpen = new JButton("Open ...");
     	userFilePanelButtons.add(btnOpen);
+    	//---- button bindings
     	btnOpen.addActionListener( // bind a button click to this action
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						doOpenAction();
 					}
 				});
-
+    	//----
     	JButton btnSave = new JButton("Save");
     	userFilePanelButtons.add(btnSave);
     	btnSave.addActionListener( // bind a button click to this action
@@ -261,7 +246,7 @@ public class ConfigureDialog extends JDialog {
 						doSaveAction();
 					}
 				});
-
+    	//----
     	JButton btnSaveAs = new JButton("Save As ...");
     	userFilePanelButtons.add(btnSaveAs);
     	btnSaveAs.addActionListener( // bind a button click to this action
@@ -271,9 +256,8 @@ public class ConfigureDialog extends JDialog {
 					}
 				});
 
-
     	// empty space at bottom of panel
-    	fileIoTab.add(new JPanel(), makeConstraints(0, row++, 1.0, 1.0, 1, 1));
+    	fileIoTab.add(new JPanel(), makeConstraints(0, row++, 1.0, 2.0, 1, 1));
 
     	// + + + + + + + + + + + + + + + + + + + + + + + +
     	// About Box
@@ -344,6 +328,24 @@ public class ConfigureDialog extends JDialog {
     	setBasicSettings(new TalkConfiguration());
     	for (int i = 0; i < NUMBER_OF_TABS; i++)
     		setPresetSettings(i+1, new TalkConfiguration());
+    }
+    
+    private JPanel createLabeledPanel(JTabbedPane subtabs, String label) {
+    	JPanel thePanel = new JPanel();
+    	thePanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.BLACK),
+                subtabs.getBorder()));
+    	//---- layout this subpanel
+    	thePanel.setLayout(new GridBagLayout());
+    	JTextField defaultFilePanelLabel = new JTextField(label);
+    	defaultFilePanelLabel.setBackground(new Color(0x656565));
+    	defaultFilePanelLabel.setForeground(Color.white);
+    	defaultFilePanelLabel.setBorder(null);
+    	defaultFilePanelLabel.setFont(new Font(Font.DIALOG, Font.BOLD, 12));
+    	GridBagConstraints c = makeConstraints(0, 0, 1.0, 0.0, 1, 1);
+    	c.insets = new Insets(4, 10, 4, 10);
+    	thePanel.add(defaultFilePanelLabel, c);
+    	return thePanel;
     }
 
     /**
@@ -416,7 +418,20 @@ public class ConfigureDialog extends JDialog {
     
     private void doOpenAction() {
         System.out.println("doOpenAction()");
-        // TODO complete this action
+        FileDialog fc = new FileDialog(this, "Choose a file", FileDialog.LOAD);
+		// fc.setDirectory("C:\\");
+        fc.setFile("*.xml");
+		FilenameFilter filter = new XmlFileFilter();
+		fc.setFilenameFilter(filter);
+		//---- complete all setup before this next line
+		fc.setVisible(true);
+		String fn = fc.getFile();
+		if (fn == null)
+			System.out.println("You cancelled the choice");
+		else {
+			System.out.println("You chose " + fn);
+			// TODO complete this action
+		}
     }
     
     private void doSaveAction() {
@@ -501,6 +516,8 @@ public class ConfigureDialog extends JDialog {
 	 */
 	public void setDefaultSettingsFile(String defaultSettingsFile) {
 		this.defaultSettingsFile = defaultSettingsFile;
+		if (defaultFilePanelText != null)
+			defaultFilePanelText.setText(defaultSettingsFile);
 	}
 
 	/**
@@ -515,6 +532,8 @@ public class ConfigureDialog extends JDialog {
 	 */
 	public void setUserSettingsFile(String userSettingsFile) {
 		this.userSettingsFile = userSettingsFile;
+		if (userFilePanelText != null)
+			userFilePanelText.setText(userSettingsFile);
 	}
 
 	/**
@@ -596,6 +615,8 @@ public class ConfigureDialog extends JDialog {
 	private String defaultSettingsFile;
 	private String userSettingsFile;
 	private static final String LICENSE_FILE = "/LICENSE";
+	private static JTextField defaultFilePanelText;
+	private static JTextField userFilePanelText;
 
 	public static final int NUMBER_OF_TABS = 4;
 	public static final int OK_BUTTON = 0;

@@ -7,9 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class TestOpenFileDialog extends Frame {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 4962967474655412622L;
 	FileDialog fc;
 
