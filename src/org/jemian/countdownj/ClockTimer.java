@@ -1,4 +1,4 @@
-package org.jemian.countdownj.Swing;
+package org.jemian.countdownj;
 
 /*
     CountdownJ, (c) 2010 Pete R. Jemian <prjemian@gmail.com>

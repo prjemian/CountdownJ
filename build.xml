@@ -86,7 +86,7 @@
 		<property name="main.class.short" 
 			value="GuiSwing" />
 		<property name="main.class.path" 
-			value="org.jemian.countdownj.Swing" />
+			value="org.jemian.countdownj" />
 		<property name="main.class" 
 			value="${main.class.path}.${main.class.short}" />
 		<echo message="target.jar = ${target.jar}" />

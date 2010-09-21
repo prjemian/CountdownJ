@@ -9,7 +9,7 @@
  * Created on Aug 23, 2010, 8:13:14 PM
  */
 
-package org.jemian.countdownj.Swing;
+package org.jemian.countdownj;
 
 /*
     CountdownJ, (c) 2010 Pete R. Jemian <prjemian@gmail.com>
