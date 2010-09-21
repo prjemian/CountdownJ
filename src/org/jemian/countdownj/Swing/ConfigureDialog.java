@@ -422,6 +422,10 @@ public class ConfigureDialog extends JDialog {
 		// fc.setDirectory("C:\\");
         //@see http://docstore.mik.ua/orelly/java/awt/ch06_07.htm
         fc.setFile("*.xml");
+        /* @note FilenameFilter is not used in Windows JVM
+         * TODO Must modify algorithm to validate selected file
+         * Can then easily report results if invalid!        
+         */
 		FilenameFilter filter = new XmlFileFilter();
 		fc.setFilenameFilter(filter);
 		//---- complete all setup before this next line

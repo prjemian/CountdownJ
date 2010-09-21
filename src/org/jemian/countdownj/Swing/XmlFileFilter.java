@@ -1,21 +1,21 @@
 package org.jemian.countdownj.Swing;
 
 /*
-    CountdownJ, (c) 2010 Pete R. Jemian <prjemian@gmail.com>
-    See LICENSE (GPLv3) for details.
-    
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+ CountdownJ, (c) 2010 Pete R. Jemian <prjemian@gmail.com>
+ See LICENSE (GPLv3) for details.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 //########### SVN repository information ###################
@@ -26,21 +26,97 @@ package org.jemian.countdownj.Swing;
 //# $Id$
 //########### SVN repository information ###################
 
-import java.io.*;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+
+import org.xml.sax.SAXException;
 
 public class XmlFileFilter implements FilenameFilter {
 	String ext;
+	private String schemaFile;
+	private Source schemaSource;
+	private Schema schema;
+	private SchemaFactory schemaFactory;
 
 	public XmlFileFilter() {
 		ext = ".xml";
+		schemaFile = "/schema.xsd";
+		schemaSource = new StreamSource(schemaFile);
+		schemaSource = new StreamSource(getClass().getResourceAsStream(schemaFile));
+		// 1. Lookup a factory for the W3C XML Schema language
+		schemaFactory = SchemaFactory
+				.newInstance("http://www.w3.org/2001/XMLSchema");
+		schema = null;
+		try {
+			schema = schemaFactory.newSchema(schemaSource);
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private boolean isValid(String file) {
+		boolean test = false;
+		test = true;
+		// ----
+		// @see http://www.ibm.com/developerworks/xml/library/x-javaxmlvalidapi.html
+		// ----
+		try {
+			test = validate(file);
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return test;
 	}
 
 	public boolean accept(File dir, String name) {
 		boolean test = false;
 		System.out.printf("XmlFileFilter(\"%s\", \"%s\")\n", dir, name);
-		test = name.toLowerCase().endsWith(".xml");	// ends with ".xml"
+		test = name.toLowerCase().endsWith(".xml"); // ends with ".xml"
 		if (test) {
-			// TODO validate aginst XML schema: "schema.xsd"
+			// TODO validate against XML schema: "schema.xsd"
+			test = isValid(name);	// TODO set the dir?
+		}
+		return test;
+	}
+
+	private boolean validate(String xmlDoc) throws SAXException, IOException {
+		boolean test = false;
+		// 1. Lookup a factory for the W3C XML Schema language
+		//SchemaFactory factory = SchemaFactory
+		//		.newInstance("http://www.w3.org/2001/XMLSchema");
+
+		// 2. Compile the schema.
+		// Here the schema is loaded from a java.io.File, but you could use
+		// a java.net.URL or a javax.xml.transform.Source instead.
+		//Schema schema = factory.newSchema(schemaSource);
+
+		// 3. Get a validator from the schema.
+		Validator validator = schema.newValidator();
+
+		// 4. Parse the document you want to check.
+		Source source = new StreamSource(xmlDoc);
+
+		// 5. Check the document
+		try {
+			validator.validate(source);
+			System.out.println(xmlDoc + " is valid.");
+			test = true;
+		} catch (SAXException ex) {
+			System.out.println(xmlDoc + " is not valid because ");
+			System.out.println(ex.getMessage());
 		}
 		return test;
 	}
