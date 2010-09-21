@@ -15,7 +15,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.jemian.countdownj.Swing.TalkConfiguration;
+import org.jemian.countdownj.TalkConfiguration;
 
 /**
  * Exploit Serialization To Perform Deep Copy

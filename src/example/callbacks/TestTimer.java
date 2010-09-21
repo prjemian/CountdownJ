@@ -1,7 +1,7 @@
 package example.callbacks;
 
-import org.jemian.countdownj.Swing.ClockTimer;
-import org.jemian.countdownj.Swing.TimerEventImpl;
+import org.jemian.countdownj.ClockTimer;
+import org.jemian.countdownj.TimerEventImpl;
 
 //TODO needs copyright and license header
 

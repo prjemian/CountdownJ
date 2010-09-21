@@ -2,7 +2,7 @@ package example.serializer;
 
 import java.io.*;
 
-import org.jemian.countdownj.Swing.TalkConfiguration;
+import org.jemian.countdownj.TalkConfiguration;
 
 public class TalkSerializer {
 	public static void main(String[] args) {

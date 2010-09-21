@@ -4,7 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
-import org.jemian.countdownj.Swing.TalkConfiguration;
+import org.jemian.countdownj.TalkConfiguration;
 
 public class TalkDeserializer {
 	public static void main(String[] args) {

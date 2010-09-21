@@ -20,8 +20,8 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.jemian.countdownj.Swing.ConfigFile;
-import org.jemian.countdownj.Swing.TalkConfiguration;
+import org.jemian.countdownj.ConfigFile;
+import org.jemian.countdownj.TalkConfiguration;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
