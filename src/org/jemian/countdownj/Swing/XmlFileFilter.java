@@ -29,7 +29,6 @@ package org.jemian.countdownj.Swing;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStream;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
@@ -45,11 +44,11 @@ public class XmlFileFilter implements FilenameFilter {
 	private Source schemaSource;
 	private Schema schema;
 	private SchemaFactory schemaFactory;
+	private Validator schemaValidator;
 
 	public XmlFileFilter() {
 		ext = ".xml";
 		schemaFile = "/schema.xsd";
-		schemaSource = new StreamSource(schemaFile);
 		schemaSource = new StreamSource(getClass().getResourceAsStream(schemaFile));
 		// 1. Lookup a factory for the W3C XML Schema language
 		schemaFactory = SchemaFactory
@@ -61,6 +60,7 @@ public class XmlFileFilter implements FilenameFilter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		schemaValidator = schema.newValidator();
 	}
 
 	private boolean isValid(String file) {
@@ -70,10 +70,7 @@ public class XmlFileFilter implements FilenameFilter {
 		// @see http://www.ibm.com/developerworks/xml/library/x-javaxmlvalidapi.html
 		// ----
 		try {
-			test = validate(file);
-		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			test = validateSettings(file);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -86,13 +83,12 @@ public class XmlFileFilter implements FilenameFilter {
 		System.out.printf("XmlFileFilter(\"%s\", \"%s\")\n", dir, name);
 		test = name.toLowerCase().endsWith(".xml"); // ends with ".xml"
 		if (test) {
-			// TODO validate against XML schema: "schema.xsd"
 			test = isValid(name);	// TODO set the dir?
 		}
 		return test;
 	}
 
-	private boolean validate(String xmlDoc) throws SAXException, IOException {
+	public boolean validateSettings(String xmlDoc) throws IOException {
 		boolean test = false;
 		// 1. Lookup a factory for the W3C XML Schema language
 		//SchemaFactory factory = SchemaFactory
@@ -104,14 +100,14 @@ public class XmlFileFilter implements FilenameFilter {
 		//Schema schema = factory.newSchema(schemaSource);
 
 		// 3. Get a validator from the schema.
-		Validator validator = schema.newValidator();
+		//Validator validator = schema.newValidator();
 
 		// 4. Parse the document you want to check.
 		Source source = new StreamSource(xmlDoc);
 
-		// 5. Check the document
 		try {
-			validator.validate(source);
+			// 5. Check the document
+			schemaValidator.validate(source);
 			System.out.println(xmlDoc + " is valid.");
 			test = true;
 		} catch (SAXException ex) {

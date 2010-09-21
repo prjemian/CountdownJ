@@ -41,8 +41,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -424,10 +422,10 @@ public class ConfigureDialog extends JDialog {
         fc.setFile("*.xml");
         /* @note FilenameFilter is not used in Windows JVM
          * TODO Must modify algorithm to validate selected file
-         * Can then easily report results if invalid!        
-         */
+         * Can then easily report results if invalid!
 		FilenameFilter filter = new XmlFileFilter();
 		fc.setFilenameFilter(filter);
+         */
 		//---- complete all setup before this next line
 		fc.setVisible(true);
 		String fn = fc.getFile();
@@ -436,6 +434,13 @@ public class ConfigureDialog extends JDialog {
 		else {
 			System.out.println("You chose " + fn);
 			// TODO complete this action
+			XmlFileFilter filter = new XmlFileFilter();
+			try {
+				filter.validateSettings(fn);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
     }
     
