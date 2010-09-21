@@ -29,7 +29,7 @@ package org.jemian.countdownj;
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* $copyright $
+/* $copyright: $
  */
 
 //########### SVN repository information ###################
