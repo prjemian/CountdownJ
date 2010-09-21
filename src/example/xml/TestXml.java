@@ -228,9 +228,13 @@ public class TestXml {
 	 */
 	private String timeStamp() {
         Date dateNow = new Date ();
-        SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-ddThh:mm:ss");
-        StringBuilder timeStamp = new StringBuilder( timeFormat.format( dateNow ) );
-		return timeStamp.toString();
+        String dateFormat = "yyyy-MM-dd+hh:mm:ss";
+        SimpleDateFormat timeFormat = new SimpleDateFormat(dateFormat);
+        String formattedDate = timeFormat.format( dateNow );
+        StringBuilder timeStamp = new StringBuilder( formattedDate );
+        // now convert to ISO8601 format (change "+" to "T")
+        String[] parts = timeStamp.toString().split("\\+");
+		return parts[0] + "T" + parts[1];
     }
 
 	public static void main(String[] args) throws Exception {
