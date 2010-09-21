@@ -420,6 +420,7 @@ public class ConfigureDialog extends JDialog {
         System.out.println("doOpenAction()");
         FileDialog fc = new FileDialog(this, "Choose a file", FileDialog.LOAD);
 		// fc.setDirectory("C:\\");
+        //@see http://docstore.mik.ua/orelly/java/awt/ch06_07.htm
         fc.setFile("*.xml");
 		FilenameFilter filter = new XmlFileFilter();
 		fc.setFilenameFilter(filter);
@@ -437,11 +438,13 @@ public class ConfigureDialog extends JDialog {
     private void doSaveAction() {
         System.out.println("doSaveAction()");
         // TODO complete this action
+        //@see http://docstore.mik.ua/orelly/java/awt/ch06_07.htm
     }
     
     private void doSaveAsAction() {
         System.out.println("doSaveAsAction()");
         // TODO complete this action
+        //@see http://docstore.mik.ua/orelly/java/awt/ch06_07.htm
     }
 	
 	private TalkConfiguration getSettingsByKey(String key) {
