@@ -98,11 +98,11 @@ public class GuiSwing extends JFrame {
         defaultSettingsFile = "{not defined yet}";
         defaultSettingsFile = dir + delim + RC_FILE;
         userSettingsFile = "{not defined yet}";
-        XmlSupport.getInstance();  // make sure this code is initialized
 
         // restore last known program settings
-        ManageRcFile rcFileInst = ManageRcFile.getInstance();
-        rcFileInst.readRcFile();
+        ManageRcFile.setRC_FILE(defaultSettingsFile);
+        // TODO retrieve the values discovered
+        // First need to write such a file
 
         // setup the GUI
     	initializeColorTable();

@@ -26,6 +26,8 @@ package org.jemian.countdownj;
 //# $Id$
 //########### SVN repository information ###################
 
+import java.io.File;
+
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
@@ -41,14 +43,16 @@ public class ManageRcFile {
 		userSettingsFile = null;
 	}
 	
-	public void readRcFile() {
-		//boolean exists = new File(RC_FILE).exists();
-		//if (exists) {
-		//	// TODO
-		//}
+	public static void readRcFile() {
+		if (RC_FILE != null) {
+			boolean exists = new File(RC_FILE).exists();
+			if (exists) {
+				// TODO
+			}
+		}
 	}
 	
-	public void writeRcFile() {
+	public static void writeRcFile() {
 		Document doc = null;
 		try {
 			doc = XmlSupport.makeNewXmlDomDoc();
@@ -79,6 +83,7 @@ public class ManageRcFile {
 	 */
 	public static void setRC_FILE(String rC_FILE) {
 		RC_FILE = rC_FILE;
+		readRcFile();
 	}
 
 	/**
