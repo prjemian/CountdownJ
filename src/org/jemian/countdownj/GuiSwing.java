@@ -90,7 +90,7 @@ public class GuiSwing extends JFrame {
         overrideInitialTalkConfigurations();
         
         // default files
-        String dir = System.getProperty("user.dir");
+        String dir = System.getProperty("user.home");
         String delim = System.getProperty("file.separator");
         defaultSettingsFile = "{not defined yet}";
         defaultSettingsFile = dir + delim + RC_FILE;
