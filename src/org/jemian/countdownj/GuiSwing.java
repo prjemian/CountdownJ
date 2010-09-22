@@ -73,6 +73,10 @@ public class GuiSwing extends JFrame {
 	private TalkTimer talkTimer;
 	private HashMap<String, Color> colorTable;
 	private HashMap<String, TalkConfiguration> settings;
+	private static String defaultSettingsFile;
+	private static String userSettingsFile;
+	private static final String RC_FILE = ".countdownjrc";
+
 
     /**
      * creates ConfigureJ application main display
@@ -84,6 +88,13 @@ public class GuiSwing extends JFrame {
         for (int i = 0; i < ConfigureDialog.NUMBER_OF_TABS; i++)
         	settings.put("preset" + (i+1), new TalkConfiguration());
         overrideInitialTalkConfigurations();
+        
+        // default files
+        String dir = System.getProperty("user.dir");
+        String delim = System.getProperty("file.separator");
+        defaultSettingsFile = "{not defined yet}";
+        defaultSettingsFile = dir + delim + RC_FILE;
+        userSettingsFile = "{not defined yet}";
 
 		// setup the GUI
     	initializeColorTable();
@@ -302,6 +313,8 @@ public class GuiSwing extends JFrame {
         	String key = "preset" + (i+1);
         	dialog.setPresetSettings(i+1, settings.get(key));
         }
+        dialog.setDefaultSettingsFile(defaultSettingsFile);
+        dialog.setUserSettingsFile(userSettingsFile);
         // =========================================
         dialog.setVisible(true);
         // =========================================
@@ -318,6 +331,7 @@ public class GuiSwing extends JFrame {
 	        presetButton2.setText(settings.get("preset2").getName());
 	        presetButton3.setText(settings.get("preset3").getName());
 	        presetButton4.setText(settings.get("preset4").getName());
+	        userSettingsFile = dialog.getUserSettingsFile();
 			break;
 
 		case ConfigureDialog.CANCEL_BUTTON:

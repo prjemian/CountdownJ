@@ -46,6 +46,12 @@ public class XmlFileFilter implements FilenameFilter {
 	private SchemaFactory schemaFactory;
 	private Validator schemaValidator;
 
+	/**
+	 * Support the FilenameFilter interface for FileDialog objects
+	 * Note this interface is not supported in Sun's reference implementation on Windows.
+	 * THUS, this code is not used as a filter.  
+	 * It provides XML file validation.  Perhaps it needs to be renamed.
+	 */
 	public XmlFileFilter() {
 		ext = ".xml";
 		schemaFile = "/schema.xsd";
@@ -57,27 +63,32 @@ public class XmlFileFilter implements FilenameFilter {
 		try {
 			schema = schemaFactory.newSchema(schemaSource);
 		} catch (SAXException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		schemaValidator = schema.newValidator();
 	}
 
-	private boolean isValid(String file) {
+	/**
+	 * Test if XML file is valid against our XML Schema
+	 * Ignore any report if invalid
+	 * @see http://www.ibm.com/developerworks/xml/library/x-javaxmlvalidapi.html
+	 * @param file
+	 * @return
+	 */
+	public boolean isValid(String file) {
 		boolean test = false;
-		test = true;
-		// ----
-		// @see http://www.ibm.com/developerworks/xml/library/x-javaxmlvalidapi.html
-		// ----
 		try {
-			test = validateSettings(file);
+			String msg = null;
+			msg = validateSettings(file);
+			test = (msg == null);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		return test;
 	}
 
+	/**
+	 * Required support for FileFilter interface
+	 */
 	public boolean accept(File dir, String name) {
 		boolean test = false;
 		System.out.printf("XmlFileFilter(\"%s\", \"%s\")\n", dir, name);
@@ -88,8 +99,14 @@ public class XmlFileFilter implements FilenameFilter {
 		return test;
 	}
 
-	public boolean validateSettings(String xmlDoc) throws IOException {
-		boolean test = false;
+	/**
+	 * Check an XML file against our XML Schema
+	 * @param xmlDoc
+	 * @return null (valid) or String(errorReport)
+	 * @throws IOException
+	 */
+	public String validateSettings(String xmlDoc) throws IOException {
+		String result = null;
 		// 1. Lookup a factory for the W3C XML Schema language
 		//SchemaFactory factory = SchemaFactory
 		//		.newInstance("http://www.w3.org/2001/XMLSchema");
@@ -108,12 +125,12 @@ public class XmlFileFilter implements FilenameFilter {
 		try {
 			// 5. Check the document
 			schemaValidator.validate(source);
-			System.out.println(xmlDoc + " is valid.");
-			test = true;
+			//System.out.println(xmlDoc + " is valid.");
 		} catch (SAXException ex) {
-			System.out.println(xmlDoc + " is not valid because ");
-			System.out.println(ex.getMessage());
+			//System.out.println(xmlDoc + " is not valid because ");
+			//System.out.println(ex.getMessage());
+			result = ex.getMessage();
 		}
-		return test;
+		return result;
 	}
 }

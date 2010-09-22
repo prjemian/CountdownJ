@@ -62,6 +62,7 @@
 		<copy file="config.xml" todir="${bin.dir}" />
 		<copy file="example.xml" todir="${bin.dir}" />
 		<copy file="schema.xsd" todir="${bin.dir}" />
+		<copy file="invalid.xml" todir="${bin.dir}" />
 	</target>
 
 	<target name="compile" 

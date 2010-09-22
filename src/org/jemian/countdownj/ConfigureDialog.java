@@ -52,6 +52,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpressionException;
+
+import org.xml.sax.SAXException;
 
 /**
  * the ConfigureDialog dialog for the CountdownJ program
@@ -305,7 +309,7 @@ public class ConfigureDialog extends JDialog {
 			// An ANT build target ("resources") copies it to ${bin.dir}.
     		// Another ANT target copies all of ${bin.dir} to the JAR
     		license_text = readResourceAsString(LICENSE_FILE);
-    		// FIXME Linux-only bug: license_text starts scrolled to the bottom.
+    		// CANTFIX Linux-only bug: license_text starts scrolled to the bottom.
 		} catch (IOException e1) {
 			// backup license text if LICENSE cannot be found
 			license_text = ConfigFile.getInstance().toString();
@@ -414,46 +418,99 @@ public class ConfigureDialog extends JDialog {
         setVisible(false);
     }
     
-    private void doOpenAction() {
-        System.out.println("doOpenAction()");
+    /**
+     * select a file to open with the FileDialog
+     * @return full path file name or null
+     */
+    private String selectFileOpen() {
         FileDialog fc = new FileDialog(this, "Choose a file", FileDialog.LOAD);
-		// fc.setDirectory("C:\\");
         //@see http://docstore.mik.ua/orelly/java/awt/ch06_07.htm
         fc.setFile("*.xml");
-        /* @note FilenameFilter is not used in Windows JVM
-         * TODO Must modify algorithm to validate selected file
-         * Can then easily report results if invalid!
-		FilenameFilter filter = new XmlFileFilter();
-		fc.setFilenameFilter(filter);
-         */
-		//---- complete all setup before this next line
+		//---- complete all dialog setup before this next line
 		fc.setVisible(true);
 		String fn = fc.getFile();
-		if (fn == null)
-			System.out.println("You cancelled the choice");
-		else {
-			System.out.println("You chose " + fn);
-			// TODO complete this action
-			XmlFileFilter filter = new XmlFileFilter();
-			try {
-				filter.validateSettings(fn);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		String dir = fc.getDirectory();
+		// String delim = System.getProperty("file.separator");
+		String full = dir + fn;
+		return full;
+    }
+    
+    /**
+     * Select a valid XML settings file and open it
+     */
+    private void doOpenAction() {
+        HashMap<String, TalkConfiguration> theCfg = null;
+        boolean done = false;
+        String fn = "";
+        while (!done) {
+        	fn = selectFileOpen();
+        	if (fn == null)
+        		done = true;
+        	else {			
+        		XmlFileFilter filter = new XmlFileFilter();
+				try {
+					String msg = filter.validateSettings(fn);
+					if (msg == null) {
+						done = true;
+						// file selection complete, process the file
+						XmlSettingsFile xsf = new XmlSettingsFile();
+						theCfg = xsf.readFullConfiguration(fn);
+					} else {
+						// TODO show msg in a dialog: [try again] [cancel]
+						System.out.printf(
+								"<%s> is not acceptable due to:\n%s\n", fn,
+								msg);
+					}
+				} catch (IOException e) {
+					e.printStackTrace();	// What happens to get here?
+				} catch (ParserConfigurationException e) {
+					e.printStackTrace();	// Due to programmer error
+				} catch (XPathExpressionException e) {
+					e.printStackTrace();	// Due to programmer error
+				} catch (SAXException e) {
+					e.printStackTrace();	// What happens to get here?
+				}
+        	}
+        }
+        if (theCfg != null) {
+			setBasicSettings(theCfg.get("basic"));
+        	for (int i = 0; i < NUMBER_OF_TABS; i++) {
+        		String key = String.format("preset%d", i+1);
+        		setPresetSettings(i+1, theCfg.get(key));
+        	}
+        	setUserSettingsFile(fn);
+        }
     }
     
     private void doSaveAction() {
         System.out.println("doSaveAction()");
         // TODO complete this action
-        //@see http://docstore.mik.ua/orelly/java/awt/ch06_07.htm
+        doSaveAsAction();	// for now
     }
     
     private void doSaveAsAction() {
         System.out.println("doSaveAsAction()");
+        String fn = selectFileSaveAs(userSettingsFile);
+        if (fn == null)
+        	System.out.println("Canceled the operation");
+        else
+        	System.out.printf("<%s> is the new file name\n", fn);
         // TODO complete this action
+    }
+    
+    /**
+     * select a file to open with the FileDialog
+     * @return file name or null
+     */
+    private String selectFileSaveAs(String oldName) {
+        FileDialog fc = new FileDialog(this, "Save file to another location ...", FileDialog.SAVE);
         //@see http://docstore.mik.ua/orelly/java/awt/ch06_07.htm
+        fc.setFile(oldName);
+		//---- complete all dialog setup before this next line
+		fc.setVisible(true);
+		String fn = fc.getFile();
+		//String dir = fc.getDirectory();
+		return fn;
     }
 	
 	private TalkConfiguration getSettingsByKey(String key) {
