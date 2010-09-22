@@ -63,6 +63,7 @@
 		<copy file="example.xml" todir="${bin.dir}" />
 		<copy file="schema.xsd" todir="${bin.dir}" />
 		<copy file="invalid.xml" todir="${bin.dir}" />
+		<copy file="build.num" todir="${bin.dir}" />
 	</target>
 
 	<target name="compile" 
@@ -90,8 +91,10 @@
 			value="org.jemian.countdownj" />
 		<property name="main.class" 
 			value="${main.class.path}.${main.class.short}" />
+		<buildnumber file="build.num" />
 		<echo message="target.jar = ${target.jar}" />
 		<echo message="main.class = ${main.class}" />
+		<echo message="build.number = ${build.number}" />
 		<jar destfile="${target.jar}" 
 			filesetmanifest="mergewithoutmain">
 			<manifest>

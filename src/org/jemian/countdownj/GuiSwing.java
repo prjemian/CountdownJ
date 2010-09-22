@@ -46,6 +46,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.HierarchyBoundsListener;
 import java.awt.event.HierarchyEvent;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 
 import javax.swing.JButton;
@@ -53,11 +57,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 /*
- * TODO read/write configuration as XML
- * TODO make GUI to read/write configuration files
- * TODO build code to validate XML files
  * TODO add code to read/write default/working configuration as XML
+ * TODO rewrite main GUI layout without using NetBeans
  */
+// TODO move About box from ConfigureDialog to button on "Other" tab of GuiSwing
 
 /**
  *
@@ -100,11 +103,12 @@ public class GuiSwing extends JFrame {
     	initializeColorTable();
         initComponents();
         ConfigFile cfg = ConfigFile.getInstance();
-        // TODO can we get most recent revision number from project directory?
-        String svnRev = "$Revision$".split(" ")[1];
+        int buildNumber = getBuildNumber();
+        // WONTFIX can we get most recent revision number from project directory?
+        // String svnRev = "$Revision$".split(" ")[1];
         String format = String.format("%s, (%s) <%s>", 
-        		cfg.getName(), "svn:%s", cfg.getEmail());
-        String title = String.format(format, svnRev);
+        		cfg.getName(), "build:%d", cfg.getEmail());
+        String title = String.format(format, buildNumber);
         this.setTitle(title);
         initializeButtonLabels();
 
@@ -120,6 +124,25 @@ public class GuiSwing extends JFrame {
 
     	talkTimer = new TalkTimer(this, settings.get("basic"));
         setExtendedState(MAXIMIZED_BOTH);     // full screen
+    }
+    
+    private int getBuildNumber() {
+    	int buildNumber = -1;
+    	InputStream in = getClass().getResourceAsStream("/build.num");
+    	if (in != null) {
+	    	InputStreamReader isr = new InputStreamReader(in);
+	        BufferedReader br = new BufferedReader(isr);
+	        try {
+				br.readLine();
+		        br.readLine();
+		        String line = br.readLine();
+		        buildNumber = new Integer(line.split("=")[1]);
+			} catch (IOException e) {
+				// ignore this error
+			}
+    	}
+
+    	return buildNumber;
     }
     
     private void overrideInitialTalkConfigurations() {

@@ -41,6 +41,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -49,6 +50,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
@@ -159,6 +161,7 @@ public class ConfigureDialog extends JDialog {
                 fileIoTab.getBorder()));
     	mainTabs.add(fileIoTab);
 
+    	// TODO move About box from ConfigureDialog to button on "Other" tab of GuiSwing
     	JPanel aboutBoxPanel = new JPanel();
     	aboutBoxPanel.setName("About");
     	aboutBoxPanel.setAlignmentX(CENTER_ALIGNMENT);
@@ -332,6 +335,12 @@ public class ConfigureDialog extends JDialog {
     		setPresetSettings(i+1, new TalkConfiguration());
     }
     
+    /**
+     * layout the top of a JPanel with a label
+     * @param subtabs
+     * @param label
+     * @return
+     */
     private JPanel createLabeledPanel(JTabbedPane subtabs, String label) {
     	JPanel thePanel = new JPanel();
     	thePanel.setBorder(BorderFactory.createCompoundBorder(
@@ -408,11 +417,17 @@ public class ConfigureDialog extends JDialog {
     	return key;
     }
     
+    /**
+     * respond to the "Ok" button
+     */
     private void doOkAction() {
         buttonPressed = OK_BUTTON;
         setVisible(false);
     }
     
+    /**
+     * respond to the "Cancel" button
+     */
     private void doCancelAction() {
         buttonPressed = CANCEL_BUTTON;
         setVisible(false);
@@ -429,10 +444,12 @@ public class ConfigureDialog extends JDialog {
 		//---- complete all dialog setup before this next line
 		fc.setVisible(true);
 		String fn = fc.getFile();
-		String dir = fc.getDirectory();
-		// String delim = System.getProperty("file.separator");
-		String full = dir + fn;
-		return full;
+		if (fn != null) {
+			String dir = fc.getDirectory();
+			// String delim = System.getProperty("file.separator");
+			fn = dir + fn;
+		}
+		return fn;
     }
     
     /**
@@ -456,10 +473,10 @@ public class ConfigureDialog extends JDialog {
 						XmlSettingsFile xsf = new XmlSettingsFile();
 						theCfg = xsf.readFullConfiguration(fn);
 					} else {
-						// TODO show msg in a dialog: [try again] [cancel]
-						System.out.printf(
-								"<%s> is not acceptable due to:\n%s\n", fn,
-								msg);
+						String title = "invalid: " + fn;
+		        		JOptionPane.showMessageDialog(null, 
+		        				msg, title, 
+		        				JOptionPane.INFORMATION_MESSAGE);
 					}
 				} catch (IOException e) {
 					e.printStackTrace();	// What happens to get here?
@@ -482,20 +499,56 @@ public class ConfigureDialog extends JDialog {
         }
     }
     
+    /**
+     * respond to "Save" button
+     */
     private void doSaveAction() {
         System.out.println("doSaveAction()");
-        // TODO complete this action
-        doSaveAsAction();	// for now
+        boolean undefined = userSettingsFile.startsWith("{");
+        boolean exists = new File(userSettingsFile).exists();
+        if (undefined | !exists)
+        	doSaveAsAction();
+        else
+        	if (!saveToFile(userSettingsFile))
+        		setUserSettingsFile("{undefined}");
     }
     
+    /**
+     * save the settings to the named file
+     * @param filename
+     * @return
+     */
+    private boolean saveToFile(String filename) {
+		XmlSettingsFile xsf;
+		boolean success = false;
+		try {
+			xsf = new XmlSettingsFile(settings);
+			xsf.writeFullConfiguration(filename);
+			success = true;	// only once written successfully
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		}
+		return success;
+    }
+    
+    /**
+     * respond to "SaveAs ..." button
+     */
     private void doSaveAsAction() {
+        boolean done = false;
         System.out.println("doSaveAsAction()");
-        String fn = selectFileSaveAs(userSettingsFile);
-        if (fn == null)
-        	System.out.println("Canceled the operation");
-        else
-        	System.out.printf("<%s> is the new file name\n", fn);
-        // TODO complete this action
+        while (!done) {
+	        String fn = selectFileSaveAs(userSettingsFile);
+	        // code already tests if selected file exists
+	        if (fn == null)
+	        	done = true;
+	        else {
+	        	if (saveToFile(fn)){
+		        	done = true;	// only once written successfully
+		        	setUserSettingsFile(fn);
+	        	}
+	        }
+        }
     }
     
     /**
@@ -503,17 +556,28 @@ public class ConfigureDialog extends JDialog {
      * @return file name or null
      */
     private String selectFileSaveAs(String oldName) {
-        FileDialog fc = new FileDialog(this, "Save file to another location ...", FileDialog.SAVE);
+        String title = "Save file to another location ...";
+    	FileDialog fc = new FileDialog(this, title, FileDialog.SAVE);
         //@see http://docstore.mik.ua/orelly/java/awt/ch06_07.htm
         fc.setFile(oldName);
 		//---- complete all dialog setup before this next line
 		fc.setVisible(true);
 		String fn = fc.getFile();
-		//String dir = fc.getDirectory();
+		if (fn != null) {
+			String dir = fc.getDirectory();
+			fn = dir + fn;
+			if (!fn.toLowerCase().endsWith(".xml"))
+				fn = fn + ".xml";
+		}
 		return fn;
     }
 	
-	private TalkConfiguration getSettingsByKey(String key) {
+	/**
+	 * find a talk by its key name
+	 * @param key
+	 * @return
+	 */
+    private TalkConfiguration getSettingsByKey(String key) {
 		TalkConfiguration talk = null;
 		if (settings.containsKey(key))
 			talk = settings.get(key).deepCopy();

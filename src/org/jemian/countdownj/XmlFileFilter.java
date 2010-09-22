@@ -94,7 +94,7 @@ public class XmlFileFilter implements FilenameFilter {
 		System.out.printf("XmlFileFilter(\"%s\", \"%s\")\n", dir, name);
 		test = name.toLowerCase().endsWith(".xml"); // ends with ".xml"
 		if (test) {
-			test = isValid(name);	// TODO set the dir?
+			test = isValid(name);	// ??? set the dir?
 		}
 		return test;
 	}

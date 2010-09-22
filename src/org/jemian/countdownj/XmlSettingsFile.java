@@ -57,6 +57,8 @@ import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+// TODO Class methods do not use class data consistently.  Some are public.
+
 /**
  * Filters filenames for use in FileDialogs.
  * @note Not supported in Sun's reference implementation on Windows
@@ -89,6 +91,15 @@ public class XmlSettingsFile {
 	throws ParserConfigurationException {
 		doc = makeNewXmlDoc();
 		this.config = config;
+	}
+	
+	/**
+	 * write the settings to an XML settings file named by the user
+	 * @param filename
+	 */
+	public void writeFullConfiguration(String filename) {
+		Document doc = writeFullConfigurationToDom();
+		writeXmlFile(doc, filename);
 	}
 	
 	/**
@@ -273,7 +284,7 @@ public class XmlSettingsFile {
 	 * write the configuration to a DOM Document object
 	 * @return the DOM Document object
 	 */
-	public Document writeFullConfiguration() {
+	public Document writeFullConfigurationToDom() {
         //create the root element and add it to the document
         Element root = xmlRootElement(doc, ROOTNODE);
         root.setAttribute("version", VERSION);
@@ -506,7 +517,7 @@ public class XmlSettingsFile {
 			theConfig.put(keys[i], talk);
 		}
 		XmlSettingsFile test = new XmlSettingsFile(theConfig);
-		Document xmldoc = test.writeFullConfiguration();
+		Document xmldoc = test.writeFullConfigurationToDom();
 		String testFile = "test.xml";
 		test.writeXmlFile(xmldoc, testFile);
 
