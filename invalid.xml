@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<!--
+	This file is invalid against the schema.xsd rules.
+	It is used to test that the software can trap such errors. 
+ -->
+
+<!-- /*
+    CountdownJ, (c) 2010 Pete R. Jemian <prjemian@gmail.com>
+    See LICENSE (GPLv3) for details.
+    
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */ -->
+
+<!--
+########### SVN repository information ###################
+# $Date$
+# $Author$
+# $Revision$
+# $URL$
+# $Id$
+########### SVN repository information ###################
+-->
+
+<TalkConfiguration programName="CountdownJ" version="1.0j">
+  <timestamp>2010-09-06+10:29:05<!-- needs T, not + to be ISO8601 compliant --></timestamp>
+  <talk id="basic">
+    <seconds discussion="60" overtime="10" presentation="600"/><!-- no presentation time in "basic" -->
+    <audible>true</audible>
+    <!--messages should be brief-->
+    <message name="pretalk">Next Presentation</message>
+    <message name="presentation">Presentation</message>
+    <message name="discussion">Discussion</message>
+    <message name="overtime">Overtime</message>
+    <message name="paused">Paused</message>
+  </talk>
+  <talk id="preset1" name="talk 1">
+    <!--name is used for the tab to be selected-->
+    <seconds discussion="120" overtime="20" presentation="900"/>
+    <audible>true</audible>
+    <!--messages should be brief-->
+    <message name="pretalk">Next Presentation</message>
+    <message name="presentation">Presentation</message>
+    <message name="discussion">Discussion</message>
+    <message name="overtime">Overtime</message>
+    <message name="paused">Paused</message>
+  </talk>
+  <talk id="preset0" name="talk 2"><!-- "preset0" is not an allowed id -->
+    <!--name is used for the tab to be selected-->
+    <seconds discussion="180" overtime="30" presentation="900"/>
+    <audible>true</audible>
+    <!--messages should be brief-->
+    <message name="pretalk">Next Presentation</message>
+    <message name="presentation">Presentation</message>
+    <message name="discussion">Discussion</message>
+    <message name="overtime">Overtime</message>
+    <message name="paused">Paused</message>
+  </talk>
+  <talk id="preset3" name="talk 3">
+    <!--name is used for the tab to be selected-->
+    <seconds discussion="240" overtime="40" presentation="900"/>
+    <audible>true</audible>
+    <!--messages should be brief-->
+    <message name="pretalk">Next Presentation</message>
+    <message name="presentation">Presentation</message>
+    <message name="discussion">Discussion</message>
+    <message name="overtime">Overtime</message>
+    <message name="paused">Paused</message>
+  </talk>
+  <talk id="preset4" name="talk 4">
+    <!--name is used for the tab to be selected-->
+    <seconds discussion="300" overtime="50" presentation="900"/>
+    <audible>true</audible>
+    <!--messages should be brief-->
+    <message name="pretalk">Next Presentation</message>
+    <message name="presentation">Presentation</message>
+    <message name="discussion">Discussion</message>
+    <message name="overtime">Overtime</message>
+    <message name="paused">Paused</message>
+  </talk>
+  <talk id="preset4" name="error: preset4 cannot be defined twice">
+    <!--name is used for the tab to be selected-->
+    <seconds discussion="300" overtime="50" presentation="900"/>
+    <audible>true</audible>
+    <!--messages should be brief-->
+    <message name="pretalk">Next Presentation</message>
+    <message name="presentation">Presentation</message>
+    <message name="discussion">Discussion</message>
+    <message name="overtime">Overtime</message>
+    <message name="paused">Paused</message>
+  </talk>
+</TalkConfiguration>
