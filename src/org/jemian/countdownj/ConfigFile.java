@@ -32,11 +32,7 @@ import java.io.InputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -69,17 +65,18 @@ public class ConfigFile {
 		} catch (IOException e) {
 		}
 
-		// prepare to search using XPath expressions
-		XPathFactory xpFactory = XPathFactory.newInstance();
-		XPath xpath = xpFactory.newXPath();
-
-		name = getStringByXpath(xpath, "/CountdownJ/@name");
-		version = getStringByXpath(xpath, "/CountdownJ/@version");
-		description = getStringByXpath(xpath, "/CountdownJ/description");
-		author = getStringByXpath(xpath, "/CountdownJ/author");
-		email = getStringByXpath(xpath, "/CountdownJ/email");
-		copyright = getStringByXpath(xpath, "/CountdownJ/copyright");
-		license = getStringByXpath(xpath, "/CountdownJ/license");
+		try {
+			name = XmlSupport.getString(doc, "/CountdownJ/@name");
+			version = XmlSupport.getString(doc, "/CountdownJ/@version");
+			description = XmlSupport.getString(doc, "/CountdownJ/description");
+			author = XmlSupport.getString(doc, "/CountdownJ/author");
+			email = XmlSupport.getString(doc, "/CountdownJ/email");
+			copyright = XmlSupport.getString(doc, "/CountdownJ/copyright");
+			license = XmlSupport.getString(doc, "/CountdownJ/license");
+		} catch (XPathExpressionException e) {
+			// do not expect this to fail here, but it could
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -88,25 +85,6 @@ public class ConfigFile {
 	 */
 	public static ConfigFile getInstance () {
 		return ConfigFile.CONFIGFILE;
-	}
-	
-	private String getStringByXpath(XPath xpath, String xpathExpr) {
-		XPathExpression expr;
-		String result = null;
-		try {
-			expr = xpath.compile(xpathExpr);
-			/*
-			 * XPathConstants.NODESET
-		     * XPathConstants.BOOLEAN
-		     * XPathConstants.NUMBER
-		     * XPathConstants.STRING
-		     * XPathConstants.NODE
-			 */
-			result = (String) expr.evaluate(doc, XPathConstants.STRING);
-		} catch (XPathExpressionException e) {
-			result = xpathExpr + " not found";
-		}
-		return result;
 	}
 
 	/**

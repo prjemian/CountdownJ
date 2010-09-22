@@ -26,35 +26,16 @@ package org.jemian.countdownj;
 //# $Id$
 //########### SVN repository information ###################
 
-import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 
-import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 // TODO Class methods do not use class data consistently.  Some are public.
@@ -73,7 +54,7 @@ public class XmlSettingsFile {
 	 */
 	public XmlSettingsFile() 
 	throws ParserConfigurationException {
-		doc = makeNewXmlDoc();
+		doc = XmlSupport.makeNewXmlDomDoc();
 		config = new HashMap<String, TalkConfiguration>();
 		for (int i = 0; i < keys.length; i++) {
 			TalkConfiguration talk = new TalkConfiguration();
@@ -89,7 +70,7 @@ public class XmlSettingsFile {
 	 */
 	public XmlSettingsFile(HashMap<String, TalkConfiguration> config) 
 	throws ParserConfigurationException {
-		doc = makeNewXmlDoc();
+		doc = XmlSupport.makeNewXmlDomDoc();
 		this.config = config;
 	}
 	
@@ -98,8 +79,7 @@ public class XmlSettingsFile {
 	 * @param filename
 	 */
 	public void writeFullConfiguration(String filename) {
-		Document doc = writeFullConfigurationToDom();
-		writeXmlFile(doc, filename);
+		XmlSupport.writeDomToFile(writeFullConfigurationToDom(), filename);
 	}
 	
 	/**
@@ -116,44 +96,40 @@ public class XmlSettingsFile {
 	throws ParserConfigurationException, SAXException, 
 	IOException, XPathExpressionException {
 		Document doc;
-		doc = openXmlDoc(settingsFile);
+		doc = XmlSupport.openXmlDoc(settingsFile);
 		HashMap<String, TalkConfiguration> cfg = null;
 
-		// prepare to search using XPath expressions
-		XPathFactory xpFactory = XPathFactory.newInstance();
-		XPath xpath = xpFactory.newXPath();
-
 		String base = "/TalkConfiguration";
-		String program = getString(doc, xpath, base+"/@programName");
-		String version = getString(doc, xpath, base+"/@version");
-		if (strEq(program, programName) & strEq(version, VERSION)) {
+		String program = XmlSupport.getString(doc, base+"/@programName");
+		String version = XmlSupport.getString(doc, base+"/@version");
+		if (XmlSupport.strEq(program, programName) & XmlSupport.strEq(version, VERSION)) {
 			// assume file is valid at this point
 			cfg = new HashMap<String, TalkConfiguration>();
 			for (int i = 0; i < keys.length; i++) {
 				// configuration
 				String talkNodeXpath;
 				talkNodeXpath = String.format(base+"/talk[@id=\"%s\"]", keys[i]);
-				Node node = getNode(doc, xpath, talkNodeXpath);
+				Node node = XmlSupport.getNode(doc, talkNodeXpath);
 				if (node != null) {
-					int timeDiscussion = getInteger(node, xpath, "seconds/@discussion");
-					int timeOvertime = getInteger(node, xpath, "seconds/@overtime");
+					int timeDiscussion = XmlSupport.getInteger(node, "seconds/@discussion");
+					int timeOvertime = XmlSupport.getInteger(node, "seconds/@overtime");
 					int timePresentation = 0;
 					String name = "";
-					if (!strEq(keys[i], "basic")) {
-						timePresentation = getInteger(node, xpath, "seconds/@presentation");
-						name = getString(node, xpath, "@name");
+					if (!XmlSupport.strEq(keys[i], "basic")) {
+						timePresentation = XmlSupport.getInteger(node, "seconds/@presentation");
+						name = XmlSupport.getString(node, "@name");
 					}
-					boolean audible = (Boolean) getObject(node, xpath, "audible", XPathConstants.BOOLEAN);
-					String strPretalk = getString(node, xpath, "message[@name=\"pretalk\"]");
-					String strPresentation = getString(node, xpath, "message[@name=\"presentation\"]");
-					String strDiscussion = getString(node, xpath, "message[@name=\"discussion\"]");
-					String strOvertime = getString(node, xpath, "message[@name=\"overtime\"]");
-					String strPaused = getString(node, xpath, "message[@name=\"paused\"]");
+					boolean audible = (Boolean) XmlSupport.getObject(node, "audible", XPathConstants.BOOLEAN);
+					String strPretalk = XmlSupport.getString(node, "message[@name=\"pretalk\"]");
+					String strPresentation = XmlSupport.getString(node, "message[@name=\"presentation\"]");
+					String strDiscussion = XmlSupport.getString(node, "message[@name=\"discussion\"]");
+					String strOvertime = XmlSupport.getString(node, "message[@name=\"overtime\"]");
+					String strPaused = XmlSupport.getString(node, "message[@name=\"paused\"]");
 	
 					TalkConfiguration talk = new TalkConfiguration();
 					talk.setDiscussion(timeDiscussion);
 					talk.setOvertime(timeOvertime);
-					if (!strEq(keys[i], "basic")) {
+					if (!XmlSupport.strEq(keys[i], "basic")) {
 						talk.setPresentation(timePresentation);
 						talk.setName(name);
 					}
@@ -172,128 +148,19 @@ public class XmlSettingsFile {
 	}
 	
 	/**
-	 * Locate an object in a DOM Document object using an XPath expression.
-	 * 
-	 * objectType can be one of these.  It is necessary to cast the 
-	 * result of this function to the desired Java type.
-	 * XPathConstants.NODESET
-     * XPathConstants.BOOLEAN
-     * XPathConstants.NUMBER
-     * XPathConstants.STRING
-     * XPathConstants.NODE
-	 * 
-	 * @param d
-	 * @param xpath
-	 * @param xpathExpr
-	 * @param objectType
-	 * @return
-	 * @throws XPathExpressionException
-	 */
-	private Object getObject(Document d, XPath xpath, String xpathExpr, QName objectType) throws XPathExpressionException {
-		XPathExpression expr = xpath.compile(xpathExpr);
-		Object obj = expr.evaluate(d, objectType);
-		return obj;
-	}
-	
-	/**
-	 * Locate an object from a DOM Node object using an XPath expression.
-	 * @param n
-	 * @param xpath
-	 * @param xpathExpr
-	 * @param objectType
-	 * @return
-	 * @throws XPathExpressionException
-	 */
-	private Object getObject(Node n, XPath xpath, String xpathExpr, QName objectType) throws XPathExpressionException {
-		XPathExpression expr = xpath.compile(xpathExpr);
-		Object obj = expr.evaluate(n, objectType);
-		return obj;
-	}
-	
-	/**
-	 * Locate a Node in a DOM Document object using an XPath expression.
-	 * @param d
-	 * @param xpath
-	 * @param xpathExpr
-	 * @return
-	 * @throws XPathExpressionException
-	 */
-	private Node getNode(Document d, XPath xpath, String xpathExpr) throws XPathExpressionException {
-		return (Node) getObject(d, xpath, xpathExpr, XPathConstants.NODE);
-	}
-	
-	/**
-	 * Locate an Integer from a DOM Node object using an XPath expression.
-	 * @param n
-	 * @param xpath
-	 * @param xpathExpr
-	 * @return
-	 * @throws XPathExpressionException
-	 */
-	private Integer getInteger(Node n, XPath xpath, String xpathExpr) throws XPathExpressionException {
-		return new Integer(getDouble(n, xpath, xpathExpr).intValue());
-	}
-
-	/**
-	 * Locate an Double from a DOM Node object using an XPath expression.
-	 * @param n
-	 * @param xpath
-	 * @param xpathExpr
-	 * @return
-	 * @throws XPathExpressionException
-	 */
-	private Double getDouble(Node n, XPath xpath, String xpathExpr) throws XPathExpressionException {
-		return (Double) getObject(n, xpath, xpathExpr, XPathConstants.NUMBER);
-	}	
-	
-	/**
-	 * Locate a String from a DOM Node object using an XPath expression.
-	 * @param n
-	 * @param xpath
-	 * @param xpathExpr
-	 * @return
-	 * @throws XPathExpressionException
-	 */
-	private String getString(Node n, XPath xpath, String xpathExpr) throws XPathExpressionException {
-		return (String) getObject(n, xpath, xpathExpr, XPathConstants.STRING);
-	}
-	
-	/**
-	 * Locate a String in a DOM Document object using an XPath expression.
-	 * @param d
-	 * @param xpath
-	 * @param xpathExpr
-	 * @return
-	 * @throws XPathExpressionException
-	 */
-	private String getString(Document d, XPath xpath, String xpathExpr) throws XPathExpressionException {
-		return (String) getObject(d, xpath, xpathExpr, XPathConstants.STRING);
-	}
-	
-	/**
-	 * compare if two Strings are equal
-	 * @param s1
-	 * @param s2
-	 * @return true if equal
-	 */
-	private boolean strEq(String s1, String s2) {
-		return (s1.compareTo(s2) == 0);
-	}
-	
-	/**
 	 * write the configuration to a DOM Document object
 	 * @return the DOM Document object
 	 */
 	public Document writeFullConfigurationToDom() {
         //create the root element and add it to the document
-        Element root = xmlRootElement(doc, ROOTNODE);
+        Element root = XmlSupport.xmlRootElement(doc, ROOTNODE);
         root.setAttribute("version", VERSION);
         root.setAttribute("programName", programName);
         root.appendChild(
         		doc.createComment("\n"+ConfigFile.getInstance().toString()+"\n"));
-        attachXmlText(doc, 
-        		attachXmlElement(doc, root, "timestamp"), 
-        		timeStamp());
+        XmlSupport.attachXmlText(doc, 
+        		XmlSupport.attachXmlElement(doc, root, "timestamp"), 
+        		XmlSupport.timeStamp());
 		for (int i = 0; i < keys.length; i++)
 			writeTalkConfiguration (doc, root, keys[i], config.get(keys[i]));
 		return doc;
@@ -308,16 +175,16 @@ public class XmlSettingsFile {
 	 */
 	private void writeTalkConfiguration (Document doc, 
 			Element parent, String id, TalkConfiguration talk) {
-        Element talkNode = attachXmlElement(doc, parent, "talk");
+        Element talkNode = XmlSupport.attachXmlElement(doc, parent, "talk");
         talkNode.setAttribute("id", id);
-        if (!strEq("basic", id)) {
+        if (!XmlSupport.strEq("basic", id)) {
 	        talkNode.appendChild(
 	        		doc.createComment("name is used for the tab to be selected"));
 	        talkNode.setAttribute("name", talk.getName());
         }
 
-        Element timeNode = attachXmlElement(doc, talkNode, "seconds");
-        if (!strEq("basic", id)) {
+        Element timeNode = XmlSupport.attachXmlElement(doc, talkNode, "seconds");
+        if (!XmlSupport.strEq("basic", id)) {
         	timeNode.setAttribute("presentation", 
         			String.format("%d", talk.getPresentation()));
         }
@@ -326,178 +193,30 @@ public class XmlSettingsFile {
         timeNode.setAttribute("overtime", 
         		String.format("%d", talk.getOvertime()));
 
-        attachXmlText(doc, 
-        		attachXmlElement(doc, talkNode, "audible"), 
+        XmlSupport.attachXmlText(doc, 
+        		XmlSupport.attachXmlElement(doc, talkNode, "audible"), 
         		talk.isAudible() ? "true" : "false");
 
         talkNode.appendChild(doc.createComment("messages should be brief"));
-        Element node = attachXmlElement(doc, talkNode, "message");
+        Element node = XmlSupport.attachXmlElement(doc, talkNode, "message");
         node.setAttribute("name", "pretalk");
-        attachXmlText(doc, node, talk.getMsg_pretalk());
+        XmlSupport.attachXmlText(doc, node, talk.getMsg_pretalk());
 
-        node = attachXmlElement(doc, talkNode, "message");
+        node = XmlSupport.attachXmlElement(doc, talkNode, "message");
         node.setAttribute("name", "presentation");
-        attachXmlText(doc, node, talk.getMsg_presentation());
+        XmlSupport.attachXmlText(doc, node, talk.getMsg_presentation());
 
-        node = attachXmlElement(doc, talkNode, "message");
+        node = XmlSupport.attachXmlElement(doc, talkNode, "message");
         node.setAttribute("name", "discussion");
-        attachXmlText(doc, node, talk.getMsg_discussion());
+        XmlSupport.attachXmlText(doc, node, talk.getMsg_discussion());
 
-        node = attachXmlElement(doc, talkNode, "message");
+        node = XmlSupport.attachXmlElement(doc, talkNode, "message");
         node.setAttribute("name", "overtime");
-        attachXmlText(doc, node, talk.getMsg_overtime());
+        XmlSupport.attachXmlText(doc, node, talk.getMsg_overtime());
 
-        node = attachXmlElement(doc, talkNode, "message");
+        node = XmlSupport.attachXmlElement(doc, talkNode, "message");
         node.setAttribute("name", "paused");
-        attachXmlText(doc, node, talk.getMsg_paused());
-    }
-
-	/**
-	 * initialize a new DOM document
-	 * @return
-	 * @throws ParserConfigurationException
-	 */
-	private Document makeNewXmlDoc() throws ParserConfigurationException {
-        // We need an XML DOM Document
-        DocumentBuilderFactory dbfac = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = dbfac.newDocumentBuilder();
-        return docBuilder.newDocument();
-	}
-
-	/**
-	 * Open filename as a DOM Document
-	 * @param filename
-	 * @return
-	 * @throws ParserConfigurationException
-	 * @throws SAXException
-	 * @throws IOException
-	 */
-	public static Document openXmlDoc(String filename) 
-	throws ParserConfigurationException, SAXException, IOException {
-		// Step 1: create a DocumentBuilderFactory
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		dbf.setNamespaceAware(true); // never forget this!
-
-		// Step 2: create a DocumentBuilder
-		DocumentBuilder db = dbf.newDocumentBuilder();
-
-		// Step 3: parse the input file to get a Document object
-		Document doc = db.parse(new File(filename));
-		return doc;
-	}
-	
-	/**
-	 * Define the root node in the DOM document
-	 * @param doc
-	 * @param name
-	 * @return
-	 */
-	private Element xmlRootElement(Document doc, String name) {
-        Element root = doc.createElement(name);
-        doc.appendChild(root);
-        return root;
-	}
-	
-	/**
-	 * add another XML element to the DOM document
-	 * @param doc
-	 * @param parent
-	 * @param name
-	 * @return
-	 */
-	private Element attachXmlElement(Document doc, Element parent, String name) {
-        Element node = doc.createElement(name);
-        parent.appendChild(node);
-        return node;
-	}
-	
-	/**
-	 * add a text node to the DOM document
-	 * @param doc
-	 * @param parent
-	 * @param text
-	 */
-	private void attachXmlText(Document doc, Element parent, String text) {
-		parent.appendChild(doc.createTextNode(text));
-	}
-
-	/**
-	 * This method writes a DOM document to a file
-	 * @see http://www.exampledepot.com/egs/javax.xml.transform/WriteDom.html
-	 * @param doc
-	 * @param filename
-	 */
-	public void writeXmlFile(Document doc, String filename) {
-		try {
-			// Prepare the DOM document for writing
-			Source source = new DOMSource(doc);
-
-			// Prepare the output file
-			File file = new File(filename);
-			Result result = new StreamResult(file);
-
-			// Write the DOM document to the file
-			Transformer xformer;
-			xformer = TransformerFactory.newInstance().newTransformer();
-			xformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			String strIndent = "{http://xml.apache.org/xslt}indent-amount";
-			xformer.setOutputProperty(strIndent, "2");
-			//xformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-			//xformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-			xformer.transform(source, result);
-		} catch (TransformerConfigurationException e) {
-		} catch (TransformerException e) {
-		}
-	}
-	
-	/**
-	 * This method will read an XML file into a DOM document
-	 * @return
-	 * @throws Exception 
-	 */
-	public static Document readXmlFile(String filename) throws Exception {
-		return openXmlDoc(filename);
-		
-	}
-
-	/**
-	 * Get a single node from an XML file indexed by an XPath expression.
-	 * This code is inefficient for many reads from the same file.
-	 * @param filename
-	 * @param xpathExpr
-	 * @return
-	 * @throws XPathExpressionException
-	 */
-	public static String readXpathNode(String filename, String xpathExpr)
-			throws XPathExpressionException {
-		// 1. Instantiate an XPathFactory.
-		XPathFactory factory = XPathFactory.newInstance();
-
-		// 2. Use the XPathFactory to create a new XPath object
-		javax.xml.xpath.XPath xpathObject = factory.newXPath();
-
-		// open the XML document
-		InputSource source = new InputSource(filename);
-
-		// 3. Compile an XPath string into an XPathExpression
-		// 4. Evaluate XPathExpression against XML document
-		return xpathObject.compile(xpathExpr).evaluate(source);
-	}
-
-	/**
-	 * Allocates a Date object and initializes it so that it 
-	 * represents the time at which it was allocated, measured 
-	 * to the nearest millisecond.
-	 */
-	private String timeStamp() {
-        Date dateNow = new Date ();
-        String dateFormat = "yyyy-MM-dd+hh:mm:ss";
-        SimpleDateFormat timeFormat = new SimpleDateFormat(dateFormat);
-        String formattedDate = timeFormat.format( dateNow );
-        StringBuilder timeStamp = new StringBuilder( formattedDate );
-        // now convert to ISO8601 format (change "+" to "T")
-        String[] parts = timeStamp.toString().split("\\+");
-		return parts[0] + "T" + parts[1];
+        XmlSupport.attachXmlText(doc, node, talk.getMsg_paused());
     }
 
 	/**
@@ -519,7 +238,7 @@ public class XmlSettingsFile {
 		XmlSettingsFile test = new XmlSettingsFile(theConfig);
 		Document xmldoc = test.writeFullConfigurationToDom();
 		String testFile = "test.xml";
-		test.writeXmlFile(xmldoc, testFile);
+		XmlSupport.writeDomToFile(xmldoc, testFile);
 
 		System.out.println(test.readFullConfiguration(testFile));
 		System.out.println(test.readFullConfiguration("example.xml"));

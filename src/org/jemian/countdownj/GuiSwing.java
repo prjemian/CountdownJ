@@ -59,8 +59,8 @@ import javax.swing.JLabel;
 /*
  * TODO add code to read/write default/working configuration as XML
  * TODO rewrite main GUI layout without using NetBeans
+ * TODO move About box from ConfigureDialog to button on "Other" tab of GuiSwing
  */
-// TODO move About box from ConfigureDialog to button on "Other" tab of GuiSwing
 
 /**
  *
@@ -98,8 +98,13 @@ public class GuiSwing extends JFrame {
         defaultSettingsFile = "{not defined yet}";
         defaultSettingsFile = dir + delim + RC_FILE;
         userSettingsFile = "{not defined yet}";
+        XmlSupport.getInstance();  // make sure this code is initialized
 
-		// setup the GUI
+        // restore last known program settings
+        ManageRcFile rcFileInst = ManageRcFile.getInstance();
+        rcFileInst.readRcFile();
+
+        // setup the GUI
     	initializeColorTable();
         initComponents();
         ConfigFile cfg = ConfigFile.getInstance();
@@ -249,16 +254,16 @@ public class GuiSwing extends JFrame {
     }
 
     private void setTextStartButtons(String text) {
-        if (text.compareTo(mmssButtonStart.getText()) != 0)
+        if (!strEq(text, mmssButtonStart.getText()))
         	mmssButtonStart.setText(text);
-        if (text.compareTo(presetButtonStart.getText()) != 0)
+        if (!strEq(text, presetButtonStart.getText()))
         	presetButtonStart.setText(text);
     }
 
     private void setTextStopButtons(String text) {
-        if (text.compareTo(mmssButtonStop.getText()) != 0)
+        if (!strEq(text, mmssButtonStop.getText()))
         	mmssButtonStop.setText(text);
-        if (text.compareTo(presetButtonStop.getText()) != 0)
+        if (!strEq(text, presetButtonStop.getText()))
         	presetButtonStop.setText(text);
     }
 
@@ -266,23 +271,23 @@ public class GuiSwing extends JFrame {
     	String label = button.getName();
     	Container parent = button.getParent();
         if (parent == mmssTabPane) {
-            if (label.compareTo(mmssButton1.getName()) == 0) {incrementTime(10*60);}
-            if (label.compareTo(mmssButton2.getName()) == 0) {incrementTime(60);}
-            if (label.compareTo(mmssButton3.getName()) == 0) {incrementTime(10);}
-            if (label.compareTo(mmssButton4.getName()) == 0) {incrementTime(1);}
-            if (label.compareTo(mmssButtonStart.getName()) == 0) {doStartButton();}
-            if (label.compareTo(mmssButtonStop.getName()) == 0) {doStopButton();}
+            if (strEq(label, mmssButton1.getName())) {incrementTime(10*60);}
+            if (strEq(label, mmssButton2.getName())) {incrementTime(60);}
+            if (strEq(label, mmssButton3.getName())) {incrementTime(10);}
+            if (strEq(label, mmssButton4.getName())) {incrementTime(1);}
+            if (strEq(label, mmssButtonStart.getName())) {doStartButton();}
+            if (strEq(label, mmssButtonStop.getName())) {doStopButton();}
         }
         if (parent == presetTabPane) {
-        	if (label.compareTo(presetButton1.getName()) == 0) {doPresetButton(label);}
-            if (label.compareTo(presetButton2.getName()) == 0) {doPresetButton(label);}
-            if (label.compareTo(presetButton3.getName()) == 0) {doPresetButton(label);}
-            if (label.compareTo(presetButton4.getName()) == 0) {doPresetButton(label);}
-            if (label.compareTo(presetButtonStart.getName()) == 0) {doStartButton();}
-            if (label.compareTo(presetButtonStop.getName()) == 0) {doStopButton();}
+        	if (strEq(label, presetButton1.getName())) {doPresetButton(label);}
+            if (strEq(label, presetButton2.getName())) {doPresetButton(label);}
+            if (strEq(label, presetButton3.getName())) {doPresetButton(label);}
+            if (strEq(label, presetButton4.getName())) {doPresetButton(label);}
+            if (strEq(label, presetButtonStart.getName())) {doStartButton();}
+            if (strEq(label, presetButtonStop.getName())) {doStopButton();}
         }
         if (parent == tabbedPane) {
-            if (label.compareTo("Configure") == 0) {doConfigureButton();}
+            if (strEq(label, "Configure")) {doConfigureButton();}
         }
     }
 
@@ -468,11 +473,21 @@ public class GuiSwing extends JFrame {
 	 */
 	private boolean smartSetText(JLabel widget, String text) {
 		boolean result = false;
-		if (widget.getText().compareTo(text) != 0) {
+		if (!strEq(widget.getText(), text)) {
 			result = true;
 			widget.setText(text);
 		}
 		return result;
+	}
+	
+	/**
+	 * compare if two Strings are equal
+	 * @param s1
+	 * @param s2
+	 * @return true if equal
+	 */
+	public static boolean strEq(String s1, String s2) {
+		return (s1.compareTo(s2) == 0);
 	}
 
     /** This method is called from within the constructor to

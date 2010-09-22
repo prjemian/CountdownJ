@@ -38,6 +38,11 @@ import javax.xml.validation.Validator;
 
 import org.xml.sax.SAXException;
 
+/**
+ * Filters filenames for use in FileDialogs.
+ * @note Not supported in Sun's reference implementation on Windows
+ *
+ */
 public class XmlFileFilter implements FilenameFilter {
 	String ext;
 	private String schemaFile;
