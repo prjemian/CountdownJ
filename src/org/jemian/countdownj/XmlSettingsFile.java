@@ -27,10 +27,12 @@ package org.jemian.countdownj;
 //########### SVN repository information ###################
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -43,14 +45,17 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.jemian.countdownj.ConfigFile;
-import org.jemian.countdownj.TalkConfiguration;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 public class XmlSettingsFile {
 
@@ -58,6 +63,106 @@ public class XmlSettingsFile {
 	throws ParserConfigurationException {
 		doc = makeNewXmlDoc();
 		this.config = config;
+	}
+	
+	public Document readFullConfiguration(String settingsFile) 
+	throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
+		// TODO write this section
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true); // never forget this!
+		DocumentBuilder builder = factory.newDocumentBuilder();
+		Document doc = builder.parse(settingsFile);
+
+		// prepare to search using XPath expressions
+		XPathFactory xpFactory = XPathFactory.newInstance();
+		XPath xpath = xpFactory.newXPath();
+
+		String program = getString(doc, xpath, "/TalkConfiguration/@programName");
+		String version = getString(doc, xpath, "/TalkConfiguration/@version");
+		if ((program.compareTo(programName) == 0) & (version.compareTo(VERSION) == 0)) {
+			// assume file is valid at this point
+			HashMap<String, TalkConfiguration> cfg = new HashMap<String, TalkConfiguration>();
+			for (int i = 0; i < keys.length; i++) {
+				// configuration
+				String talkNodeXpath;
+				talkNodeXpath = String.format("/TalkConfiguration/talk[@id=\"%s\"]", keys[i]);
+				Node node = getNode(doc, xpath, talkNodeXpath);
+
+				int timeDiscussion = getInteger(node, xpath, "seconds/@discussion");
+				int timeOvertime = getInteger(node, xpath, "seconds/@overtime");
+				int timePresentation = 0;
+				String name = "";
+				if (keys[i].compareTo("basic") != 0) {
+					timePresentation = getInteger(node, xpath, "seconds/@presentation");
+					name = getString(node, xpath, "@name");
+				}
+				boolean audible = (Boolean) getObject(node, xpath, "audible", XPathConstants.BOOLEAN);
+				String strPretalk = getString(node, xpath, "message[@name=\"pretalk\"]");
+				String strPresentation = getString(node, xpath, "message[@name=\"presentation\"]");
+				String strDiscussion = getString(node, xpath, "message[@name=\"discussion\"]");
+				String strOvertime = getString(node, xpath, "message[@name=\"overtime\"]");
+				String strPaused = getString(node, xpath, "message[@name=\"paused\"]");
+
+				TalkConfiguration talk = new TalkConfiguration();
+				talk.setDiscussion(timeDiscussion);
+				talk.setOvertime(timeOvertime);
+				if (keys[i].compareTo("basic") != 0) {
+					talk.setPresentation(timePresentation);
+					talk.setName(name);
+				}
+				talk.setAudible(audible);
+				talk.setMsg_pretalk(strPretalk);
+				talk.setMsg_presentation(strPresentation);
+				talk.setMsg_discussion(strDiscussion);
+				talk.setMsg_overtime(strOvertime);
+				talk.setMsg_paused(strPaused);
+				cfg.put(keys[i], talk);
+			}
+			// if we got here, then copy to the global array
+			// TODO write the copy
+			// TODO update the widgets in the dialog?
+			System.out.println(cfg);
+		}
+		return doc;	// FIXME This cannot be correct!
+	}
+	
+	private Object getObject(Document d, XPath xpath, String xpathExpr, QName objectType) throws XPathExpressionException {
+		XPathExpression expr = xpath.compile(xpathExpr);
+		Object obj = expr.evaluate(d, objectType);
+		return obj;
+	}
+	
+	private Object getObject(Node n, XPath xpath, String xpathExpr, QName objectType) throws XPathExpressionException {
+		XPathExpression expr = xpath.compile(xpathExpr);
+		Object obj = expr.evaluate(n, objectType);
+		return obj;
+	}
+	
+	private Node getNode(Document d, XPath xpath, String xpathExpr) throws XPathExpressionException {
+		return (Node) getObject(d, xpath, xpathExpr, XPathConstants.NODE);
+	}
+	
+	/*
+	 * XPathConstants.NODESET
+     * XPathConstants.BOOLEAN
+     * XPathConstants.NUMBER
+     * XPathConstants.STRING
+     * XPathConstants.NODE
+	 */
+	private Integer getInteger(Node n, XPath xpath, String xpathExpr) throws XPathExpressionException {
+		return new Integer(getDouble(n, xpath, xpathExpr).intValue());
+	}
+
+	private Double getDouble(Node n, XPath xpath, String xpathExpr) throws XPathExpressionException {
+		return (Double) getObject(n, xpath, xpathExpr, XPathConstants.NUMBER);
+	}	
+	
+	private String getString(Node n, XPath xpath, String xpathExpr) throws XPathExpressionException {
+		return (String) getObject(n, xpath, xpathExpr, XPathConstants.STRING);
+	}
+	
+	private String getString(Document d, XPath xpath, String xpathExpr) throws XPathExpressionException {
+		return (String) getObject(d, xpath, xpathExpr, XPathConstants.STRING);
 	}
 	
 	/**
@@ -68,7 +173,7 @@ public class XmlSettingsFile {
         //create the root element and add it to the document
         Element root = xmlRootElement(doc, ROOTNODE);
         root.setAttribute("version", VERSION);
-        // TODO add date & time file was written and program that wrote it
+		// TODO add date & time file was written and program that wrote it
         root.setAttribute("programName", programName);
         root.appendChild(
         		doc.createComment("\n"+ConfigFile.getInstance().toString()+"\n"));
@@ -270,11 +375,15 @@ public class XmlSettingsFile {
 			talk.setDiscussion((i+1)*60);
 			talk.setOvertime((i+1)*10);
 			talk.setName("talk " + i);
+			talk.setAudible((i % 2) == 0);
 			theConfig.put(keys[i], talk);
 		}
 		XmlSettingsFile test = new XmlSettingsFile(theConfig);
 		Document xmldoc = test.writeFullConfiguration();
-		test.writeXmlFile(xmldoc, "test.xml");
+		String testFile = "test.xml";
+		test.writeXmlFile(xmldoc, testFile);
+		
+		test.readFullConfiguration(testFile);
 	}
 
 	private Document doc;
