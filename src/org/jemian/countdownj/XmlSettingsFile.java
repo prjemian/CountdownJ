@@ -382,8 +382,9 @@ public class XmlSettingsFile {
 		Document xmldoc = test.writeFullConfiguration();
 		String testFile = "test.xml";
 		test.writeXmlFile(xmldoc, testFile);
-		
+
 		test.readFullConfiguration(testFile);
+		test.readFullConfiguration("example.xml");
 	}
 
 	private Document doc;
