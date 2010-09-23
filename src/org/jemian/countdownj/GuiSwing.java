@@ -101,8 +101,11 @@ public class GuiSwing extends JFrame {
 
         // restore last known program settings
         ManageRcFile.setRC_FILE(defaultSettingsFile);
-        // TODO retrieve the values discovered
-        // First need to write such a file
+        userSettingsFile = ManageRcFile.getUserSettingsFile();
+        HashMap<String, TalkConfiguration> tempSettings;
+        tempSettings = ManageRcFile.getSettings();
+        if (tempSettings != null)
+        	settings = tempSettings;
 
         // setup the GUI
     	initializeColorTable();

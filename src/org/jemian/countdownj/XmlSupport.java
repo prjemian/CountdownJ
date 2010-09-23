@@ -275,6 +275,17 @@ public class XmlSupport {
 			Element parent, String text) {
 		parent.appendChild(doc.createTextNode(text));
 	}
+	
+	/**
+	 * add a text node to the DOM document
+	 * @param doc
+	 * @param parent
+	 * @param text
+	 */
+	public static void attachXmlText(Document doc, 
+			Node parent, String text) {
+		parent.appendChild(doc.createTextNode(text));
+	}
 
 	/**
 	 * This method writes a DOM (XML) document to a file

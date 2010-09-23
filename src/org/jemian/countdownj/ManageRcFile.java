@@ -27,11 +27,20 @@ package org.jemian.countdownj;
 //########### SVN repository information ###################
 
 import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * Manages the resource configuration file
@@ -41,13 +50,48 @@ public class ManageRcFile {
 	private ManageRcFile() {
 		RC_FILE = null;
 		userSettingsFile = null;
+		settings = null;
 	}
 	
 	public static void readRcFile() {
 		if (RC_FILE != null) {
 			boolean exists = new File(RC_FILE).exists();
+			Document doc = null;
 			if (exists) {
-				// TODO
+				try {
+					doc = XmlSupport.readXmlFile(RC_FILE);
+					String base = "/" + ROOTNODE;
+					String version = XmlSupport.getString(doc, base+"/@version");
+					if (XmlSupport.strEq(version, VERSION)) {
+						String timestamp = XmlSupport.getString(doc, base+"/timestamp");
+						String userfile = XmlSupport.getString(doc, base+"/userSettingsFile");
+						NodeList talks = (NodeList) XmlSupport.getObject(doc, base+"/talk", XPathConstants.NODESET);
+						HashMap<String, TalkConfiguration> cfg;
+						cfg = new HashMap<String, TalkConfiguration>();
+						for (int i = 0; i < talks.getLength(); i++) {
+							//
+							Node talkNode = talks.item(i);
+							String key = XmlSupport.getString(talkNode, "./@id");
+							TalkConfiguration talk = new TalkConfiguration();
+							talk.setAudible(new Boolean(XmlSupport.getString(talkNode, "./audible")));
+							talk.setPresentation(XmlSupport.getInteger(talkNode, "./seconds/@presentation"));
+							talk.setDiscussion(XmlSupport.getInteger(talkNode, "./seconds/@discussion"));
+							talk.setOvertime(XmlSupport.getInteger(talkNode, "./seconds/@overtime"));
+							talk.setMsg_pretalk(XmlSupport.getString(talkNode, "./message[@name='pretalk']"));
+							talk.setMsg_presentation(XmlSupport.getString(talkNode, "./message[@name='presentation']"));
+							talk.setMsg_discussion(XmlSupport.getString(talkNode, "./message[@name='discussion']"));
+							talk.setMsg_overtime(XmlSupport.getString(talkNode, "./message[@name='overtime']"));
+							talk.setMsg_paused(XmlSupport.getString(talkNode, "./message[@name='paused']"));
+
+							cfg.put(key, talk);
+						}
+						settings = cfg;
+						userSettingsFile = userfile;
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -68,7 +112,43 @@ public class ManageRcFile {
         XmlSupport.attachXmlText(doc, 
         		XmlSupport.attachXmlElement(doc, root, "timestamp"), 
         		XmlSupport.timeStamp());
-        XmlSupport.attachXmlElement(doc, root, "timestamp");
+        Node node = XmlSupport.attachXmlElement(doc, root, "userSettingsFile");
+        if (userSettingsFile != null)
+        	XmlSupport.attachXmlText(doc, node, userSettingsFile);
+
+		Iterator<String> iter = settings.keySet().iterator();
+		while(iter.hasNext()) {
+		    String key = (String) iter.next();
+		    TalkConfiguration talk = settings.get(key);
+		    // write the DOM parts now
+		    Element talkElement = XmlSupport.attachXmlElement(doc, root, "talk");
+		    talkElement.setAttribute("id", key);
+		    Element secondsElement = XmlSupport.attachXmlElement(doc, talkElement, "seconds");
+		    secondsElement.setAttribute("discussion", String.format("%d", talk.getDiscussion()));
+		    secondsElement.setAttribute("overtime", String.format("%d", talk.getOvertime()));
+		    secondsElement.setAttribute("presentation", String.format("%d", talk.getPresentation()));
+	        XmlSupport.attachXmlText(doc, 
+	        		XmlSupport.attachXmlElement(doc, talkElement, "audible"), 
+	        		new Boolean(talk.isAudible()).toString());
+	        Element msgElement;
+	        msgElement = XmlSupport.attachXmlElement(doc, talkElement, "message");
+	        msgElement.setAttribute("name", "pretalk");
+	        XmlSupport.attachXmlText(doc, msgElement, talk.getMsg_pretalk());
+	        msgElement = XmlSupport.attachXmlElement(doc, talkElement, "message");
+	        msgElement.setAttribute("name", "presentation");
+	        XmlSupport.attachXmlText(doc, msgElement, talk.getMsg_presentation());
+	        msgElement = XmlSupport.attachXmlElement(doc, talkElement, "message");
+	        msgElement.setAttribute("name", "discussion");
+	        XmlSupport.attachXmlText(doc, msgElement, talk.getMsg_discussion());
+	        msgElement = XmlSupport.attachXmlElement(doc, talkElement, "message");
+	        msgElement.setAttribute("name", "overtime");
+	        XmlSupport.attachXmlText(doc, msgElement, talk.getMsg_overtime());
+	        msgElement = XmlSupport.attachXmlElement(doc, talkElement, "message");
+	        msgElement.setAttribute("name", "paused");
+	        XmlSupport.attachXmlText(doc, msgElement, talk.getMsg_paused());
+		}
+
+        XmlSupport.writeDomToFile(doc, RC_FILE);
 	}
 
 	/**
@@ -108,15 +188,58 @@ public class ManageRcFile {
 	}
 
 	/**
+	 * @return the settings
+	 */
+	public static HashMap<String, TalkConfiguration> getSettings() {
+		HashMap<String, TalkConfiguration> cfg = null;
+		if (settings != null) {
+			cfg = new HashMap<String, TalkConfiguration>();
+			Iterator<String> iter = settings.keySet().iterator();
+			while(iter.hasNext()) {
+			    String key = (String) iter.next();
+			    TalkConfiguration talk = settings.get(key);
+			    cfg.put(key, talk.deepCopy());
+			}
+		}
+		return cfg;
+	}
+
+	/**
+	 * @param settings the settings to set
+	 */
+	public static void setSettings(HashMap<String, TalkConfiguration> settings) {
+		ManageRcFile.settings = new HashMap<String, TalkConfiguration>();
+		Iterator<String> iter = settings.keySet().iterator();
+		while(iter.hasNext()) {
+		    String key = (String) iter.next();
+		    TalkConfiguration talk = settings.get(key);
+		    ManageRcFile.settings.put(key, talk.deepCopy());
+		}
+	}
+
+	/**
 	 * Example code to test this class
 	 * @param args
+	 * @throws ParserConfigurationException 
+	 * @throws IOException 
+	 * @throws SAXException 
+	 * @throws XPathExpressionException 
 	 * @throws Exception
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ParserConfigurationException, XPathExpressionException, SAXException, IOException {
+		XmlSettingsFile xsf = new XmlSettingsFile();
+		settings = xsf.readFullConfiguration("example.xml");
+		ManageRcFile.setRC_FILE("rcfile.xml");
+		ManageRcFile.setUserSettingsFile("example.xml");
+		ManageRcFile.setSettings(settings);
+		System.out.println(ManageRcFile.getSettings());
+		ManageRcFile.writeRcFile();
+		ManageRcFile.readRcFile();
 	}
 
 	private static String RC_FILE;
 	private static String userSettingsFile;
+	private static HashMap<String, TalkConfiguration> settings;
 	private static final ManageRcFile INSTANCE = new ManageRcFile();
 	private static String ROOTNODE = "CoundownJ.rc";
 	private static String VERSION = "1.0";
