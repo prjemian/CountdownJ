@@ -30,7 +30,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathConstants;
@@ -63,7 +62,7 @@ public class ManageRcFile {
 					String base = "/" + ROOTNODE;
 					String version = XmlSupport.getString(doc, base+"/@version");
 					if (XmlSupport.strEq(version, VERSION)) {
-						String timestamp = XmlSupport.getString(doc, base+"/timestamp");
+						//String timestamp = XmlSupport.getString(doc, base+"/timestamp");
 						String userfile = XmlSupport.getString(doc, base+"/userSettingsFile");
 						NodeList talks = (NodeList) XmlSupport.getObject(doc, base+"/talk", XPathConstants.NODESET);
 						HashMap<String, TalkConfiguration> cfg;
@@ -73,6 +72,7 @@ public class ManageRcFile {
 							Node talkNode = talks.item(i);
 							String key = XmlSupport.getString(talkNode, "./@id");
 							TalkConfiguration talk = new TalkConfiguration();
+							talk.setName(XmlSupport.getString(talkNode, "./@name"));
 							talk.setAudible(new Boolean(XmlSupport.getString(talkNode, "./audible")));
 							talk.setPresentation(XmlSupport.getInteger(talkNode, "./seconds/@presentation"));
 							talk.setDiscussion(XmlSupport.getInteger(talkNode, "./seconds/@discussion"));
@@ -85,11 +85,11 @@ public class ManageRcFile {
 
 							cfg.put(key, talk);
 						}
+						// wait to update class variables now
 						settings = cfg;
 						userSettingsFile = userfile;
 					}
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -123,6 +123,7 @@ public class ManageRcFile {
 		    // write the DOM parts now
 		    Element talkElement = XmlSupport.attachXmlElement(doc, root, "talk");
 		    talkElement.setAttribute("id", key);
+		    talkElement.setAttribute("name", talk.getName());
 		    Element secondsElement = XmlSupport.attachXmlElement(doc, talkElement, "seconds");
 		    secondsElement.setAttribute("discussion", String.format("%d", talk.getDiscussion()));
 		    secondsElement.setAttribute("overtime", String.format("%d", talk.getOvertime()));

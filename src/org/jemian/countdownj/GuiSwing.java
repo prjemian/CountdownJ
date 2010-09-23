@@ -47,6 +47,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.HierarchyBoundsListener;
 import java.awt.event.HierarchyEvent;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -98,6 +99,13 @@ public class GuiSwing extends JFrame {
         defaultSettingsFile = "{not defined yet}";
         defaultSettingsFile = dir + delim + RC_FILE;
         userSettingsFile = "{not defined yet}";
+        boolean exists = new File(defaultSettingsFile).exists();
+        if (!exists) {
+        	ManageRcFile.setUserSettingsFile(userSettingsFile);
+        	ManageRcFile.setSettings(settings);
+        	ManageRcFile.setRC_FILE(defaultSettingsFile);
+        	ManageRcFile.writeRcFile();
+        }
 
         // restore last known program settings
         ManageRcFile.setRC_FILE(defaultSettingsFile);
