@@ -30,12 +30,12 @@ import java.util.HashMap;
 
 public class TalkTimer extends TimerEventImpl {
 
-	public TalkTimer(GuiSwing display, TalkConfiguration talk) {
+	public TalkTimer(CountdownJ countdownJ, TalkConfiguration talk) {
 		// TalkTimer will call display.doDisplayCallback() with updates
-		this.display = display;
+		this.display = countdownJ;
 		setTalk(talk);
 		clockTimer = new ClockTimer(this);
-		display = null;
+		countdownJ = null;
 		lastPhase = phase = PHASE_PRETALK;
 		paused = false;
 		messageTable = new HashMap<Integer, String>();
@@ -155,7 +155,7 @@ public class TalkTimer extends TimerEventImpl {
 	 * This code will call it through display.doDisplayCallback()
 	 * @param display
 	 */
-	public void setDisplay(GuiSwing display) {
+	public void setDisplay(CountdownJ display) {
 		this.display = display;
 	}
 
@@ -257,7 +257,7 @@ public class TalkTimer extends TimerEventImpl {
 	private int lastPhase;
 	private double time;
 	private double lastTime;
-	private GuiSwing display;
+	private CountdownJ display;
 	private TalkConfiguration talk;
 	private ClockTimer clockTimer;
 	private HashMap<Integer, String> messageTable;

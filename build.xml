@@ -86,7 +86,7 @@
 			value="CountdownJ-${version}.jar" />
 		<echo message="Building ${target.jar}" />
 		<property name="main.class.short" 
-			value="GuiSwing" />
+			value="CountdownJ" />
 		<property name="main.class.path" 
 			value="org.jemian.countdownj" />
 		<property name="main.class" 
