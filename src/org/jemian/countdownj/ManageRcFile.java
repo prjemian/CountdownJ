@@ -233,6 +233,6 @@ public class ManageRcFile {
 	private static String userSettingsFile;
 	private static HashMap<String, TalkConfiguration> settings;
 	private static final ManageRcFile INSTANCE = new ManageRcFile();
-	private static String ROOTNODE = "CoundownJ.rc";
+	private static String ROOTNODE = "CountdownJ.rc";
 	private static String VERSION = "1.0";
 }
