@@ -76,7 +76,7 @@
 
   <xs:complexType name="talkType">
     <xs:group ref="talkGroup" />
-    <xs:attribute name="id" type="talkPhaseType">
+    <xs:attribute name="id" type="talkSettingsType">
       <xs:annotation>
         <xs:documentation>
           Id values are fixed by the program to identify the various configuration settings.
@@ -120,7 +120,7 @@
       </xs:annotation>
     </xs:element>
     
-    <xs:element name="message" minOccurs="5" maxOccurs="5" type="messageType">
+    <xs:element name="message" minOccurs="5" maxOccurs="5" type="phaseMessageType">
       <xs:annotation>
         <xs:documentation>
           A short message is displayed below the remaining clock 
@@ -168,7 +168,7 @@
     </xs:attribute>
   </xs:complexType>
 
-  <xs:simpleType name="talkPhaseType">
+  <xs:simpleType name="talkSettingsType">
     <xs:restriction base="xs:string">
       
       <xs:enumeration value="basic">
@@ -216,7 +216,7 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:complexType name="messageType">
+  <xs:complexType name="phaseMessageType">
     <xs:complexContent>
       <xs:extension base="xs:anyType">
         <xs:attribute name="name">

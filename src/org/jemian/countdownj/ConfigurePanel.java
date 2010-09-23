@@ -153,7 +153,7 @@ public class ConfigurePanel extends JPanel {
     			"presentation message", 
     			"message to show during presentation before discussion",
     			"{presentation message}", 
-    			"suggested: Next Presentation");
+    			"suggested: Presentation");
     	msg_discussion = label_entry(parent, row++, 
     			"discussion message", 
     			"message to show during time allowed for discussion",
