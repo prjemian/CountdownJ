@@ -64,10 +64,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
-/*
- * TODO move About box from ConfigureDialog to button on "Other" tab of GuiSwing
- */
-
 /**
  * Provide a visible countdown clock as feedback for presentations.
  */
@@ -274,7 +270,8 @@ public class CountdownJ extends JFrame {
     // ----------------------------------------------------------------------
 
     private void doAboutButton() {
-    	// TODO
+    	AboutDialog dialog = new AboutDialog(null);
+    	dialog.setVisible(true);
     }
 
     /**

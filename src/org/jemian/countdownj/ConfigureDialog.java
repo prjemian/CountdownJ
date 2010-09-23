@@ -36,14 +36,12 @@ import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 
 import javax.swing.BorderFactory;
@@ -160,15 +158,6 @@ public class ConfigureDialog extends JDialog {
                 fileIoTab.getBorder()));
     	mainTabs.add(fileIoTab);
 
-    	// TODO move About box from ConfigureDialog to button on "Other" tab of GuiSwing
-    	JPanel aboutBoxPanel = new JPanel();
-    	aboutBoxPanel.setName("About");
-    	aboutBoxPanel.setAlignmentX(CENTER_ALIGNMENT);
-    	aboutBoxPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.BLACK),
-                aboutBoxPanel.getBorder()));
-    	mainTabs.add(aboutBoxPanel);
-
     	// + + + + + + + + + + + + + + + + + + + + + + + +
     	// presets tab panel
     	
@@ -264,63 +253,6 @@ public class ConfigureDialog extends JDialog {
     	fileIoTab.add(new JPanel(), makeConstraints(0, row++, 1.0, 2.0, 1, 1));
 
     	// + + + + + + + + + + + + + + + + + + + + + + + +
-    	// About Box
-    	ConfigFile cfg = ConfigFile.getInstance();
-
-    	row = 0;
-    	aboutBoxPanel.setLayout(new GridBagLayout());
-    	JLabel text = new JLabel(cfg.getName() + ", v" + cfg.getVersion());
-    	text.setFont(new Font("Tahoma", Font.BOLD, 32));
-    	text.setAlignmentX(CENTER_ALIGNMENT);
-    	aboutBoxPanel.add(text, makeConstraints(0, row++, 1.0, 0.0, 1, 1));
-
-    	text = new JLabel(cfg.getCopyright());
-    	text.setFont(new Font("Courier", Font.PLAIN, 12));
-    	aboutBoxPanel.add(text, makeConstraints(0, row++, 1.0, 0.0, 1, 1));
-
-    	text = new JLabel("by " + cfg.getAuthor());
-    	text.setFont(new Font("Tahoma", Font.PLAIN, 16));
-    	aboutBoxPanel.add(text, makeConstraints(0, row++, 1.0, 0.0, 1, 1));
-
-    	text = new JLabel("<"+cfg.getEmail()+">");
-    	text.setFont(new Font("Courier", Font.PLAIN, 12));
-    	aboutBoxPanel.add(text, makeConstraints(0, row++, 1.0, 0.0, 1, 1));
-
-    	text = new JLabel(" ");
-    	text.setFont(new Font("Tahoma", Font.PLAIN, 12));
-    	aboutBoxPanel.add(text, makeConstraints(0, row++, 1.0, 0.0, 1, 1));
-
-    	text = new JLabel(svnId);
-    	text.setFont(new Font("Courier", Font.PLAIN, 12));
-    	aboutBoxPanel.add(text, makeConstraints(0, row++, 1.0, 0.0, 1, 1));
-
-    	text = new JLabel(" ");
-    	text.setFont(new Font("Tahoma", Font.PLAIN, 12));
-    	aboutBoxPanel.add(text, makeConstraints(0, row++, 1.0, 0.0, 1, 1));
-    	
-    	text = new JLabel("Software license");
-    	text.setFont(new Font("Tahoma", Font.PLAIN, 12));
-    	aboutBoxPanel.add(text, makeConstraints(0, row++, 1.0, 0.0, 1, 1));
-
-    	String license_text = "";
-    	try {
-    		// The LICENSE file is at the root of the development tree.
-    		// getResourceAsStream() expects to find it either:
-    		//	  [1] root of ${bin.dir} during code development
-    		//	  [2] root of JAR executable file
-			// An ANT build target ("resources") copies it to ${bin.dir}.
-    		// Another ANT target copies all of ${bin.dir} to the JAR
-    		license_text = readResourceAsString(LICENSE_FILE);
-    		// CANTFIX Linux-only bug: license_text starts scrolled to the bottom.
-		} catch (IOException e1) {
-			// backup license text if LICENSE cannot be found
-			license_text = ConfigFile.getInstance().toString();
-		}
-    	TextArea area = new TextArea(license_text);
-    	area.setEditable(false);
-    	aboutBoxPanel.add(area, makeConstraints(0, row++, 1.0, 1.0, 1, 1));
-
-    	// + + + + + + + + + + + + + + + + + + + + + + + +
 
     	pack();	// adjust the sizes of everything to fit
     }
@@ -358,29 +290,6 @@ public class ConfigureDialog extends JDialog {
     	return thePanel;
     }
 
-    /**
-     * Read a file resource into a string from the JAR file
-     * @param filename
-     * @return
-     * @throws IOException
-     * @note An alternate (not equivalent) method is
-     *  org.apache.commons.io.FileUtils.readFileToString(file);
-     * For example:  http://www.kodejava.org/examples/52.html
-     */
-    private String readResourceAsString(String resourceName) throws IOException {
-    	InputStream input = getClass().getResourceAsStream(resourceName);
-    	StringBuffer fileData = new StringBuffer();
-        byte[] buf = new byte[1024];        
-        int numRead=0;
-        while((numRead=input.read(buf)) != -1){
-            String str = new String(buf, 0, numRead);
-        	fileData.append(str);
-            buf = new byte[1024];
-        }
-        input.close();
-    	return fileData.toString();
-    }
-    
     /**
      * make GridBagConstraints for a GridBagLayout item
      * @param x
@@ -739,7 +648,6 @@ public class ConfigureDialog extends JDialog {
 	private int buttonPressed;
 	private String defaultSettingsFile;
 	private String userSettingsFile;
-	private static final String LICENSE_FILE = "/LICENSE";
 	private static JTextField defaultFilePanelText;
 	private static JTextField userFilePanelText;
 
@@ -747,7 +655,4 @@ public class ConfigureDialog extends JDialog {
 	public static final int OK_BUTTON = 0;
 	public static final int NO_BUTTON_PRESSED = 1;
 	public static final int CANCEL_BUTTON = 2;
-
-	//private String svnRev = "$Revision$";
-	private String svnId = "$Id$";
 }
