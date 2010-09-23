@@ -58,7 +58,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 /*
- * TODO add code to read/write default/working configuration as XML
  * TODO rewrite main GUI layout without using NetBeans
  * TODO move About box from ConfigureDialog to button on "Other" tab of GuiSwing
  */
@@ -311,6 +310,9 @@ public class GuiSwing extends JFrame {
 			talkTimer.start();
 			setTextStartButtons("pause");
 			setTextStopButtons("stop");
+        	ManageRcFile.setUserSettingsFile(userSettingsFile);
+        	ManageRcFile.setSettings(settings);
+        	ManageRcFile.writeRcFile();
 		} else {
 			talkTimer.pause();
 			talkTimer.incrementTime(0);  // force a timer event?
@@ -371,6 +373,9 @@ public class GuiSwing extends JFrame {
 	        presetButton3.setText(settings.get("preset3").getName());
 	        presetButton4.setText(settings.get("preset4").getName());
 	        userSettingsFile = dialog.getUserSettingsFile();
+        	ManageRcFile.setUserSettingsFile(userSettingsFile);
+        	ManageRcFile.setSettings(settings);
+        	ManageRcFile.writeRcFile();
 			break;
 
 		case ConfigureDialog.CANCEL_BUTTON:

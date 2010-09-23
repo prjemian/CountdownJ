@@ -201,17 +201,23 @@ public class XmlSupport {
 	}
 
 	/**
-	 * initialize a new DOM document
+	 * initialize a new (XML) DOM document
 	 * @return
-	 * @throws ParserConfigurationException
 	 */
-	public static Document makeNewXmlDomDoc() 
-		throws ParserConfigurationException {
-		// TODO Find out why this could fail
-        // We need an XML DOM Document
+	public static Document makeNewXmlDomDoc() {
         DocumentBuilderFactory dbfac;
         dbfac = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = dbfac.newDocumentBuilder();
+        DocumentBuilder docBuilder = null;
+        try {
+			docBuilder = dbfac.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			/*
+			 * Since we don't actually attempt to configure the parser at all, we
+			 * should never get a parser configuration exception.
+			 */
+			return null;
+			// e.printStackTrace();
+		}
         return docBuilder.newDocument();
 	}
 
@@ -219,20 +225,28 @@ public class XmlSupport {
 	 * Open filename as a DOM Document
 	 * @param filename
 	 * @return
-	 * @throws ParserConfigurationException
 	 * @throws SAXException
 	 * @throws IOException
 	 */
 	public static Document openXmlDoc(String filename) 
-		throws ParserConfigurationException, 
-			SAXException, IOException {
+		throws SAXException, IOException {
 		// Step 1: create a DocumentBuilderFactory
 		DocumentBuilderFactory dbf;
 		dbf = DocumentBuilderFactory.newInstance();
 		dbf.setNamespaceAware(true); // never forget this!
 
 		// Step 2: create a DocumentBuilder
-		DocumentBuilder db = dbf.newDocumentBuilder();
+		DocumentBuilder db = null;
+		try {
+			db = dbf.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			/*
+			 * Since we don't actually attempt to configure the parser at all, we
+			 * should never get a parser configuration exception.
+			 */
+			return null;
+			// e.printStackTrace();
+		}
 
 		// Step 3: parse the input file to get a Document object
 		Document doc = db.parse(new File(filename));

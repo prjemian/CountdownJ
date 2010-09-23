@@ -54,7 +54,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.xml.sax.SAXException;
@@ -480,10 +479,8 @@ public class ConfigureDialog extends JDialog {
 					}
 				} catch (IOException e) {
 					e.printStackTrace();	// What happens to get here?
-				} catch (ParserConfigurationException e) {
-					e.printStackTrace();	// Due to programmer error
 				} catch (XPathExpressionException e) {
-					e.printStackTrace();	// Due to programmer error
+					e.printStackTrace();	// Due to programmer error, can't evaluate XPathExpression
 				} catch (SAXException e) {
 					e.printStackTrace();	// What happens to get here?
 				}
@@ -519,15 +516,10 @@ public class ConfigureDialog extends JDialog {
      * @return
      */
     private boolean saveToFile(String filename) {
-		XmlSettingsFile xsf;
 		boolean success = false;
-		try {
-			xsf = new XmlSettingsFile(settings);
-			xsf.writeFullConfiguration(filename);
-			success = true;	// only once written successfully
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
-		}
+		XmlSettingsFile xsf = new XmlSettingsFile(settings);
+		xsf.writeFullConfiguration(filename);
+		success = true;	// only once written successfully
 		return success;
     }
     

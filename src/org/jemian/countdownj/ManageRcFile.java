@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 
@@ -97,14 +96,7 @@ public class ManageRcFile {
 	}
 	
 	public static void writeRcFile() {
-		Document doc = null;
-		try {
-			doc = XmlSupport.makeNewXmlDomDoc();
-		} catch (ParserConfigurationException e) {
-			// not expected to fail here
-			e.printStackTrace();
-		}
-
+		Document doc = XmlSupport.makeNewXmlDomDoc();
         Element root = XmlSupport.xmlRootElement(doc, ROOTNODE);
         root.setAttribute("version", VERSION);
         String comment = "\n"+ConfigFile.getInstance().toString()+"\n";
@@ -221,13 +213,12 @@ public class ManageRcFile {
 	/**
 	 * Example code to test this class
 	 * @param args
-	 * @throws ParserConfigurationException 
 	 * @throws IOException 
 	 * @throws SAXException 
 	 * @throws XPathExpressionException 
 	 * @throws Exception
 	 */
-	public static void main(String[] args) throws ParserConfigurationException, XPathExpressionException, SAXException, IOException {
+	public static void main(String[] args) throws XPathExpressionException, SAXException, IOException {
 		XmlSettingsFile xsf = new XmlSettingsFile();
 		settings = xsf.readFullConfiguration("example.xml");
 		ManageRcFile.setRC_FILE("rcfile.xml");

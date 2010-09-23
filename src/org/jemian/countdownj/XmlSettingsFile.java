@@ -29,7 +29,6 @@ package org.jemian.countdownj;
 import java.io.IOException;
 import java.util.HashMap;
 
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 
@@ -50,10 +49,8 @@ public class XmlSettingsFile {
 	/**
 	 * Routines that manage XML files with the user-configurable
 	 * setting for this program.
-	 * @throws ParserConfigurationException
 	 */
-	public XmlSettingsFile() 
-	throws ParserConfigurationException {
+	public XmlSettingsFile() {
 		doc = XmlSupport.makeNewXmlDomDoc();
 		config = new HashMap<String, TalkConfiguration>();
 		for (int i = 0; i < keys.length; i++) {
@@ -66,10 +63,8 @@ public class XmlSettingsFile {
 	 * Routines that manage XML files with the user-configurable
 	 * setting for this program.
 	 * @param config  Supplied configuration
-	 * @throws ParserConfigurationException
 	 */
-	public XmlSettingsFile(HashMap<String, TalkConfiguration> config) 
-	throws ParserConfigurationException {
+	public XmlSettingsFile(HashMap<String, TalkConfiguration> config) {
 		doc = XmlSupport.makeNewXmlDomDoc();
 		this.config = config;
 	}
@@ -87,14 +82,12 @@ public class XmlSettingsFile {
 	 * Assume the XML file has been validated against our schema before this method is called.
 	 * @param settingsFile
 	 * @return
-	 * @throws ParserConfigurationException
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws XPathExpressionException
 	 */
 	public HashMap<String, TalkConfiguration> readFullConfiguration(String settingsFile) 
-	throws ParserConfigurationException, SAXException, 
-	IOException, XPathExpressionException {
+	throws SAXException, IOException, XPathExpressionException {
 		Document doc;
 		doc = XmlSupport.openXmlDoc(settingsFile);
 		HashMap<String, TalkConfiguration> cfg = null;
