@@ -265,6 +265,9 @@ public class CountdownJ extends JFrame {
         presetButton2.setText(settings.get("preset2").getName());
         presetButton3.setText(settings.get("preset3").getName());
         presetButton4.setText(settings.get("preset4").getName());
+
+        configureButton.setToolTipText("change discussion times, messages, presets, save/read settings, ...");
+        aboutButton.setToolTipText("About this program, the author, the copyright, and license.");
     }
 
     // ----------------------------------------------------------------------
