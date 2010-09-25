@@ -164,8 +164,11 @@ public class CountdownJ extends JFrame {
     	presetTabPane.add(presetButtonStop, makeConstraints(6, 0, 1.0, 0.0, 1, 1));
 
     	otherTabPane.setLayout(new GridBagLayout());
-    	otherTabPane.add(configureButton, makeConstraints(0, 0, 1.0, 0.0, 1, 1));
-    	otherTabPane.add(aboutButton, makeConstraints(1, 0, 1.0, 0.0, 1, 1));
+    	otherTabPane.add(new JPanel(), makeConstraints(0, 0, 1.0, 0.0, 1, 1));
+    	otherTabPane.add(configureButton, makeConstraints(1, 0, 1.0, 0.0, 1, 1));
+    	otherTabPane.add(new JPanel(), makeConstraints(2, 0, 1.0, 0.0, 1, 1));
+    	otherTabPane.add(aboutButton, makeConstraints(3, 0, 1.0, 0.0, 1, 1));
+    	otherTabPane.add(new JPanel(), makeConstraints(4, 0, 1.0, 0.0, 1, 1));
     }
     
     /**
