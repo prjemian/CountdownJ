@@ -72,7 +72,7 @@ public class ManageRcFile {
 							String key = XmlSupport.getString(talkNode, "./@id");
 							TalkConfiguration talk = new TalkConfiguration();
 							talk.setName(XmlSupport.getString(talkNode, "./@name"));
-							talk.setAudible(new Boolean(XmlSupport.getString(talkNode, "./audible")));
+							talk.setAudible(Boolean.valueOf(XmlSupport.getString(talkNode, "./audible")));
 							talk.setPresentation(XmlSupport.getInteger(talkNode, "./seconds/@presentation"));
 							talk.setDiscussion(XmlSupport.getInteger(talkNode, "./seconds/@discussion"));
 							talk.setOvertime(XmlSupport.getInteger(talkNode, "./seconds/@overtime"));
@@ -122,7 +122,7 @@ public class ManageRcFile {
 		    secondsElement.setAttribute("presentation", String.format("%d", talk.getPresentation()));
 	        XmlSupport.attachXmlText(doc, 
 	        		XmlSupport.attachXmlElement(doc, talkElement, "audible"), 
-	        		new Boolean(talk.isAudible()).toString());
+	        		Boolean.valueOf(talk.isAudible()).toString());
 	        Element msgElement;
 	        msgElement = XmlSupport.attachXmlElement(doc, talkElement, "message");
 	        msgElement.setAttribute("name", "pretalk");

@@ -218,7 +218,7 @@ public class AboutDialog extends JDialog {
                 dialog.setVisible(true);	// run the dialog and wait ...
                 // =========================================
                 dialog.dispose();
-                System.exit(0);
+                //System.exit(0);
             }
         });
     }

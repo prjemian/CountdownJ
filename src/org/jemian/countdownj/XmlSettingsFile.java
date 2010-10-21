@@ -95,7 +95,7 @@ public class XmlSettingsFile {
 		String base = "/TalkConfiguration";
 		String program = XmlSupport.getString(doc, base+"/@programName");
 		String version = XmlSupport.getString(doc, base+"/@version");
-		if (XmlSupport.strEq(program, programName) & XmlSupport.strEq(version, VERSION)) {
+		if (XmlSupport.strEq(program, programName) && XmlSupport.strEq(version, VERSION)) {
 			// assume file is valid at this point
 			cfg = new HashMap<String, TalkConfiguration>();
 			for (int i = 0; i < keys.length; i++) {

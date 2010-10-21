@@ -322,6 +322,21 @@ public class CountdownJ extends JFrame {
 			} catch (IOException e) {
 				// ignore this error
 			}
+	        try {
+				br.close();
+			} catch (IOException e) {
+				// ignore this error
+			}
+	        try {
+				isr.close();
+			} catch (IOException e) {
+				// ignore this error
+			}
+	    	try {
+				in.close();
+			} catch (IOException e) {
+				// ignore this error
+			}
     	}
 
     	return buildNumber;
@@ -486,17 +501,11 @@ public class CountdownJ extends JFrame {
     }
 
     private void doStopButton() {
-		if (!talkTimer.isCounting()) {
-			talkTimer.stop();
-			talkTimer.clearCounter();
-			setTextStartButtons("Start");
-			setTextStopButtons("Clear");
-		} else {
-			talkTimer.stop();
-			talkTimer.clearCounter();
-			setTextStartButtons("Start");
-			setTextStopButtons("Clear");
-		}   
+		// talkTimer.isCounting()
+		talkTimer.stop();
+		talkTimer.clearCounter();
+		setTextStartButtons("Start");
+		setTextStopButtons("Clear");
 	}
 
     private void doConfigureButton() {

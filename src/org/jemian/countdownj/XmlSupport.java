@@ -145,7 +145,7 @@ public class XmlSupport {
 	public static Integer getInteger(Node n, 
 			String xpathExpr) 
 	throws XPathExpressionException {
-		return new Integer(getDouble(n, xpathExpr).intValue());
+		return Integer.valueOf(getDouble(n, xpathExpr).intValue());
 	}
 
 	/**
