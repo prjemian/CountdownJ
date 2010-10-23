@@ -29,7 +29,7 @@ package org.jemian.countdownj;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Map.Entry;
 
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -51,51 +51,51 @@ public class ManageRcFile {
 		settings = null;
 	}
 	
-	public static void readRcFile() {
-		if (RC_FILE != null) {
-			boolean exists = new File(RC_FILE).exists();
-			Document doc = null;
-			if (exists) {
-				try {
-					doc = XmlSupport.readXmlFile(RC_FILE);
-					String base = "/" + ROOTNODE;
-					String version = XmlSupport.getString(doc, base+"/@version");
-					if (XmlSupport.strEq(version, VERSION)) {
-						//String timestamp = XmlSupport.getString(doc, base+"/timestamp");
-						String userfile = XmlSupport.getString(doc, base+"/userSettingsFile");
-						NodeList talks = (NodeList) XmlSupport.getObject(doc, base+"/talk", XPathConstants.NODESET);
-						HashMap<String, TalkConfiguration> cfg;
-						cfg = new HashMap<String, TalkConfiguration>();
-						for (int i = 0; i < talks.getLength(); i++) {
-							//
-							Node talkNode = talks.item(i);
-							String key = XmlSupport.getString(talkNode, "./@id");
-							TalkConfiguration talk = new TalkConfiguration();
-							talk.setName(XmlSupport.getString(talkNode, "./@name"));
-							talk.setAudible(Boolean.valueOf(XmlSupport.getString(talkNode, "./audible")));
-							talk.setPresentation(XmlSupport.getInteger(talkNode, "./seconds/@presentation"));
-							talk.setDiscussion(XmlSupport.getInteger(talkNode, "./seconds/@discussion"));
-							talk.setOvertime(XmlSupport.getInteger(talkNode, "./seconds/@overtime"));
-							talk.setMsg_pretalk(XmlSupport.getString(talkNode, "./message[@name='pretalk']"));
-							talk.setMsg_presentation(XmlSupport.getString(talkNode, "./message[@name='presentation']"));
-							talk.setMsg_discussion(XmlSupport.getString(talkNode, "./message[@name='discussion']"));
-							talk.setMsg_overtime(XmlSupport.getString(talkNode, "./message[@name='overtime']"));
-							talk.setMsg_paused(XmlSupport.getString(talkNode, "./message[@name='paused']"));
+	public void readRcFile() {
+		if (RC_FILE == null) return;
+		boolean exists = new File(RC_FILE).exists();
+		Document doc = null;
+		if (exists) {
+			try {
+				doc = XmlSupport.readXmlFile(RC_FILE);
+				String base = "/" + ROOTNODE;
+				String version = XmlSupport.getString(doc, base+"/@version");
+				if (XmlSupport.strEq(version, VERSION)) {
+					//String timestamp = XmlSupport.getString(doc, base+"/timestamp");
+					String userfile = XmlSupport.getString(doc, base+"/userSettingsFile");
+					NodeList talks = (NodeList) XmlSupport.getObject(doc, base+"/talk", XPathConstants.NODESET);
+					HashMap<String, TalkConfiguration> cfg;
+					cfg = new HashMap<String, TalkConfiguration>();
+					for (int i = 0; i < talks.getLength(); i++) {
+						//
+						Node talkNode = talks.item(i);
+						String key = XmlSupport.getString(talkNode, "./@id");
+						TalkConfiguration talk = new TalkConfiguration();
+						talk.setName(XmlSupport.getString(talkNode, "./@name"));
+						talk.setAudible(Boolean.valueOf(XmlSupport.getString(talkNode, "./audible")));
+						talk.setPresentation(XmlSupport.getInteger(talkNode, "./seconds/@presentation"));
+						talk.setDiscussion(XmlSupport.getInteger(talkNode, "./seconds/@discussion"));
+						talk.setOvertime(XmlSupport.getInteger(talkNode, "./seconds/@overtime"));
+						talk.setMsg_pretalk(XmlSupport.getString(talkNode, "./message[@name='pretalk']"));
+						talk.setMsg_presentation(XmlSupport.getString(talkNode, "./message[@name='presentation']"));
+						talk.setMsg_discussion(XmlSupport.getString(talkNode, "./message[@name='discussion']"));
+						talk.setMsg_overtime(XmlSupport.getString(talkNode, "./message[@name='overtime']"));
+						talk.setMsg_paused(XmlSupport.getString(talkNode, "./message[@name='paused']"));
 
-							cfg.put(key, talk);
-						}
-						// wait to update class variables now
-						settings = cfg;
-						userSettingsFile = userfile;
+						cfg.put(key, talk);
 					}
-				} catch (Exception e) {
-					e.printStackTrace();
+					// wait to update class variables now
+					settings = cfg;
+					userSettingsFile = userfile;
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
 	
-	public static void writeRcFile() {
+	public void writeRcFile() {
+		if (RC_FILE == null) return;
 		Document doc = XmlSupport.makeNewXmlDomDoc();
         Element root = XmlSupport.xmlRootElement(doc, ROOTNODE);
         root.setAttribute("version", VERSION);
@@ -108,10 +108,9 @@ public class ManageRcFile {
         if (userSettingsFile != null)
         	XmlSupport.attachXmlText(doc, node, userSettingsFile);
 
-		Iterator<String> iter = settings.keySet().iterator();
-		while(iter.hasNext()) {
-		    String key = (String) iter.next();
-		    TalkConfiguration talk = settings.get(key);
+		for (Entry<String, TalkConfiguration> e : settings.entrySet()) {
+		    String key = (String) e.getKey();
+		    TalkConfiguration talk = e.getValue();
 		    // write the DOM parts now
 		    Element talkElement = XmlSupport.attachXmlElement(doc, root, "talk");
 		    talkElement.setAttribute("id", key);
@@ -147,14 +146,14 @@ public class ManageRcFile {
 	/**
 	 * @return the RC_FILE
 	 */
-	public static String getRC_FILE() {
+	public String getRC_FILE() {
 		return RC_FILE;
 	}
 
 	/**
 	 * @param rC_FILE the rC_FILE to set
 	 */
-	public static void setRC_FILE(String rC_FILE) {
+	public void setRC_FILE(String rC_FILE) {
 		RC_FILE = rC_FILE;
 		readRcFile();
 	}
@@ -162,52 +161,44 @@ public class ManageRcFile {
 	/**
 	 * @return the userSettingsFile
 	 */
-	public static String getUserSettingsFile() {
+	public String getUserSettingsFile() {
 		return userSettingsFile;
 	}
 
 	/**
 	 * @param userSettingsFile the userSettingsFile to set
 	 */
-	public static void setUserSettingsFile(String userSettingsFile) {
-		ManageRcFile.userSettingsFile = userSettingsFile;
+	public void setUserSettingsFile(String theUserSettingsFile) {
+		userSettingsFile = theUserSettingsFile;
 	}
 
 	/**
 	 * @return the instance
 	 */
-	public static ManageRcFile getInstance() {
+	public ManageRcFile getInstance() {
 		return INSTANCE;
 	}
 
 	/**
 	 * @return the settings
 	 */
-	public static HashMap<String, TalkConfiguration> getSettings() {
+	public HashMap<String, TalkConfiguration> getSettings() {
 		HashMap<String, TalkConfiguration> cfg = null;
 		if (settings != null) {
 			cfg = new HashMap<String, TalkConfiguration>();
-			Iterator<String> iter = settings.keySet().iterator();
-			while(iter.hasNext()) {
-			    String key = (String) iter.next();
-			    TalkConfiguration talk = settings.get(key);
-			    cfg.put(key, talk.deepCopy());
-			}
+			for (Entry<String, TalkConfiguration> e : settings.entrySet())
+				cfg.put(e.getKey(), e.getValue().deepCopy());
 		}
 		return cfg;
 	}
 
 	/**
-	 * @param settings the settings to set
+	 * @param theSettings the settings to set
 	 */
-	public static void setSettings(HashMap<String, TalkConfiguration> settings) {
-		ManageRcFile.settings = new HashMap<String, TalkConfiguration>();
-		Iterator<String> iter = settings.keySet().iterator();
-		while(iter.hasNext()) {
-		    String key = (String) iter.next();
-		    TalkConfiguration talk = settings.get(key);
-		    ManageRcFile.settings.put(key, talk.deepCopy());
-		}
+	public void setSettings(HashMap<String, TalkConfiguration> theSettings) {
+		theSettings = new HashMap<String, TalkConfiguration>();
+		for (Entry<String, TalkConfiguration> e : theSettings.entrySet())
+		    theSettings.put(e.getKey(), e.getValue().deepCopy());
 	}
 
 	/**
@@ -219,20 +210,21 @@ public class ManageRcFile {
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws XPathExpressionException, SAXException, IOException {
+		ManageRcFile rc = ManageRcFile.INSTANCE;
 		XmlSettingsFile xsf = new XmlSettingsFile();
-		settings = xsf.readFullConfiguration("example.xml");
-		ManageRcFile.setRC_FILE("rcfile.xml");
-		ManageRcFile.setUserSettingsFile("example.xml");
-		ManageRcFile.setSettings(settings);
-		System.out.println(ManageRcFile.getSettings());
-		ManageRcFile.writeRcFile();
-		ManageRcFile.readRcFile();
+		rc.settings = xsf.readFullConfiguration("example.xml");
+		rc.setRC_FILE("rcfile.xml");
+		rc.setUserSettingsFile("example.xml");
+		rc.setSettings(rc.settings);
+		System.out.println(rc.getSettings());
+		rc.writeRcFile();
+		rc.readRcFile();
 	}
 
-	private static String RC_FILE;
-	private static String userSettingsFile;
-	private static HashMap<String, TalkConfiguration> settings;
-	private static final ManageRcFile INSTANCE = new ManageRcFile();
-	private static String ROOTNODE = "CountdownJ.rc";
+	private String RC_FILE;
+	private String userSettingsFile;
+	private HashMap<String, TalkConfiguration> settings;
+	public static final ManageRcFile INSTANCE = new ManageRcFile();
+	private String ROOTNODE = "CountdownJ.rc";
 	private static String VERSION = "1.0";
 }

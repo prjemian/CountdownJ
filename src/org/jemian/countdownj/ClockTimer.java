@@ -61,7 +61,7 @@ public class ClockTimer {
 	/**
 	 * receive the timer update
 	 */
-	class UpdateTask extends TimerTask {
+	static class UpdateTask extends TimerTask {
 
 		ClockTimer ct;
 

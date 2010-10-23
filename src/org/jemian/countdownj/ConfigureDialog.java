@@ -648,8 +648,8 @@ public class ConfigureDialog extends JDialog {
 	private int buttonPressed;
 	private String defaultSettingsFile;
 	private String userSettingsFile;
-	private static JTextField defaultFilePanelText;
-	private static JTextField userFilePanelText;
+	private JTextField defaultFilePanelText;
+	private JTextField userFilePanelText;
 
 	public static final int NUMBER_OF_TABS = 4;
 	public static final int OK_BUTTON = 0;

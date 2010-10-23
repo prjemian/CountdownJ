@@ -42,6 +42,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
@@ -308,7 +309,6 @@ public class XmlSupport {
 	 * @param filename
 	 */
 	public static void writeDomToFile(Document doc, String filename) {
-		try {
 			// Prepare the DOM document for writing
 			Source source = new DOMSource(doc);
 
@@ -318,16 +318,24 @@ public class XmlSupport {
 
 			// Write the DOM document to the file
 			Transformer xformer;
-			xformer = TransformerFactory.newInstance().newTransformer();
-			xformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			String strIndent = "{http://xml.apache.org/xslt}indent-amount";
-			xformer.setOutputProperty(strIndent, "2");
-			//xformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-			//xformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-			xformer.transform(source, result);
-		} catch (TransformerConfigurationException e) {
-		} catch (TransformerException e) {
-		}
+			try {
+				xformer = TransformerFactory.newInstance().newTransformer();
+				xformer.setOutputProperty(OutputKeys.INDENT, "yes");
+				String strIndent = "{http://xml.apache.org/xslt}indent-amount";
+				xformer.setOutputProperty(strIndent, "2");
+				//xformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+				//xformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+				xformer.transform(source, result);
+			} catch (TransformerConfigurationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (TransformerFactoryConfigurationError e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (TransformerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 	
 	/**

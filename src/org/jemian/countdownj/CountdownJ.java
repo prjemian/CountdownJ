@@ -484,9 +484,10 @@ public class CountdownJ extends JFrame {
 		if (!talkTimer.isCounting() && talkTimer.getClockTime()>0) {
 			setTextStartButtons("Pause");
 			setTextStopButtons("Stop");
-        	ManageRcFile.setUserSettingsFile(userSettingsFile);
-        	ManageRcFile.setSettings(settings);
-        	ManageRcFile.writeRcFile();
+			ManageRcFile rc = ManageRcFile.INSTANCE;
+        	rc.setUserSettingsFile(userSettingsFile);
+        	rc.setSettings(settings);
+        	rc.writeRcFile();
 			talkTimer.start();
 		} else {
 			talkTimer.pause();
@@ -541,9 +542,10 @@ public class CountdownJ extends JFrame {
 	        presetButton3.setText(settings.get("preset3").getName());
 	        presetButton4.setText(settings.get("preset4").getName());
 	        userSettingsFile = dialog.getUserSettingsFile();
-        	ManageRcFile.setUserSettingsFile(userSettingsFile);
-        	ManageRcFile.setSettings(settings);
-        	ManageRcFile.writeRcFile();
+	        ManageRcFile rc = ManageRcFile.INSTANCE;
+        	rc.setUserSettingsFile(userSettingsFile);
+        	rc.setSettings(settings);
+        	rc.writeRcFile();
 			break;
 
 		case ConfigureDialog.CANCEL_BUTTON:
@@ -644,10 +646,11 @@ public class CountdownJ extends JFrame {
         userSettingsFile = "{not defined yet}";
         boolean exists = new File(defaultSettingsFile).exists();
         if (!exists) {
-        	ManageRcFile.setUserSettingsFile(userSettingsFile);
-        	ManageRcFile.setSettings(settings);
-        	ManageRcFile.setRC_FILE(defaultSettingsFile);
-        	ManageRcFile.writeRcFile();
+        	ManageRcFile rc = ManageRcFile.INSTANCE;
+        	rc.setUserSettingsFile(userSettingsFile);
+        	rc.setSettings(settings);
+        	rc.setRC_FILE(defaultSettingsFile);
+        	rc.writeRcFile();
         }
 	}
 
@@ -655,10 +658,11 @@ public class CountdownJ extends JFrame {
 	 * initialization routine
 	 */
 	private void restoreSettings() {
-        ManageRcFile.setRC_FILE(defaultSettingsFile);
-        userSettingsFile = ManageRcFile.getUserSettingsFile();
+		ManageRcFile rc = ManageRcFile.INSTANCE;
+        rc.setRC_FILE(defaultSettingsFile);
+        userSettingsFile = rc.getUserSettingsFile();
         HashMap<String, TalkConfiguration> tempSettings;
-        tempSettings = ManageRcFile.getSettings();
+        tempSettings = rc.getSettings();
         if (tempSettings != null)
         	settings = tempSettings;
 	}

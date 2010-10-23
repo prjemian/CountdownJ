@@ -44,7 +44,7 @@ import org.xml.sax.SAXException;
  *
  */
 public class XmlFileFilter implements FilenameFilter {
-	String ext;
+	//String extension;
 	private String schemaFile;
 	private Source schemaSource;
 	private Schema schema;
@@ -58,7 +58,7 @@ public class XmlFileFilter implements FilenameFilter {
 	 * It provides XML file validation.  Perhaps it needs to be renamed.
 	 */
 	public XmlFileFilter() {
-		ext = ".xml";
+		//extension = ".xml";
 		schemaFile = "/schema.xsd";
 		schemaSource = new StreamSource(getClass().getResourceAsStream(schemaFile));
 		// 1. Lookup a factory for the W3C XML Schema language
@@ -67,10 +67,10 @@ public class XmlFileFilter implements FilenameFilter {
 		schema = null;
 		try {
 			schema = schemaFactory.newSchema(schemaSource);
+			schemaValidator = schema.newValidator();
 		} catch (SAXException e) {
 			e.printStackTrace();
 		}
-		schemaValidator = schema.newValidator();
 	}
 
 	/**
