@@ -29,7 +29,7 @@
 -->
 
 
-<project  name="Create Runnable Jar for GUI in project CountdownJ"
+<project  name="CountdownJ: Create Runnable GUI Jar"
 	default="gui" >
 
 	<import file="hostarch.xml" />
