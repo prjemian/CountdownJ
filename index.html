@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>CountdownJ &mdash; CountdownJ 2006-09-04 documentation</title>
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2006-09-04',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="CountdownJ 2006-09-04 documentation" href="#" />
+    <link rel="next" title="Contents" href="contents.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="contents.html" title="Contents"
+             accesskey="N">next</a> |</li>
+        <li><a href="#">CountdownJ 2006-09-04 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">CountdownJ</a><ul>
+<li><a class="reference internal" href="#motivation">Motivation</a></li>
+<li><a class="reference internal" href="#requirements">Requirements</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Next topic</h4>
+  <p class="topless"><a href="contents.html"
+                        title="next chapter">Contents</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="countdownj">
+<h1>CountdownJ<a class="headerlink" href="#countdownj" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">summary:</th><td class="field-body">display a clock of time remaining for speakers in a conference session</td>
+</tr>
+<tr class="field-even field"><th class="field-name">author:</th><td class="field-body">Pete R. Jemian</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">email:</th><td class="field-body"><a class="reference external" href="mailto:prjemian&#37;&#52;&#48;gmail&#46;com">prjemian<span>&#64;</span>gmail<span>&#46;</span>com</a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">copyright:</th><td class="field-body">2014, Pete R. Jemian</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">license:</th><td class="field-body">GPL3 (see <em>LICENSE</em> file)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">git:</th><td class="field-body"><a class="reference external" href="https://github.com/prjemian/CountdownJ">https://github.com/prjemian/CountdownJ</a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">URL:</th><td class="field-body"><a class="reference external" href="http://prjemian.github.io/CountdownJ">http://prjemian.github.io/CountdownJ</a></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="motivation">
+<h2>Motivation<a class="headerlink" href="#motivation" title="Permalink to this headline">¶</a></h2>
+<p>Have you ever been a speaker at a meeting and talked too long? If you&#8217;d known
+you only had 3 minutes left, you might have restructured your next remarks.</p>
+<p>Perhaps you have been a session organizer and all your speakers take a few extra
+minutes. Your session schedule is just shot to bits.</p>
+<p>Here is a tool that will help to keep speakers on schedule by providing a display
+of the time remaining for them to speak. Giving feedback to speaker, sessions
+moderator, and even session attendees, this simple tool has been useful in helping
+conference sessions stick close to the schedule through social engineering.</p>
+</div>
+<div class="section" id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<p>Here is a terse list of the initial display requirements:</p>
+<ul class="simple">
+<li>show the time remaining (MM:SS) in big characters on a black background</li>
+<li>show a word or phrase indicating the current phase of the presentation</li>
+<li>no other clutter in the display</li>
+<li>allow for talks of different lengths</li>
+<li>alert speakers and audience when time has run out</li>
+<li>provide audible indicators at phase transitions and in <em>overtime</em></li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="36%" />
+<col width="64%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">phase</th>
+<th class="head">indicator</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>before presentation</td>
+<td>white text or blank</td>
+</tr>
+<tr class="row-odd"><td>starting</td>
+<td>1 beep</td>
+</tr>
+<tr class="row-even"><td>presentation</td>
+<td>green text</td>
+</tr>
+<tr class="row-odd"><td>change to discussion</td>
+<td>2 beeps</td>
+</tr>
+<tr class="row-even"><td>discussion / questions</td>
+<td>yellow text</td>
+</tr>
+<tr class="row-odd"><td>time is out</td>
+<td>3 beeps</td>
+</tr>
+<tr class="row-even"><td>overtime</td>
+<td>red text and 3 beeps every interval</td>
+</tr>
+</tbody>
+</table>
+<div class="toctree-wrapper compound">
+</div>
+<p>This documentation built February 24, 2014.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="contents.html" title="Contents"
+             >next</a> |</li>
+        <li><a href="#">CountdownJ 2006-09-04 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2006-2014 Pete R Jemian.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+    </div>
+  </body>
+</html>
