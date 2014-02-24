@@ -18,14 +18,6 @@ package org.jemian.countdownj;
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//########### SVN repository information ###################
-//# $Date$
-//# $Author$
-//# $Revision$
-//# $URL$
-//# $Id$
-//########### SVN repository information ###################
-
 import java.util.HashMap;
 
 public class TalkTimer extends TimerEventImpl {

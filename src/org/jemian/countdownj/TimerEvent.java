@@ -18,14 +18,6 @@ package org.jemian.countdownj;
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//########### SVN repository information ###################
-//# $Date$
-//# $Author$
-//# $Revision$
-//# $URL$
-//# $Id$
-//########### SVN repository information ###################
-
 public interface TimerEvent {
 
 	// timers will call this method

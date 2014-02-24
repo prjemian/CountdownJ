@@ -18,20 +18,10 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */ -->
 
-<!--
-########### SVN repository information ###################
-# $Date: 2010-08-23 16:30:21 -0500 (Mon, 23 Aug 2010) $
-# $Author: jemian $
-# $Revision: 1304 $
-# $URL: http://svn.jemian.org/svn/regitte/CountdownJ/hostarch.xml $
-# $Id: hostarch.xml 1304 2010-08-23 21:30:21Z jemian $
-########### SVN repository information ###################
--->
-
 <CountdownJ version="1.0j" name="CountdownJ">
   <description>CountdownJ - a timer for presentations</description>
   <author>Pete R. Jemian</author>
   <email>prjemian@gmail.com</email>
-  <copyright>(c) 2010 Pete R. Jemian</copyright>
+  <copyright>(c) 2010-2014 Pete R. Jemian</copyright>
   <license>See the LICENSE file (GPLv3) included in the distribution for details.</license>
 </CountdownJ>

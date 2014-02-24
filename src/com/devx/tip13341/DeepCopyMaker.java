@@ -2,14 +2,6 @@ package com.devx.tip13341;
 
 // http://www.devx.com/tips/Tip/13341
 
-//########### SVN repository information ###################
-//# $Date$
-//# $Author$
-//# $Revision$
-//# $URL$
-//# $Id$
-//########### SVN repository information ###################
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;

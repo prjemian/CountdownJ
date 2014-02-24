@@ -18,14 +18,6 @@ package org.jemian.countdownj;
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//########### SVN repository information ###################
-//# $Date$
-//# $Author$
-//# $Revision$
-//# $URL$
-//# $Id$
-//########### SVN repository information ###################
-
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -99,7 +91,8 @@ public class ManageRcFile {
 		Document doc = XmlSupport.makeNewXmlDomDoc();
         Element root = XmlSupport.xmlRootElement(doc, ROOTNODE);
         root.setAttribute("version", VERSION);
-        String comment = "\n"+ConfigFile.getInstance().toString()+"\n";
+        ConfigFile conFile = ConfigFile.getInstance();
+        String comment = "\n" + conFile.toString() + "\n";
         root.appendChild(doc.createComment(comment));
         XmlSupport.attachXmlText(doc, 
         		XmlSupport.attachXmlElement(doc, root, "timestamp"), 

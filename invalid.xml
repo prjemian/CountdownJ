@@ -23,16 +23,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */ -->
 
-<!--
-########### SVN repository information ###################
-# $Date$
-# $Author$
-# $Revision$
-# $URL$
-# $Id$
-########### SVN repository information ###################
--->
-
 <TalkConfiguration programName="CountdownJ" version="1.0j">
   <timestamp>2010-09-06+10:29:05<!-- needs T, not + to be ISO8601 compliant --></timestamp>
   <talk id="basic">

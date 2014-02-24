@@ -18,16 +18,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */ -->
 
-<!--
-########### SVN repository information ###################
-# $Date$
-# $Author$
-# $Revision$
-# $URL$
-# $Id$
-########### SVN repository information ###################
--->
-
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 
   <xs:element name="TalkConfiguration">

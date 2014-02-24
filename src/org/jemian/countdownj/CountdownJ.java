@@ -1,13 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the NetBeans editor.
- */
-
-/*
- * GuiSwing.java
- *
- * Created on Aug 23, 2010, 8:13:14 PM
- */
 
 package org.jemian.countdownj;
 
@@ -28,14 +18,6 @@ package org.jemian.countdownj;
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-//########### SVN repository information ###################
-//# $Date$
-//# $Author$
-//# $Revision$
-//# $URL$
-//# $Id$
-//########### SVN repository information ###################
 
 import java.awt.Color;
 import java.awt.Container;
@@ -686,7 +668,7 @@ public class CountdownJ extends JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new CountdownJ().setVisible(true);

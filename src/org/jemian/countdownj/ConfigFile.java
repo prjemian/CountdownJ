@@ -18,16 +18,11 @@ package org.jemian.countdownj;
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//########### SVN repository information ###################
-//# $Date$
-//# $Author$
-//# $Revision$
-//# $URL$
-//# $Id$
-//########### SVN repository information ###################
-
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.FileInputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -42,16 +37,27 @@ public class ConfigFile {
 	/**
 	 * Singleton class to provide contents of config.xml file.
 	 * Do not make this constructor accessible as public.
+	 * @throws FileNotFoundException 
 	 */
 	private ConfigFile() {
 		String dataFile = RES_DIR + xmlFile;	// find at the root of the jar file
 
 		// find the XML file in the JAR file
+		// TODO: If we fail this, then look elsewhere for the config.xml
 		InputStream in = getClass().getResourceAsStream(dataFile);
 		if (in == null) {
-		    throw new IllegalArgumentException(
-		    		dataFile + " not found (actually: InputStream cannot be null");
+			File file = new File(xmlFile);
+			try {
+				in = (InputStream) new FileInputStream(file);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
+		//if (in == null) {
+		//    throw new IllegalArgumentException(
+		//    		dataFile + " not found (actually: InputStream cannot be null");
+		//}
 
 		// prepare the XML DOM resources
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
