@@ -469,7 +469,7 @@ public class CountdownJ extends JFrame {
 			ManageRcFile rc = ManageRcFile.INSTANCE;
         	rc.setUserSettingsFile(userSettingsFile);
         	rc.setSettings(settings);
-        	rc.writeRcFile();
+        	// FIXME: rc.writeRcFile();
 			talkTimer.start();
 		} else {
 			talkTimer.pause();
@@ -527,7 +527,7 @@ public class CountdownJ extends JFrame {
 	        ManageRcFile rc = ManageRcFile.INSTANCE;
         	rc.setUserSettingsFile(userSettingsFile);
         	rc.setSettings(settings);
-        	rc.writeRcFile();
+        	// FIXME: rc.writeRcFile();
 			break;
 
 		case ConfigureDialog.CANCEL_BUTTON:
@@ -632,7 +632,7 @@ public class CountdownJ extends JFrame {
         	rc.setUserSettingsFile(userSettingsFile);
         	rc.setSettings(settings);
         	rc.setRC_FILE(defaultSettingsFile);
-        	rc.writeRcFile();
+        	// FIXME: rc.writeRcFile();
         }
 	}
 

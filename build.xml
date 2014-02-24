@@ -63,7 +63,8 @@
 			srcdir="${src.dir}" 
 			destdir="${bin.dir}" 
 			debuglevel="${javac.debug.attrs}" 
-			verbose="false">
+			verbose="false"
+			includeantruntime="false">
 			<classpath path="${compile.classpath.contents}" />
 			<exclude name="example/" />
 		</javac>

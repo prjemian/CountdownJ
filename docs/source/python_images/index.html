@@ -1,0 +1,656 @@
+<!DOCTYPE HTML PUBLIC 
+  "-//W3C//DTD HTML 4.01 Transitional//EN" 
+  "http://www.w3.org/TR/html4/loose.dtd">
+<HTML lang="en">
+  <HEAD>
+    <META HTTP-EQUIV="Pragma" CONTENT="text/html">
+    <TITLE>Pete Jemian Python tools: speaker timer</TITLE>
+    <LINK REL="stylesheet" HREF="style.css">
+  </HEAD>
+  <BODY>
+
+
+<!-- START HEADER -->
+<TABLE RULES="none" CLASS="top_background">
+  <TR STYLE="background-color: skyblue;">
+    <TD>
+      <A HREF="http://www.uni.aps.anl.gov/~jemian">
+        <img src="logo.png"
+          style="border: 0; margin: 10px;"
+          align=middle
+          height="80"
+          alt="Pete"  />
+      </A>
+    </TD>
+    <TD CLASS="top_title">
+      Pete Jemian Python tools: speaker timer
+      <BR>
+      <FONT SIZE="-1">
+        Pete R. Jemian,
+        <TT>jemian@anl.gov</TT>
+        <BR />
+        <FONT SIZE="-2">last updated: 2006-09-04</FONT>
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+
+<TABLE WIDTH="75%" ALIGN=CENTER>
+  <TR>
+    <TD>
+      <B>Summary:</B>
+      Provides
+          <A HREF="speakerTimer.py"><TT>speakerTimer.py</TT></A>,
+      Python support to display a clock of time remaining for speakers in a conference session
+    </TD>
+  </TR>
+</TABLE>
+<!-- END HEADER -->
+
+
+<!-- START TABLE-OF-CONTENTS -->
+<H1>Contents</H1>
+
+<UL>
+  <LI><A HREF="#objectives">Objectives</A></LI> 
+  <LI><A HREF="#instructions">Instructions</A></LI> 
+  <LI><A HREF="#dependencies">Dependencies</A></LI> 
+  <LI><A HREF="#code">Python code</A></LI>
+</UL>
+<!-- END TABLE-OF-CONTENTS -->
+
+
+<H1><A NAME="objectives">Objectives</A></H1>
+
+    Have you ever been a speaker at a meeting and talked too long?
+    If you'd known you only had 3 minutes left, you might have 
+    restructured your next remarks.
+
+    <BR>
+
+    Perhaps you have been a session organizer and all your speakers 
+    take a few extra minutes.  Your session schedule is just shot to bits.
+
+    <BR>
+
+    Here is a tool that will help to keep speakers on schedule
+    by providing a display of the time remaining for them to speak.
+    Giving feedback to speaker, sessions moderator, and even session 
+    attendees, this simple tool has been useful in helping 
+    conference sessions stick close to the schedule through social engineering.
+
+Here is a terse list of the initial display requirements.
+<PRE CLASS="macro_example">
+    > 05:00      green    PRESENTATION
+    > 00:00      yellow   DISCUSSION
+    < 00:00      red      OVERTIME
+      05:00     1 beep
+      00:00     2 beeps
+     -01:00     3 beeps  (at each minute)
+</PRE>
+
+<H2>To-do list</H2>
+This work is not complete but this version (2006-08-17) will stand on its own.
+<UL>
+  <LI> There is not provision to provide a GUI for configuring the tool
+       or saving/restoring a non-default configuration.  That will come.
+       The code already has the labels stored as data.  All that is needed
+       is to create the GUI mechanisms to edit/save/recover these.
+  <LI> The <em>beep</em> capability needs to be much more robust.
+       There does not seem to be a native-Python and system-independent
+       method to access the OS-specific default system beep.
+       This needs work.
+       The present method works best (on Windows XP) with 
+       <A HREF="http://code.enthought.com/enthon/">Enthought Python</A> or
+       <A HREF="http://www.activestate.com/Products/ActivePython/">ActiveState Python</A>.
+  <LI> It has been reported that on Mac OS X, the beep would not work when starting
+       <TT>speakerTimer</TT> from an <TT>xterm</TT>.  
+       However, it worked when started from <TT>Terminal.all</TT>.
+  <LI> It would be good to provide a checkbox to (de)activate the beep
+  <LI> Change the <TT>start</TT>, <TT>pause</TT>, and <TT>stop</TT>
+       button text to the symbols standard on most DVD tools.
+       You know the ones already.
+</UL>
+
+<H1><A NAME="instructions">Instructions</A></H1>
+
+    The user interface is simple.
+    <UL>
+      <LI>Maximize the window on the screen.</LI>
+      <LI>Add time to the clock for the presentation.</LI>
+      <LI>If too much time is added, press stop to clear and re-enter the time needed.</LI>
+      <LI>Start the timer when the speaker starts.</LI>
+      <LI>Pause if necessary.  Press start to resume.</LI>
+      <LI>Stop the timer when the presentation is done.
+      <LI>Clock will clear on stop or when pause is in overtime.</LI>
+    </UL>
+
+<TABLE BORDER=2>
+  <TR>
+    <TD>
+      Initial screen is blank (since the timer is not programmed yet).
+      Note the configuration buttons at the bottom.
+      <TT>+10:00</TT> will add 10 minutes to the countdown timer clock.
+      The other buttons are similar.  
+      <TT>start</TT>,
+      <TT>pause</TT>, and
+      <TT>stop</TT> are intuitive.  
+      <TT>stop</TT> is also be used to clear the countdown timer
+      before counting is started.
+    </TD>
+    <TD>
+        <img src="blank.png"
+          style="border: 0; margin: 10px;"
+          align=middle
+          height="300"
+          alt="timer is armed"  />
+    </TD>
+  </TR>
+  <TR>
+    <TD>
+      This speaker has 25 minutes for a presentation.
+      Have the session moderator or monitor press the start button when the speaker starts.
+    </TD>
+    <TD>
+        <img src="armed.png"
+          style="border: 0; margin: 10px;"
+          align=middle
+          height="80"
+          alt="timer is armed"  />
+    </TD>
+  </TR>
+  <TR>
+    <TD>
+      The talk has begun.  Countdown timer is churning away.
+      Timer will beep once when time reaches 5 minutes.
+    </TD>
+    <TD>
+        <img src="presentation.png"
+          style="border: 0; margin: 10px;"
+          align=middle
+          height="80"
+          alt="presentation"  />
+    </TD>
+  </TR>
+  <TR>
+    <TD>
+      The talk has been paused.  
+      Maybe some problem with the projector?
+    </TD>
+    <TD>
+        <img src="paused.png"
+          style="border: 0; margin: 10px;"
+          align=middle
+          height="80"
+          alt="paused"  />
+    </TD>
+  </TR>
+  <TR>
+    <TD>
+      The talk has only a short time left.  
+      Time to consider audience questions.
+      Timer will beep twice when clock reaches zero.
+    </TD>
+    <TD>
+        <img src="discussion.png"
+          style="border: 0; margin: 10px;"
+          align=middle
+          height="80"
+          alt="discussion"  />
+    </TD>
+  </TR>
+  <TR>
+    <TD>
+      Time has run out.  Speaker should wrap things up.
+      Timer will beep 3 times every minute into overtime.
+    </TD>
+    <TD>
+        <img src="overtime.png"
+          style="border: 0; margin: 10px;"
+          align=middle
+          height="80"
+          alt="overtime"  />
+    </TD>
+  </TR>
+</TABLE>
+
+
+<H1><A NAME="dependencies">Dependencies</A></H1>
+
+This code is based on <A HREF="http://www.python.org">Python</A>.
+It uses these modules:
+<UL>
+  <LI> time </LI>
+  <LI> Tkinter </LI>
+  <LI> winsound (on Windows to access default system sound) </LI>
+  <LI> curses (alternative method to create sound) </LI>
+</UL>
+
+
+
+<H1><A NAME="code">Python code</A></H1>
+
+Here is the python code, as of 2006-08-17.
+It may have been changed since this WWW page was written.
+Consult the (<A HREF="speakerTimer.py">source code</A>).
+
+<PRE CLASS="macro_example">
+#! /bin/env python
+
+"""
+  file:    speakerTimer.py
+  author:  Pete R Jemian <jemian _att_ anl _dott_ gov>
+  created: 2006-07-27
+  revised: 2006-09-04
+  purpose: Display a clock of time remaining for speakers in a conference session
+
+    This simple tool has been useful in helping conferences stick close to the schedule.
+
+    The user interface is simple.
+    Add time to the clock for the presentation.
+    If too much time is added, press stop to clear and re-enter the time needed.
+    Start the timer when the speaker starts.
+    Pause if necessary.  Press start to resume.
+    Stop the timer when the presentation is done.
+    Clock will clear on stop or when pause is in overtime.
+
+    > 05:00      green    PRESENTATION
+    > 00:00      yellow   DISCUSSION
+    < 00:00      red      OVERTIME
+     05:00   1 beep
+     00:00   2 beeps
+    -01:00   3 beeps (at each minute)
+"""
+
+
+import time
+import Tkinter
+
+params = {}
+
+######################################################################
+#
+#   setDefaults
+#      define/reset the defaults for this tool
+#
+def setDefaults (params):
+    params["timerFontSpec"]        = ("", 288, "bold")
+    params["phaseFontSpec"]        = ("", 92, "bold")
+    params["buttonFontSpec"]       = ("",  24, "")
+    params["updatePoll_ms"]        = 250
+    params["discussionTime_sec"]   = 300
+    params["overtimeReminder_sec"] =  60
+    params["text,next"]            = "NEXT"
+    params["text,discussion"]      = "DISCUSSION"
+    params["text,paused"]          = "PAUSED"
+    params["text,presentation"]    = "PRESENTATION"
+    params["text,overtime"]        = "OVERTIME"
+    params["text,start"]           = "start"
+    params["text,pause"]           = "pause"
+    params["text,stop"]            = "stop"
+    params["total_secs"]           = 0
+    params["afterID"]              = 0
+
+
+######################################################################
+#
+#   setDisplayColor
+#      sets the color of the timer display
+#
+def setDisplayColor (params, color):
+   params["displayColor"] = color
+   try:
+      params["timerTextWidget"]["foreground"] = color
+      params["phaseTextWidget"]["foreground"] = color
+      #print "timerTextWidget[foreground] = ", params["timerTextWidget"]["foreground"]
+      #print "phaseTextWidget[foreground] = ", params["phaseTextWidget"]["foreground"]
+   except:
+      print "could not access GUI widgets"
+   return
+
+
+######################################################################
+#
+#   emptyAfterEvents
+#      clear the "after" event queue
+#
+def emptyAfterEvents (params):
+  if (params["afterID"] != 0):
+    params["tk"].after_cancel(params["afterID"])
+    params["afterID"] = 0
+
+
+######################################################################
+#
+#   _fallback_boing
+#      sound the bell using a fallback method such as curses
+#
+def _fallback_boing ():
+  try:
+    # try using curses
+    import curses
+    curses.initscr()
+    curses.beep()
+    curses.endwin()
+    return
+  except:
+    # maybe flash the screen
+    return
+
+######################################################################
+#
+#   _boing
+#      sound the bell
+#
+def _boing ():
+
+      # curses has beep()
+      # Tkinter has bell()
+      # wx has bell()
+      # ASCII ^g (string escape code: \a ) is a bell
+
+  import sys
+  if sys.platform == "win32":
+    try:
+      import winsound
+      # winsound.MessageBeep() uses default system message sound
+      winsound.MessageBeep()
+      # winsound.beep() ignores system sound settings (for mute and volume)
+      # winsound.Beep(1200,100) # 1200Hz for 100ms
+      return
+    except:
+      _fallback_boing()
+      return
+  else:
+    # non-Windows systems
+    _fallback_boing()
+    return
+
+
+######################################################################
+#
+#   boing
+#      sound the bell n times
+#
+def boing (params, n):
+  _boing()
+  for item in range(n-1):
+    params["tk"].after(100)
+    _boing()
+
+
+######################################################################
+#
+#   showTime
+#      shows the speaker timer
+#
+def showTime (params):
+  timeNow = time.time()
+  theTime = params["endTime"] - timeNow
+  mins    = abs(int(theTime)) / 60
+  secs    = abs(int(theTime)) % 60
+  params["timerTextWidget"]["text"] = "%02d:%02d" % (mins, secs)
+
+  # shall we make it audible?
+  # this method expects that we get called within one update period of a beep time
+  # Better to trigger a beep to happen after some time has been passed.
+  diffTime = theTime - params["discussionTime_sec"]
+  if (abs(diffTime) < 0.001*params["updatePoll_ms"]):
+    if (diffTime < 0):
+      boing(params, 1)
+  if (abs(theTime) < 0.001*params["updatePoll_ms"]):
+    if (theTime< 0):
+      boing(params, 2)
+  if (theTime < -10):
+      ot_secs = abs(theTime) % params["overtimeReminder_sec"]
+      if (ot_secs < 0.001*params["updatePoll_ms"]):
+          boing(params, 3)
+          #print theTime, ot_secs
+
+  # shall we make change the color?
+  if (theTime < 0):
+    # OVERTIME
+    setDisplayColor(params, "red")
+    params["phaseTextWidget"]["text"] = params["text,overtime"]
+  else:
+    if (theTime < params["discussionTime_sec"]):
+      # DISCUSSION
+      setDisplayColor(params, "yellow")
+      params["phaseTextWidget"]["text"] = params["text,discussion"]
+    else:
+      # PRESENTATION
+      setDisplayColor(params, "green")
+      params["phaseTextWidget"]["text"] = params["text,presentation"]
+  emptyAfterEvents(params)
+  params["afterID"] = params["tk"].after(params["updatePoll_ms"], showTime, params)
+
+
+
+######################################################################
+#
+#   addTimer
+#      adds seconds into the speaker timer
+#
+def addTimer (params, seconds):
+  params["total_secs"] += seconds
+  mins = int(params["total_secs"] / 60)
+  secs =     params["total_secs"] % 60
+  try:
+      params["timerTextWidget"]["text"] = "%02d:%02d" % (mins, secs)
+      #params["phaseTextWidget"]["text"] = ""
+      params["phaseTextWidget"]["text"] = params["text,next"]
+  except:
+      print "could not access GUI widgets"
+  setDisplayColor(params, "white")
+
+
+######################################################################
+#
+#   startTimer
+#      starts the speaker timer
+#
+def startTimer (params):
+  #print params
+  if (params["total_secs"] <= 0):
+      return
+  params["startTime"] = int(time.time())
+  params["endTime"]   = params["startTime"] + params["total_secs"]
+  emptyAfterEvents(params)
+  params["afterID"] = params["tk"].after(params["updatePoll_ms"], showTime, params)
+
+
+######################################################################
+#
+#   pauseTimer
+#      pauses the speaker timer
+#
+def pauseTimer (params):
+  if (params["total_secs"] <= 0):
+    return
+  #print params["total_secs"]
+  #print params["phaseTextWidget"]["text"]
+  #print params["text,paused"]
+  if (params["phaseTextWidget"]["text"] == params["text,paused"]):
+    # Could enable resume here by pressing pause
+    # But for now, just ignore repeated presses of pause
+    # startTimer
+    return
+
+  timeNow = int(time.time())
+  theTime = params["endTime"] - timeNow
+  #print timeNow, theTime
+  if (theTime <= 0):
+    stopTimer(params)
+    return
+
+  params["total_secs"] = theTime
+  params["phaseTextWidget"]["text"] = params["text,paused"]
+  setDisplayColor (params, "white")
+  emptyAfterEvents(params)
+
+######################################################################
+#
+#   stopTimer
+#      stops the speaker timer
+#
+def stopTimer (params):
+  emptyAfterEvents(params)
+  params["total_secs"] = 0
+  params["total_secs"] = 0
+  params["total_secs"] = 0
+  params["timerTextWidget"]["text"] = ""
+  params["phaseTextWidget"]["text"] = ""
+  setDisplayColor(params, "white")
+  #update idle
+
+
+######################################################################
+#
+#   button presses
+#
+def p10m_ButtonPressed():
+  addTimer(params, 600)
+
+def p1m_ButtonPressed():
+  addTimer(params, 60)
+
+def p10s_ButtonPressed():
+  addTimer(params, 10)
+
+def p1s_ButtonPressed():
+  addTimer(params, 1)
+
+def start_ButtonPressed():
+  startTimer(params)
+
+def pause_ButtonPressed():
+  pauseTimer(params)
+
+def stop_ButtonPressed():
+  stopTimer(params)
+
+
+######################################################################
+#
+#   define_GUI
+#      define the GUI for this tool
+#
+def define_GUI (params):
+   params["tk"].grid()
+   params["tk"].grid_columnconfigure(0, weight=1)
+   params["tk"].grid_rowconfigure(0, weight=1)
+
+   timer = Tkinter.Frame(params["tk"], bg = "black")
+   timer.grid(sticky = "news")
+   timer.grid_columnconfigure(0, weight=1)
+   phase = Tkinter.Frame(params["tk"], bg = "black")
+   phase.grid(sticky = "news")
+   phase.grid_columnconfigure(0,weight=1)
+   controls = Tkinter.Frame(params["tk"], bg = "grey")
+   controls.grid(sticky = "news")
+   controls.grid_columnconfigure(0,weight=1)
+
+   params["timerTextWidget"] = Tkinter.Label(timer)
+   params["timerTextWidget"]["text"]         = ""
+   params["timerTextWidget"]["font"]         = params["timerFontSpec"]
+   params["timerTextWidget"]["background"]   = "black"
+   params["timerTextWidget"]["foreground"]   = "white"
+   params["timerTextWidget"].grid(sticky = "news")
+
+   params["phaseTextWidget"] = Tkinter.Label(timer)
+   params["phaseTextWidget"]["text"]         = ""
+   params["phaseTextWidget"]["font"]         = params["phaseFontSpec"]
+   params["phaseTextWidget"]["background"]   = "black"
+   params["phaseTextWidget"]["foreground"]   = "white"
+   params["phaseTextWidget"].grid(sticky = "news")
+
+   p10m  = Tkinter.Button(controls, text="+10:00", font=params["buttonFontSpec"])
+   p1m   = Tkinter.Button(controls, text="+1:00",  font=params["buttonFontSpec"])
+   p10s  = Tkinter.Button(controls, text="+0:10",  font=params["buttonFontSpec"])
+   p1s   = Tkinter.Button(controls, text="+0:01",  font=params["buttonFontSpec"])
+   start = Tkinter.Button(controls, text="start",  font=params["buttonFontSpec"])
+   pause = Tkinter.Button(controls, text="pause",  font=params["buttonFontSpec"])
+   stop  = Tkinter.Button(controls, text="stop",   font=params["buttonFontSpec"])
+   p10m.configure( command = p10m_ButtonPressed)
+   p1m.configure(  command = p1m_ButtonPressed)
+   p10s.configure( command = p10s_ButtonPressed)
+   p1s.configure(  command = p1s_ButtonPressed)
+   start.configure(command = start_ButtonPressed)
+   pause.configure(command = pause_ButtonPressed)
+   stop.configure( command = stop_ButtonPressed)
+   p10m.grid( sticky = "news", row=0, column=0)
+   p1m.grid(  sticky = "news", row=0, column=1)
+   p10s.grid( sticky = "news", row=0, column=2)
+   p1s.grid(  sticky = "news", row=0, column=3)
+   start.grid(sticky = "news", row=0, column=4)
+   pause.grid(sticky = "news", row=0, column=5)
+   stop.grid( sticky = "news", row=0, column=6)
+   for item in range(7):
+       #print item
+       controls.grid_columnconfigure(item, weight=1)
+
+
+#----------------------------------------------------------------------
+
+def usual_main (params):
+   setDefaults(params)
+   params["tk"] = Tkinter.Tk()
+   define_GUI(params)
+   #addTimer(params, 300)
+   #addTimer(params, 6)
+   params["tk"].mainloop()
+
+def test_main (params):
+   addTimer(params, 300)
+   addTimer(params, 7)
+
+if __name__ == "__main__":
+    usual_main(params)
+    #test_main(params)
+</PRE>
+
+<HR />
+<P>
+  An alternative version (prior) of this tool is available 
+  that implements the same functionality in Tcl/Tk.
+  (<A HREF="speakerTime.tcl">speakerTimer.tcl</A>)
+</P>
+
+<!-- START FOOTER -->
+<TABLE RULES="none" BORDER="0">
+  <TR>
+    <TD STYLE="padding: 10px">
+      &nbsp;
+    </TD>
+  </TR>
+</TABLE>
+<TABLE RULES=none CLASS="top_background">
+  <TR STYLE="background-color: skyblue;">
+    <TD CLASS="top_title">
+      <SMALL>
+        This handy utility provided by Pete Jemian:
+      <A HREF="http://www.uni.aps.anl.gov/~jemian"><TT>http://www.uni.aps.anl.gov/~jemian</TT></A>
+      </SMALL>
+    </TD>
+    <TD CLASS="top_title">
+      <SMALL>
+        <a href="http://validator.w3.org/check?uri=referer"><img border="0"
+            src="http://www.w3.org/Icons/valid-html401"
+            alt="Valid HTML 4.01!" height="31" width="88"></a>
+      </SMALL>
+    </TD>
+    <TD CLASS="top_title">
+      <SMALL>
+        <a href="http://jigsaw.w3.org/css-validator/">
+         <img style="border:0;width:88px;height:31px"
+              src="http://jigsaw.w3.org/css-validator/images/vcss"
+              alt="Valid CSS!">
+        </a>
+      </SMALL>
+    </TD>
+  </TR>
+</TABLE>
+<!-- END FOOTER -->
+
+</BODY>
+</HTML>
